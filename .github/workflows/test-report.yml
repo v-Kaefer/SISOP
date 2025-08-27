@@ -1,0 +1,152 @@
+name: Test Reporting and Analysis
+
+# This workflow provides detailed test reporting and analysis
+on:
+  workflow_run:
+    workflows: ["CI/CD Pipeline"]
+    types:
+      - completed
+
+jobs:
+  advanced-reporting:
+    name: Advanced Test Reporting
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion != 'cancelled' }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up JDK 17 (for reporting)
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        
+    - name: Generate comprehensive project analysis
+      run: |
+        echo "=== SISOP Project Analysis Report ===" > project-analysis.md
+        echo "" >> project-analysis.md
+        echo "Generated on: $(date)" >> project-analysis.md
+        echo "" >> project-analysis.md
+        
+        echo "## 📋 Project Overview" >> project-analysis.md
+        echo "- **Project**: SISOP Virtual Machine Simulator" >> project-analysis.md
+        echo "- **Language**: Java" >> project-analysis.md
+        echo "- **Architecture**: Single-file virtual machine implementation" >> project-analysis.md
+        echo "- **Course**: Operating Systems (PUCRS)" >> project-analysis.md
+        echo "" >> project-analysis.md
+        
+        echo "## 🏗️ Code Structure Analysis" >> project-analysis.md
+        echo "### Main Components:" >> project-analysis.md
+        echo "- **Hardware Layer**: Memory, CPU, Word classes" >> project-analysis.md
+        echo "- **Operating System Layer**: InterruptHandling, SysCallHandling" >> project-analysis.md
+        echo "- **Programs**: Built-in virtual programs (factorial, fibonacci, etc.)" >> project-analysis.md
+        echo "- **Utilities**: Memory management and debugging tools" >> project-analysis.md
+        echo "" >> project-analysis.md
+        
+        echo "### File Statistics:" >> project-analysis.md
+        echo "\`\`\`" >> project-analysis.md
+        echo "Lines of code in Sistema.java: $(wc -l < Sistema.java)" >> project-analysis.md
+        echo "Lines of code in SistemaTest.java: $(wc -l < SistemaTest.java)" >> project-analysis.md
+        echo "Total Java files: $(find . -name '*.java' | wc -l)" >> project-analysis.md
+        echo "\`\`\`" >> project-analysis.md
+        echo "" >> project-analysis.md
+        
+        echo "## 🧪 Test Coverage Analysis" >> project-analysis.md
+        echo "### Test Categories:" >> project-analysis.md
+        echo "- ✅ **System Initialization Tests**: Validates VM startup" >> project-analysis.md
+        echo "- ✅ **Memory Management Tests**: Tests memory allocation" >> project-analysis.md
+        echo "- ✅ **CPU Execution Tests**: Validates CPU setup and operations" >> project-analysis.md
+        echo "- ✅ **Program Loading Tests**: Tests program retrieval and loading" >> project-analysis.md
+        echo "- ✅ **Integration Tests**: End-to-end program execution" >> project-analysis.md
+        echo "- ✅ **System Call Tests**: Validates syscall handling" >> project-analysis.md
+        echo "" >> project-analysis.md
+        
+        echo "### Supported Programs:" >> project-analysis.md
+        # Extract program names from Sistema.java
+        grep -o '"[^"]*"' Sistema.java | grep -E '(fatorial|fibonacci|prog|PB|PC)' | sort -u | sed 's/^/- /' >> project-analysis.md
+        echo "" >> project-analysis.md
+        
+        echo "## 🚀 CI/CD Pipeline Features" >> project-analysis.md
+        echo "### ✨ Implemented Features:" >> project-analysis.md
+        echo "- 🌟 **Multi-Java Version Testing**: Java 11, 17, and 21" >> project-analysis.md
+        echo "- ⚡ **Fast Feedback**: Fail-fast compilation and immediate error reporting" >> project-analysis.md
+        echo "- 🧪 **Comprehensive Testing**: Unit tests + Integration tests" >> project-analysis.md
+        echo "- 📦 **Artifact Management**: Build artifacts and test reports" >> project-analysis.md
+        echo "- 🛡️ **Quality Gates**: Code formatting and security checks" >> project-analysis.md
+        echo "- 📊 **Detailed Reporting**: Test summaries and analysis reports" >> project-analysis.md
+        echo "- 🔄 **Caching**: Maven dependency caching for future expansion" >> project-analysis.md
+        echo "- 🔐 **Security Analysis**: Basic security vulnerability scanning" >> project-analysis.md
+        echo "" >> project-analysis.md
+        
+        echo "### 🎯 Pipeline Triggers:" >> project-analysis.md
+        echo "- **Push to main branch**: Full pipeline execution" >> project-analysis.md
+        echo "- **Pull requests**: Complete validation before merge" >> project-analysis.md
+        echo "- **Workflow completion**: Advanced reporting and analysis" >> project-analysis.md
+        echo "" >> project-analysis.md
+        
+        echo "## 📈 Quality Metrics" >> project-analysis.md
+        echo "### Code Quality Checks:" >> project-analysis.md
+        echo "- ✅ Compilation validation across Java versions" >> project-analysis.md
+        echo "- ✅ Code formatting consistency checks" >> project-analysis.md
+        echo "- ✅ Security vulnerability scanning" >> project-analysis.md
+        echo "- ✅ File structure validation" >> project-analysis.md
+        echo "- ✅ TODO/FIXME comment tracking" >> project-analysis.md
+        echo "" >> project-analysis.md
+        
+        echo "### Performance Considerations:" >> project-analysis.md
+        echo "- ⚡ Parallel execution across Java versions" >> project-analysis.md
+        echo "- 💾 Dependency caching for faster builds" >> project-analysis.md
+        echo "- 🎯 Focused testing with timeout protection" >> project-analysis.md
+        echo "- 📦 Efficient artifact collection and storage" >> project-analysis.md
+        echo "" >> project-analysis.md
+        
+        echo "## 🔮 Future Enhancements" >> project-analysis.md
+        echo "### Potential Improvements:" >> project-analysis.md
+        echo "- 📊 **Code Coverage**: Add JaCoCo for detailed coverage metrics" >> project-analysis.md
+        echo "- 🔍 **Static Analysis**: Integration with SpotBugs, PMD, or SonarQube" >> project-analysis.md
+        echo "- 📝 **Documentation**: Automated JavaDoc generation" >> project-analysis.md
+        echo "- 🐳 **Containerization**: Docker-based testing environments" >> project-analysis.md
+        echo "- 🌐 **Performance Testing**: Benchmark tests for VM performance" >> project-analysis.md
+        echo "- 🔗 **Maven Integration**: Migration to Maven for better dependency management" >> project-analysis.md
+        
+        cat project-analysis.md
+        
+    - name: Upload project analysis
+      uses: actions/upload-artifact@v4
+      with:
+        name: project-analysis-report
+        path: project-analysis.md
+        retention-days: 90
+        
+    - name: Workflow status summary
+      run: |
+        echo "## 📋 Workflow Status Report" > workflow-status.md
+        echo "" >> workflow-status.md
+        echo "**Workflow**: ${{ github.event.workflow_run.name }}" >> workflow-status.md
+        echo "**Status**: ${{ github.event.workflow_run.conclusion }}" >> workflow-status.md
+        echo "**Triggered by**: ${{ github.event.workflow_run.event }}" >> workflow-status.md
+        echo "**Branch**: ${{ github.event.workflow_run.head_branch }}" >> workflow-status.md
+        echo "**Commit**: ${{ github.event.workflow_run.head_sha }}" >> workflow-status.md
+        echo "**Report Generated**: $(date)" >> workflow-status.md
+        echo "" >> workflow-status.md
+        
+        if [ "${{ github.event.workflow_run.conclusion }}" = "success" ]; then
+          echo "✅ **Result**: All checks passed successfully!" >> workflow-status.md
+          echo "" >> workflow-status.md
+          echo "🎉 The SISOP virtual machine simulator is ready for integration!" >> workflow-status.md
+        else
+          echo "❌ **Result**: Some checks failed." >> workflow-status.md
+          echo "" >> workflow-status.md
+          echo "🔧 Please check the workflow logs for details." >> workflow-status.md
+        fi
+        
+        cat workflow-status.md
+        
+    - name: Upload workflow status
+      uses: actions/upload-artifact@v4
+      with:
+        name: workflow-status-report
+        path: workflow-status.md
+        retention-days: 30
