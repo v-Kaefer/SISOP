@@ -2,9 +2,9 @@ package hardware;
 
 import common.Opcode;
 import common.Interrupts;
-import software.InterruptHandling;
-import software.SysCallHandling;
-import software.Utilities;
+import common.IInterruptHandler;
+import common.ISysCallHandler;
+import common.IUtilities;
 
 public class CPU {
 	private int maxInt; // valores maximo e minimo para inteiros nesta cpu
@@ -20,15 +20,15 @@ public class CPU {
 
 	private Word[] m;   // m é o array de memória "física", CPU tem uma ref a m para acessar
 
-	private InterruptHandling ih;    // significa desvio para rotinas de tratamento de Int - se int ligada, desvia
-	private SysCallHandling sysCall; // significa desvio para tratamento de chamadas de sistema
+	private IInterruptHandler ih;    // significa desvio para rotinas de tratamento de Int - se int ligada, desvia
+	private ISysCallHandler sysCall; // significa desvio para tratamento de chamadas de sistema
 
 	private boolean cpuStop;    // flag para parar CPU - caso de interrupcao que acaba o processo, ou chamada stop - 
 								// nesta versao acaba o sistema no fim do prog
 
 	                            // auxilio aa depuração
 	private boolean debug;      // se true entao mostra cada instrucao em execucao
-	private Utilities u;        // para debug (dump)
+	private IUtilities u;        // para debug (dump)
 
 	public CPU(Memory _mem, boolean _debug) { // ref a MEMORIA passada na criacao da CPU
 		maxInt = 32767;            // capacidade de representacao modelada
@@ -40,12 +40,12 @@ public class CPU {
 
 	}
 
-	public void setAddressOfHandlers(InterruptHandling _ih, SysCallHandling _sysCall) {
+	public void setAddressOfHandlers(IInterruptHandler _ih, ISysCallHandler _sysCall) {
 		ih = _ih;                  // aponta para rotinas de tratamento de int
 		sysCall = _sysCall;        // aponta para rotinas de tratamento de chamadas de sistema
 	}
 
-	public void setUtilities(Utilities _u) {
+	public void setUtilities(IUtilities _u) {
 		u = _u;                     // aponta para rotinas utilitárias - fazer dump da memória na tela
 	}
 

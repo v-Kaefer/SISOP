@@ -1,9 +1,10 @@
 package software;
 
+import common.IUtilities;
 import hardware.HW;
 import hardware.Word;
 
-public class Utilities {
+public class Utilities implements IUtilities {
 	private HW hw;
 
 	public Utilities(HW _hw) {

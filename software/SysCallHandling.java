@@ -1,8 +1,9 @@
 package software;
 
+import common.ISysCallHandler;
 import hardware.HW;
 
-public class SysCallHandling {
+public class SysCallHandling implements ISysCallHandler {
 	private HW hw; // referencia ao hw se tiver que setar algo
 
 	public SysCallHandling(HW _hw) {

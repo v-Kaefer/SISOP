@@ -1,9 +1,10 @@
 package software;
 
 import common.Interrupts;
+import common.IInterruptHandler;
 import hardware.HW;
 
-public class InterruptHandling {
+public class InterruptHandling implements IInterruptHandler {
 	private HW hw; // referencia ao hw se tiver que setar algo
 
 	public InterruptHandling(HW _hw) {
