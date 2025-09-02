@@ -1,7 +1,7 @@
-package pucrs.sisop.hardware;
+package hardware;
 
-import pucrs.sisop.hardware.Memory;
-import pucrs.sisop.hardware.CPU;
+import hardware.Memory;
+import hardware.CPU;
 public class HW {
 		public Memory mem;
 		public CPU cpu;

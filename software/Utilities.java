@@ -1,7 +1,7 @@
-package pucrs.sisop.software;
+package software;
 
-import pucrs.sisop.hardware.HW;
-import pucrs.sisop.hardware.Word;
+import hardware.HW;
+import hardware.Word;
 public class Utilities {
 		private HW hw;
 

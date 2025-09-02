@@ -1,6 +1,6 @@
-package pucrs.sisop.programs;
+package programs;
 
-import pucrs.sisop.hardware.Word;
+import hardware.Word;
 public class Program {
 		public String name;
 		public Word[] image;

@@ -1,8 +1,8 @@
-package pucrs.sisop.software;
+package software;
 
-import pucrs.sisop.hardware.HW;
-import pucrs.sisop.software.InterruptHandling;
-import pucrs.sisop.software.SysCallHandling;
+import hardware.HW;
+import software.InterruptHandling;
+import software.SysCallHandling;
 public class SO {
 		public InterruptHandling ih;
 		public SysCallHandling sc;

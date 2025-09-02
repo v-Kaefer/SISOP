@@ -1,10 +1,10 @@
-package pucrs.sisop.software;
+package software;
 
-import pucrs.sisop.hardware.HW;
-import pucrs.sisop.hardware.Opcode;
-import pucrs.sisop.hardware.Interrupts;
-import pucrs.sisop.hardware.Memory;
-import pucrs.sisop.hardware.Word;
+import hardware.HW;
+import hardware.Opcode;
+import hardware.Interrupts;
+import hardware.Memory;
+import hardware.Word;
 public class SysCallHandling {
 		private HW hw; // referencia ao hw se tiver que setar algo
 

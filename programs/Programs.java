@@ -1,7 +1,7 @@
-package pucrs.sisop.programs;
+package programs;
 
-import pucrs.sisop.hardware.Word;
-import pucrs.sisop.hardware.Opcode;
+import hardware.Word;
+import hardware.Opcode;
 public class Programs {
 
 		public Word[] retrieveProgram(String pname) {

@@ -1,12 +1,12 @@
-package pucrs.sisop.hardware;
+package hardware;
 
-import pucrs.sisop.hardware.Memory;
-import pucrs.sisop.hardware.Word;
-import pucrs.sisop.hardware.Opcode;
-import pucrs.sisop.hardware.Interrupts;
-import pucrs.sisop.software.InterruptHandling;
-import pucrs.sisop.software.SysCallHandling;
-import pucrs.sisop.software.Utilities;
+import hardware.Memory;
+import hardware.Word;
+import hardware.Opcode;
+import hardware.Interrupts;
+import software.InterruptHandling;
+import software.SysCallHandling;
+import software.Utilities;
 public class CPU {
 		private int maxInt; // valores maximo e minimo para inteiros nesta cpu
 		private int minInt;

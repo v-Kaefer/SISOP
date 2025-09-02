@@ -1,6 +1,6 @@
-package pucrs.sisop.hardware;
+package hardware;
 
-import pucrs.sisop.hardware.Opcode;
+import hardware.Opcode;
 public class Word {    // cada posicao da memoria tem uma instrucao (ou um dado)
 		public Opcode opc; //
 		public int ra;     // indice do primeiro registrador da operacao (Rs ou Rd cfe opcode na tabela)
