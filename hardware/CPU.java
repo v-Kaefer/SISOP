@@ -77,6 +77,14 @@ public class CPU {
 			irpt = Interrupts.noInterrupt;                // reset da interrupcao registrada
 		}
 
+		public int getPc() {
+			return pc;
+		}
+
+		public int getReg(int i) {
+			return reg[i];
+		}
+
 		public void run() {                               // execucao da CPU supoe que o contexto da CPU, vide acima, 
 														  // esta devidamente setado
 			cpuStop = false;
