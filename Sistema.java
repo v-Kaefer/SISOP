@@ -1,5 +1,3 @@
-package pucrs.sisop;
-
 import hardware.HW;
 import software.SO;
 import programs.Programs;
