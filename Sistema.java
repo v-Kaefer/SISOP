@@ -1,8 +1,6 @@
-package pucrs.sisop;
-
-import pucrs.sisop.hardware.HW;
-import pucrs.sisop.software.SO;
-import pucrs.sisop.programs.Programs;
+import hardware.HW;
+import software.SO;
+import programs.Programs;
 
 public class Sistema {
     public HW hw;

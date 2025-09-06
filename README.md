@@ -4,7 +4,7 @@ T1 - SISOP
 Estrutura Modularizada
 
 ```
-sisop
+SISOP
 ├── Sistema.java                # Main (instancia HW, SO, Programs) + run()
 ├── hardware/
 │   ├── CPU.java
@@ -35,3 +35,13 @@ sisop
 Melhor metodologia para desenvolver o trabalho:
 
 * Gerente de Memória -> Gerente de Processos -> Escalonamento
+
+# Para compilar e rodar:
+
+Na pasta SISOP, execute:
+
+`javac Sistema.java`
+
+Para rodar, execute:
+
+`java Sistema`
