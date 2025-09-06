@@ -1,3 +1,7 @@
+package memory;
+
+import hardware.Opcode;
+
 /**
  * Representa uma posição de memória da máquina virtual.
  * Cada posição codifica: [OPCODE; R1: 1 REG de 0..7; R2: 1 REG de 0..7, PARAMETRO: K ou A conforme OPCODE]
@@ -43,8 +47,10 @@ public class PosicaoDeMemoria {
     }
     
     private void validarRegistrador(int reg) {
-        if (reg < 0 || reg > 7) {
-            throw new IllegalArgumentException("Registrador deve estar entre 0 e 7. Valor recebido: " + reg);
+        // Allow registers -1 to 9 to match the existing system
+        // Registers 8 and 9 are used for I/O operations
+        if (reg < -1 || reg > 9) {
+            throw new IllegalArgumentException("Registrador deve estar entre -1 e 9. Valor recebido: " + reg);
         }
     }
     
