@@ -1,4 +1,7 @@
 *.class
+*.png
+*.pdf
+*.pages.pdf
 Guia.md
 Etapa01.md
-*.png
+Etapa02.md

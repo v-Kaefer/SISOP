@@ -4,37 +4,35 @@ T1 - SISOP
 Estrutura Modularizada
 
 ```
-SISOP
-├── Sistema.java                # Main (instancia HW, SO, Programs) + run()
-├── hardware/
-│   ├── CPU.java
-│   ├── HW.java
-│   ├── Interrupts.java
-│   ├── Memory.java
-│   ├── Opcode.java
-│   └── Word.java
-├── memory/                     # Gerenciador de Memória com Paginação
-│   ├── GerenciadorMemoria.java
-│   ├── MemoryManagerBridge.java
-│   ├── PosicaoDeMemoria.java
-│   ├── TesteGerenciadorMemoria.java
-│   └── TesteIntegracao.java
-├── programs/
-│   ├── Program.java
-│   └── Programs.java
-└── software/
-    ├── InterruptHandling.java
-    ├── SO.java
-    ├── SysCallHandling.java
-    └── Utilities.java
+SISOP/
+├── Sistema.java                   # O "main" - onde tudo começa
+├── hardware/                      # Componentes do computador virtual
+│   ├── CPU.java                  # Processador virtual  
+│   ├── Memory.java               # Memória RAM virtual
+│   ├── Word.java                 # Uma "palavra" de memória
+│   ├── Opcode.java               # Conjunto de instruções da CPU
+│   └── HW.java                   # Hardware completo (CPU + Memória)
+├── memory/                        # Gerenciador de memória inteligente (NOVO!)
+│   ├── GerenciadorMemoria.java   # Sistema de paginação
+│   ├── PosicaoDeMemoria.java     # Representação de instrução/dado
+│   ├── MemoryManagerBridge.java  # Ponte entre sistemas
+│   ├── TesteGerenciadorMemoria.java   # Testes completos
+│   └── TesteIntegracao.java      # Testes de integração
+├── programs/                      # Programas que rodam na VM
+│   ├── Programs.java             # Biblioteca de programas
+│   └── Program.java              # Estrutura de um programa
+└── software/                      # Sistema operacional da VM
+    ├── SO.java                   # Núcleo do sistema operacional
+    ├── Utilities.java            # Funções auxiliares
+    ├── InterruptHandling.java    # Tratamento de interrupções
+    └── SysCallHandling.java      # Chamadas de sistema
 ```
-
 
 # TO-DO
 
-[x] Gerencia de Memória
-[ ] Gerencia de Processos
-[ ] Escalonamento -> Round-Robin (definido pelo prof)
+* [X] Gerencia de Memória
+- [X] Gerencia de Processos
+- [ ] Escalonamento -> Round-Robin (definido pelo prof)
 
 * Para o controle do tempo, vamos usar os ciclos de CPU.
 
