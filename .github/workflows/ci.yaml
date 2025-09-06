@@ -1,0 +1,34 @@
+name: Java CI
+
+on:
+  push:
+    branches: [main, develop]
+
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v5
+
+    - name: Set up Java
+      uses: actions/setup-java@v5
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+    
+    - name: Compile project
+      run: |
+        javac Sistema.java
+        javac memory/*.java
+    
+    - name: Run basic system test
+      run: java Sistema
+    
+    - name: Run memory manager tests
+      run: java memory.TesteGerenciadorMemoria
+    
+    - name: Run integration tests
+      run: java memory.TesteIntegracao
