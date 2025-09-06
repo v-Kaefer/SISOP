@@ -1,8 +1,13 @@
+package memory;
+
+import java.util.Arrays;
+import hardware.Opcode;
+
 /**
  * Classe de teste para o Gerenciador de Memória com Paginação
  * Testa todos os aspectos conforme especificação da Etapa 01
  */
-public class TesteGerenciadorMemoriaCompleto {
+public class TesteGerenciadorMemoria {
     
     public static void main(String[] args) {
         System.out.println("=== TESTE COMPLETO DO GERENCIADOR DE MEMÓRIA ===\n");
