@@ -222,11 +222,88 @@ SISOP/
 └── CHANGELOG.md                          # Este arquivo
 ```
 
-### Próximos Passos
-- [ ] Integração com sistema de processos
-- [ ] Implementação de algoritmos de substituição de página
-- [ ] Otimização de alocação (algoritmos best-fit, worst-fit)
-- [ ] Métricas avançadas de performance
+## [3.0.0] - Etapa 03 - 2025-01-XX
+
+### Adicionado
+
+#### Framework Completo de Escalonamento Avançado (Etapa 03)
+- **Interface `Scheduler`**: Contrato abstrato para todos os algoritmos de escalonamento
+- **`SchedulerFactory`**: Factory pattern para criação dinâmica de escalonadores
+- **`SchedulingPolicy` enum**: Enumeração de todas as políticas disponíveis
+- **Arquitetura modular**: Separação clara entre lógica de algoritmo e integração de sistema
+
+#### Algoritmos de Escalonamento Implementados
+- **Round-Robin Modular**: Reimplementação modular com métricas aprimoradas
+- **FCFS (First Come First Served)**: Escalonamento não-preemptivo baseado em ordem
+- **SJF (Shortest Job First)**: Algoritmo ótimo com estimativa automática de tempo
+- **Estruturas base**: Framework preparado para Priority, Multilevel e SRTF
+
+#### Sistema de Métricas Avançadas
+- **`SchedulingMetrics`**: Classe completa para análise de performance
+- **Context switches**: Rastreamento de trocas de contexto e overhead
+- **Utilização de CPU**: Monitoramento detalhado de uso do processador
+- **Tempos médios**: Cálculo de tempo de espera, turnaround e resposta
+- **Throughput**: Medição de processos finalizados por unidade de tempo
+- **Análise comparativa**: Ferramentas para comparação entre algoritmos
+
+#### Process Control Block Estendido
+- **Estimativa de tempo**: Para algoritmo SJF
+- **Tempo de resposta**: Cálculo do tempo até primeira execução
+- **Tempo de chegada**: Rastreamento para análise completa
+- **Turnaround time**: Tempo total no sistema
+
+### Funcionalidades Implementadas
+
+#### Sistema de Testes Completo
+- **`TesteEscalonamentoEtapa3.java`**: Validação do framework e algoritmos
+- **Testes por algoritmo**: Verificação individual de comportamento
+- **Benchmarks de performance**: Análise comparativa entre algoritmos
+- **Compatibilidade reversa**: Validação de funcionalidade existente
+
+#### Exemplos Educacionais
+- **`ExemploEscalonamentoEtapa3.java`**: Demonstrações interativas
+- **Visualização passo-a-passo**: Execução detalhada de algoritmos
+- **Comparação lado-a-lado**: Performance de diferentes escalonadores
+- **Coleta de métricas**: Análise em tempo real
+
+#### Documentação Técnica
+- **`DOCUMENTACAO_ETAPA03.md`**: Guia técnico completo
+- **`ROTEIRO_APRESENTACAO.md`**: Roadmap de apresentação
+- **README atualizado**: Informações e exemplos da Etapa 3
+
+### Modificado
+
+#### Compatibilidade Total
+- **Sistema.java**: Mantido funcionamento original
+- **Testes existentes**: Continuam funcionando sem modificações
+- **Exemplos anteriores**: Preservados e operacionais
+- **RoundRobinScheduler**: Mantido junto com implementação modular
+
+#### Arquitetura de Software
+- **Separação de responsabilidades**: Algoritmos independentes do sistema
+- **Factory pattern**: Criação consistente de escalonadores
+- **Interface limpa**: Métodos padronizados para todos os algoritmos
+- **Extensibilidade**: Pontos claros para adição de novos algoritmos
+
+### Resultados de Performance
+
+#### Benchmarks Iniciais
+- **Round-Robin**: Context switches altos, distribuição justa de CPU
+- **FCFS**: Overhead mínimo, potencial convoy effect
+- **SJF**: Tempo médio de espera ótimo, baixo overhead
+
+### Próximos Passos - Projeto Finalizado
+
+O projeto SISOP foi concluído com a implementação da Etapa 3, fornecendo um sistema operacional virtual educacional completo com:
+- Gerenciamento de memória com paginação (Etapa 1)
+- Gerenciamento de processos (Etapa 2)  
+- Framework avançado de escalonamento (Etapa 3)
+
+### Notas de Desenvolvimento
+- **Framework extensível**: Arquitetura permite fácil adição de novos algoritmos
+- **Métricas educacionais**: Ferramentas para comparação e aprendizado
+- **Base sólida**: Fundação estabelecida para estudos de sistemas operacionais
+- **Implementação modular**: Código limpo e bem estruturado
 
 ### Notas de Desenvolvimento
 - Código totalmente baseado nas especificações fornecidas
