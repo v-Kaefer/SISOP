@@ -4,17 +4,17 @@ import hardware.Word;
 import hardware.Opcode;
 
 /**
- * Bridge class to connect the advanced GerenciadorMemoria with the existing system
+ * Ponte class to connect the advanced GerenciadorMemoria with the existing system
  * that uses Word objects. This allows the system to use pagination without major changes.
  */
-public class MemoryManagerBridge {
+public class MemoryManagerPonte {
     private GerenciadorMemoria gerenciador;
     
-    public MemoryManagerBridge(int tamMem, int tamPg) {
+    public MemoryManagerPonte(int tamMem, int tamPg) {
         this.gerenciador = new GerenciadorMemoria(tamMem, tamPg);
     }
     
-    public MemoryManagerBridge() {
+    public MemoryManagerPonte() {
         this.gerenciador = new GerenciadorMemoria(); // default: 1024 words, 8 words per page
     }
     

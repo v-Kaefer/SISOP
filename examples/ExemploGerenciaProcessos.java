@@ -4,7 +4,7 @@ import hardware.HW;
 import software.SO;
 import programs.Programs;
 import memory.GerenciadorMemoria;
-import memory.MemoryManagerBridge;
+import memory.MemoryManagerPonte;
 import hardware.Word;
 
 /**
@@ -26,7 +26,7 @@ public class ExemploGerenciaProcessos {
         SO so = new SO(hw);
         hw.cpu.setUtilities(so.utils); // Fix: Set utilities properly
         Programs progs = new Programs();
-        MemoryManagerBridge bridge = new MemoryManagerBridge(1024, 8);
+        MemoryManagerPonte bridge = new MemoryManagerPonte(1024, 8);
         GerenciadorMemoria gm = bridge.getGerenciador();
         
         // 2. Simular múltiplos "processos" alocando memória

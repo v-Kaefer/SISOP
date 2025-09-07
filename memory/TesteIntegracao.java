@@ -27,7 +27,7 @@ public class TesteIntegracao {
     public static void testWithExistingPrograms() {
         System.out.println(">>> TESTE COM PROGRAMAS EXISTENTES <<<");
         
-        MemoryManagerBridge bridge = new MemoryManagerBridge(1024, 8); // Same as default system
+        MemoryManagerPonte bridge = new MemoryManagerPonte(1024, 8); // Same as default system
         Programs progs = new Programs();
         
         // Load factorial program (same as used in Sistema.java)
@@ -72,7 +72,7 @@ public class TesteIntegracao {
     public static void testMultiplePrograms() {
         System.out.println(">>> TESTE COM MÚLTIPLOS PROGRAMAS <<<");
         
-        MemoryManagerBridge bridge = new MemoryManagerBridge(256, 8); // Smaller memory for testing
+        MemoryManagerPonte bridge = new MemoryManagerPonte(256, 8); // Smaller memory for testing
         Programs progs = new Programs();
         
         // Load different programs
