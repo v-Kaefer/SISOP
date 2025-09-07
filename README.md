@@ -30,15 +30,20 @@ SISOP/
 
 # TO-DO
 
-* [X] Gerencia de Memória
-- [X] Gerencia de Processos
-- [ ] Escalonamento -> Round-Robin (definido pelo prof)
+* [X] Gerencia de Memória (Etapa 01) - COMPLETA
+* [~] Gerencia de Processos (Etapa 02) - FUNDAÇÕES IMPLEMENTADAS
+* [ ] Escalonamento -> Round-Robin (Etapa 03) - PLANEJADO
 
 * Para o controle do tempo, vamos usar os ciclos de CPU.
 
 Melhor metodologia para desenvolver o trabalho:
 
 * Gerente de Memória -> Gerente de Processos -> Escalonamento
+
+## Documentação
+
+- **[DOCUMENTACAO_ETAPA02.md](DOCUMENTACAO_ETAPA02.md)** - Guia completo do sistema com foco em gerenciamento de memória
+- **[DOCUMENTACAO_GERENCIA_PROCESSOS.md](DOCUMENTACAO_GERENCIA_PROCESSOS.md)** - Estado atual da implementação de gerência de processos
 
 # Para compilar e rodar:
 
@@ -76,3 +81,16 @@ java -cp . memory.TesteIntegracao
 - **Estatísticas**: Monitoramento de uso da memória
 - **Fragmentação**: Tratamento adequado de fragmentação externa
 - **Bridge de integração**: Compatibilidade com o sistema existente
+
+## Exemplos Práticos
+
+### Exemplo de Gerência de Processos
+```bash
+javac examples/*.java
+java examples.ExemploGerenciaProcessos
+```
+
+Este exemplo demonstra o estado atual da implementação de gerência de processos, mostrando:
+- Alocação simultânea de memória para múltiplos processos
+- Configuração de contexto da CPU
+- Limitações atuais do sistema
