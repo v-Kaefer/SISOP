@@ -10,9 +10,8 @@ Este projeto implementa um **Sistema Operacional completo** que funciona em uma 
 - **[Etapa 2]** Gerenciamento de Processos com Round-Robin - **COMPLETA**
 
 ### 📋 Próximas Etapas Planejadas
-- **[Etapa 3]** Sincronização entre Processos (Semáforos, Mutex)
-- **[Etapa 4]** Sistema de Arquivos
-- **[Etapa 5]** Interface Gráfica de Administração
+- **[Etapa 3.1]** Sincronização entre Processos (Semáforos, Mutex)
+- **[Etapa 3.2]** Escalonamento
 
 ## Arquitetura do Sistema
 
