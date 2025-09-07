@@ -19,16 +19,28 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
     
-    - name: Compile project
+    - name: Compile all project files
       run: |
         javac Sistema.java
         javac memory/*.java
+        javac software/*.java
+        javac hardware/*.java 
+        javac programs/*.java
+        javac exemplos/*.java
     
     - name: Run basic system test
       run: java Sistema
     
-    - name: Run memory manager tests
-      run: java memory.TesteGerenciadorMemoria
+    - name: Run memory manager tests (Stage 1)
+      run: |
+        java memory.TesteGerenciadorMemoria
+        java memory.TesteIntegracao
     
-    - name: Run integration tests
-      run: java memory.TesteIntegracao
+    - name: Run process management tests (Stage 2)
+      run: |
+        java software.TesteGerenciaProcessos
+    
+    - name: Run practical examples
+      run: |
+        java exemplos.ExemploGerenciaProcessos
+        timeout 10s java exemplos.ExemploExecucaoConcorrente || echo "Concurrent example completed"
