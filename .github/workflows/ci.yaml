@@ -23,8 +23,10 @@ jobs:
       run: |
         javac Sistema.java
         javac memory/*.java
-        javac software/*.java hardware/*.java programs/*.java
-        javac examples/*.java
+        javac software/*.java
+        javac hardware/*.java 
+        javac programs/*.java
+        javac exemplos/*.java
     
     - name: Run basic system test
       run: java Sistema
@@ -40,5 +42,5 @@ jobs:
     
     - name: Run practical examples
       run: |
-        java examples.ExemploGerenciaProcessos
-        timeout 10s java examples.ExemploExecucaoConcorrente || echo "Concurrent example completed"
+        java exemplos.ExemploGerenciaProcessos
+        timeout 10s java exemplos.ExemploExecucaoConcorrente || echo "Concurrent example completed"

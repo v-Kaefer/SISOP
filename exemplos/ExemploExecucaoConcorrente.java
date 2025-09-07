@@ -1,4 +1,4 @@
-package examples;
+package exemplos;
 
 import hardware.HW;
 import hardware.Word;
