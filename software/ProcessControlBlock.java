@@ -41,6 +41,12 @@ public class ProcessControlBlock {
     private long tempoUltimaExecucao;   // Último momento que executou
     private int quantumRestante;        // Quantum restante no Round-Robin
     
+    // Etapa 3: Métricas avançadas para diferentes algoritmos de escalonamento
+    private int tempoEstimadoExecucao;  // Estimativa de tempo total de execução (para SJF)
+    private long tempoResposta;         // Tempo de resposta (tempo até primeira execução)
+    private long tempoChegada;          // Timestamp de chegada no sistema
+    private boolean primeiraExecucao;   // Flag para calcular tempo de resposta
+    
     /**
      * Construtor do PCB
      */
@@ -63,6 +69,12 @@ public class ProcessControlBlock {
         this.tempoEspera = 0;
         this.prioridade = 1; // Prioridade padrão
         this.quantumRestante = 0;
+        
+        // Etapa 3: Inicialização de métricas avançadas
+        this.tempoEstimadoExecucao = 0; // Será definido conforme necessário
+        this.tempoResposta = 0;
+        this.tempoChegada = System.currentTimeMillis();
+        this.primeiraExecucao = true;
     }
     
     // === GETTERS E SETTERS ===
@@ -180,6 +192,41 @@ public class ProcessControlBlock {
     
     public void setTempoUltimaExecucao(long tempo) {
         this.tempoUltimaExecucao = tempo;
+        
+        // Etapa 3: Calcula tempo de resposta na primeira execução
+        if (primeiraExecucao) {
+            this.tempoResposta = tempo - tempoChegada;
+            this.primeiraExecucao = false;
+        }
+    }
+    
+    // === Etapa 3: Getters e Setters para métricas avançadas ===
+    
+    public int getTempoEstimadoExecucao() {
+        return tempoEstimadoExecucao;
+    }
+    
+    public void setTempoEstimadoExecucao(int tempoEstimado) {
+        this.tempoEstimadoExecucao = tempoEstimado;
+    }
+    
+    public long getTempoResposta() {
+        return tempoResposta;
+    }
+    
+    public long getTempoChegada() {
+        return tempoChegada;
+    }
+    
+    public void setTempoChegada(long tempoChegada) {
+        this.tempoChegada = tempoChegada;
+    }
+    
+    /**
+     * Calcula o tempo de turnaround (tempo total no sistema)
+     */
+    public long getTempoTurnaround() {
+        return tempoCPU + tempoEspera;
     }
     
     /**
