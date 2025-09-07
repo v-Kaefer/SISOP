@@ -10,9 +10,8 @@ Este projeto implementa um **Sistema Operacional completo** que funciona em uma 
 - **[Etapa 2]** Gerenciamento de Processos com Round-Robin - **COMPLETA**
 - **[Etapa 3]** Framework de Escalonamento Avançado - **COMPLETA**
 
-### 📋 Próximas Etapas Planejadas
-- **[Etapa 4]** Sincronização entre Processos (Semáforos, Mutex)
-- **[Etapa 5]** Sistema de Arquivos Virtual
+### 🎯 Projeto Finalizado
+Este projeto educacional foi concluído com a implementação completa das três etapas principais, fornecendo um sistema operacional virtual funcional com gerenciamento de memória, processos e escalonamento avançado.
 
 ## Arquitetura do Sistema
 
