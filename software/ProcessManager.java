@@ -26,7 +26,7 @@ public class ProcessManager {
     // Componentes do sistema
     private HW hardware;
     private MemoryManagerPonte gerenciadorMemoria;
-    private RoundRobinScheduler escalonador;
+    private Scheduler escalonador;
     
     // Controle de processos
     private Map<Integer, ProcessControlBlock> processos; // Todos os processos do sistema
@@ -46,7 +46,8 @@ public class ProcessManager {
     public ProcessManager(HW hardware, MemoryManagerPonte gerenciadorMemoria) {
         this.hardware = hardware;
         this.gerenciadorMemoria = gerenciadorMemoria;
-        this.escalonador = new RoundRobinScheduler(10); // Quantum padrão de 10 ciclos
+        // Usa a factory para criar o escalonador padrão (Etapa 3)
+        this.escalonador = SchedulerFactory.criarEscalonador(SchedulingPolicy.ROUND_ROBIN, new Object[]{10});
         
         this.processos = new HashMap<>();
         this.proximoPID = 1;
@@ -56,7 +57,7 @@ public class ProcessManager {
         this.totalProcessosCriados = 0;
         this.totalProcessosFinalizados = 0;
         
-        System.out.println("Gerenciador de Processos inicializado");
+        System.out.println("Gerenciador de Processos inicializado com escalonador: " + escalonador.getTipoEscalonamento());
     }
     
     /**
@@ -72,8 +73,15 @@ public class ProcessManager {
         int pid = proximoPID++;
         ProcessControlBlock pcb = new ProcessControlBlock(pid, nome, programa);
         
+        // Define a memória total necessária. Alguns programas, como o 'PC' (Bubble Sort),
+        // precisam de mais espaço para dados do que o tamanho do seu código.
+        int requiredSize = programa.length;
+        if (nome.equals("PC")) {
+            requiredSize = 100; // O programa PC acessa endereços de memória até 99.
+        }
+
         // Aloca memória para o processo
-        int[] tabelaPaginas = gerenciadorMemoria.alocaPrograma(programa, "Processo-" + pid);
+        int[] tabelaPaginas = gerenciadorMemoria.alocaPrograma(programa, requiredSize, "Processo-" + pid);
         if (tabelaPaginas == null) {
             System.out.println("ERRO: Falha na alocação de memória para processo " + nome);
             return null;
@@ -157,13 +165,14 @@ public class ProcessManager {
                 return false;
             }
             return true; // Aguarda novos processos
+        }        
+
+        // Salva contexto do processo anterior (se houver e se for diferente)
+        ProcessControlBlock processoAnterior = escalonador.getProcessoAtual();
+        if (processoAnterior != null && processoAnterior != processoAtual && !processoAnterior.isFinished()) {
+            salvarContextoCPU(processoAnterior);
         }
-        
-        // Executa context switch se necessário
-        if (processoAtual != escalonador.getProcessoAtual()) {
-            executarContextSwitch(processoAtual);
-        }
-        
+
         // Executa uma instrução do processo
         boolean continuarExecucao = executarInstrucao(processoAtual);
         
@@ -174,26 +183,12 @@ public class ProcessManager {
         if (!continuarExecucao || processoAtual.isFinished()) {
             escalonador.finalizarProcessoAtual();
             finalizarProcesso(processoAtual.getPid());
+        } else {
+            // Salva o contexto do processo que acabou de executar, caso ele continue
+            salvarContextoCPU(processoAtual);
         }
-        
+
         return true;
-    }
-    
-    /**
-     * Executa context switch para um processo
-     */
-    private void executarContextSwitch(ProcessControlBlock novoProcesso) {
-        // Salva contexto do processo anterior (se houver)
-        ProcessControlBlock processoAnterior = escalonador.getProcessoAtual();
-        if (processoAnterior != null && !processoAnterior.isFinished()) {
-            salvarContextoCPU(processoAnterior);
-        }
-        
-        // Carrega contexto do novo processo
-        carregarContextoCPU(novoProcesso);
-        
-        System.out.println("Context switch: " + 
-            (processoAnterior != null ? processoAnterior.getNome() : "idle") + " -> " + novoProcesso.getNome());
     }
     
     /**
@@ -209,9 +204,7 @@ public class ProcessManager {
         }
         pcb.setRegistradores(regs);
         
-        // Salva estado de interrupção
-        // Nota: No código atual, não há acesso direto ao estado de interrupção da CPU
-        // Esta funcionalidade seria expandida numa implementação completa
+        pcb.setInterrupcao(hardware.cpu.getInterrupt());
     }
     
     /**
@@ -220,10 +213,12 @@ public class ProcessManager {
     private void carregarContextoCPU(ProcessControlBlock pcb) {
         // Define contexto na CPU
         hardware.cpu.setContext(pcb.getPc());
-        
-        // Nota: O código atual da CPU não permite definir registradores diretamente
-        // Esta funcionalidade requer expansão da interface da CPU
-        // Por ora, o contexto básico (PC) é suficiente para demonstrar o conceito
+        hardware.cpu.setInterrupt(pcb.getInterrupcao());
+
+        int[] regs = pcb.getRegistradores();
+        for (int i = 0; i < regs.length; i++) {
+            hardware.cpu.setReg(i, regs[i]);
+        }
     }
     
     /**
@@ -231,18 +226,26 @@ public class ProcessManager {
      */
     private boolean executarInstrucao(ProcessControlBlock pcb) {
         try {
-            // Aqui seria a execução de uma única instrução
-            // Por limitações da CPU atual, executamos um ciclo completo controlado
-            
-            // Verifica se processo chegou ao fim
-            if (pcb.getPc() >= pcb.getTamanhoPrograma()) {
-                return false; // Processo terminou
+            // Carrega o contexto do processo na CPU antes de executar
+            carregarContextoCPU(pcb);
+
+            // 1. Pede para a CPU executar uma única instrução.
+            //    A CPU precisa da tabela de páginas para traduzir endereços de memória.
+            hardware.cpu.runInstruction(pcb.getTabelaPaginas());
+
+            // 2. Após a execução, verifica se houve alguma interrupção (ex: STOP, I/O)
+            Interrupts interrupt = hardware.cpu.getInterrupt();
+            switch (interrupt) {
+                case END: // Corrigido: Usar Interrupts.END
+                    return false; // Processo terminou
+                case INVALID_ADDRESS: // Corrigido: Usar Interrupts.INVALID_ADDRESS
+                case INVALID_INSTRUCTION: // Corrigido: Usar Interrupts.INVALID_INSTRUCTION
+                case OVERFLOW: // Corrigido: Usar Interrupts.OVERFLOW
+                    System.out.println("ERRO na execução do processo " + pcb.getNome() + ": Interrupção " + interrupt);
+                    return false; // Termina processo com erro
+                default:
+                    return true; // Continua execução
             }
-            
-            // A CPU atual executa até STOP, então precisamos de uma abordagem diferente
-            // Por ora, vamos simular a execução controlada
-            return true;
-            
         } catch (Exception e) {
             System.out.println("ERRO na execução do processo " + pcb.getNome() + ": " + e.getMessage());
             return false;
@@ -351,12 +354,63 @@ public class ProcessManager {
     }
     
     /**
+     * Exibe o conteúdo do PCB e da memória de um processo
+     */
+    public void dumpProcesso(int pid) {
+        ProcessControlBlock pcb = processos.get(pid);
+        if (pcb == null) {
+            System.out.println("Erro: Processo com PID " + pid + " não encontrado.");
+            return;
+        }
+
+        System.out.println("--- DUMP DO PROCESSO " + pid + " (" + pcb.getNome() + ") ---");
+        System.out.println(pcb.toDetailedString());
+
+        System.out.println("--- DUMP DE MEMÓRIA DO PROCESSO ---");
+        if (pcb.getTabelaPaginas() != null) {
+            gerenciadorMemoria.exibeConteudoProcesso(pcb.getTabelaPaginas());
+        } else {
+            System.out.println("Processo não possui memória alocada.");
+        }
+    }
+
+    /**
+     * Exibe o conteúdo da memória física em um intervalo
+     */
+    public void dumpMemoria(int inicio, int fim) {
+        System.out.println("--- DUMP DA MEMÓRIA FÍSICA [" + inicio + " - " + fim + "] ---");
+        gerenciadorMemoria.dumpMemoriaFisica(inicio, fim);
+    }
+
+    /**
+     * Ativa ou desativa o modo de trace da CPU
+     */
+    public void setTrace(boolean on) {
+        // Esta funcionalidade depende de um método na CPU: hardware.cpu.setTraceMode(on);
+        System.out.println("Modo trace " + (on ? "ativado." : "desativado."));
+        System.out.println("AVISO: A funcionalidade de trace depende de implementação na CPU.java.");
+    }
+
+    /**
      * Define quantum do escalonador
      */
     public void setQuantum(int quantum) {
-        escalonador.setQuantum(quantum);
+        escalonador.configurarParametros("quantum", quantum);
     }
-    
+
+    /**
+     * Altera o algoritmo de escalonamento em tempo de execução
+     */
+    public void setEscalonador(SchedulingPolicy policy, Object... params) {
+        Scheduler novoEscalonador = SchedulerFactory.criarEscalonador(policy, params);
+        // Transfere processos do escalonador antigo para o novo
+        if (escalonador != null) {
+            escalonador.getProcessosProntos().forEach(novoEscalonador::adicionarProcesso);
+        }
+        this.escalonador = novoEscalonador;
+        System.out.println("Escalonador alterado para: " + escalonador.getTipoEscalonamento());
+    }
+
     /**
      * Define limite máximo de processos concorrentes
      */
@@ -368,7 +422,7 @@ public class ProcessManager {
     /**
      * Retorna o escalonador
      */
-    public RoundRobinScheduler getEscalonador() {
+    public Scheduler getEscalonador() {
         return escalonador;
     }
 }

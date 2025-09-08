@@ -1,7 +1,8 @@
 package memory;
 
-import hardware.Word;
+import hardware.Memory;
 import hardware.Opcode;
+import hardware.Word;
 
 /**
  * Ponte class to connect the advanced GerenciadorMemoria with the existing system
@@ -9,6 +10,7 @@ import hardware.Opcode;
  */
 public class MemoryManagerPonte {
     private GerenciadorMemoria gerenciador;
+    private Memory hwMemory; // Referência para a memória real do hardware
     
     public MemoryManagerPonte(int tamMem, int tamPg) {
         this.gerenciador = new GerenciadorMemoria(tamMem, tamPg);
@@ -16,6 +18,14 @@ public class MemoryManagerPonte {
     
     public MemoryManagerPonte() {
         this.gerenciador = new GerenciadorMemoria(); // default: 1024 words, 8 words per page
+    }
+
+    /**
+     * Define a referência para a memória real do hardware.
+     * Isso é crucial para sincronizar a memória gerenciada com a memória usada pela CPU.
+     */
+    public void setHwMemory(Memory mem) {
+        this.hwMemory = mem;
     }
     
     /**
@@ -40,13 +50,33 @@ public class MemoryManagerPonte {
      * Allocates memory for a program and returns the page table
      */
     public int[] alocaPrograma(Word[] programa, String processoId) {
-        int[] tabelaPaginas = new int[calcularNumPaginas(programa.length)];
-        boolean sucesso = gerenciador.aloca(programa.length, tabelaPaginas, processoId);
+        return alocaPrograma(programa, programa.length, processoId);
+    }
+
+    /**
+     * Allocates a specific amount of memory for a program and returns the page table.
+     * This allows programs to have a data segment larger than their code.
+     * @param programa The program code to load.
+     * @param requiredSize The total number of words required by the program (code + data).
+     * @param processoId A unique identifier for the process.
+     * @return The page table for the allocated memory, or null if allocation fails.
+     */
+    public int[] alocaPrograma(Word[] programa, int requiredSize, String processoId) {
+        int[] tabelaPaginas = new int[calcularNumPaginas(requiredSize)];
+        boolean sucesso = gerenciador.aloca(requiredSize, tabelaPaginas, processoId);
         
         if (sucesso) {
             // Load the program into allocated memory
             PosicaoDeMemoria[] posicoes = wordToPosicao(programa);
             gerenciador.carregaPrograma(posicoes, tabelaPaginas);
+
+            // SINCRONIZAÇÃO: Carrega o programa na memória real do HW que a CPU usa
+            if (hwMemory != null) {
+                for (int i = 0; i < programa.length; i++) {
+                    int physicalAddress = gerenciador.traduzeEndereco(i, tabelaPaginas);
+                    hwMemory.pos[physicalAddress] = programa[i];
+                }
+            }
             return tabelaPaginas;
         }
         
@@ -58,6 +88,19 @@ public class MemoryManagerPonte {
      */
     public void desalocaPrograma(int[] tabelaPaginas) {
         gerenciador.desaloca(tabelaPaginas);
+
+        // SINCRONIZAÇÃO: Limpa a memória real do HW
+        if (hwMemory != null) {
+            for (int frame : tabelaPaginas) {
+                if (frame >= 0 && frame < gerenciador.getNumFrames()) {
+                    int inicioFrame = frame * gerenciador.getTamFrame();
+                    int fimFrame = inicioFrame + gerenciador.getTamFrame();
+                    for (int i = inicioFrame; i < fimFrame; i++) {
+                        hwMemory.pos[i] = new Word(Opcode.___, -1, -1, -1);
+                    }
+                }
+            }
+        }
     }
     
     /**
@@ -99,6 +142,23 @@ public class MemoryManagerPonte {
      */
     public void exibirMapaMemoria() {
         gerenciador.exibeMapaMemoria();
+    }
+
+    /**
+     * Exibe o conteúdo de todos os frames pertencentes a um processo.
+     * @param tabelaPaginas A tabela de páginas do processo.
+     */
+    public void exibeConteudoProcesso(int[] tabelaPaginas) {
+        gerenciador.exibeConteudoProcesso(tabelaPaginas);
+    }
+
+    /**
+     * Exibe o conteúdo da memória física em um dado intervalo.
+     * @param inicio Endereço físico inicial.
+     * @param fim Endereço físico final.
+     */
+    public void dumpMemoriaFisica(int inicio, int fim) {
+        gerenciador.dumpMemoriaFisica(inicio, fim);
     }
     
     /**

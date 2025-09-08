@@ -310,4 +310,42 @@ public class GerenciadorMemoria {
             System.out.printf("  [%4d] %s%n", endereco, pos);
         }
     }
+
+    /**
+     * Exibe o conteúdo de todos os frames pertencentes a um processo.
+     * @param tabelaPaginas A tabela de páginas do processo.
+     */
+    public void exibeConteudoProcesso(int[] tabelaPaginas) {
+        if (tabelaPaginas == null) {
+            System.out.println("Tabela de páginas nula.");
+            return;
+        }
+        boolean hasContent = false;
+        for (int pagina = 0; pagina < tabelaPaginas.length; pagina++) {
+            int frame = tabelaPaginas[pagina];
+            if (frame != -1) {
+                hasContent = true;
+                System.out.printf("--- Página Lógica %d -> Frame Físico %d ---\n", pagina, frame);
+                exibeConteudoPagina(frame);
+            }
+        }
+        if (!hasContent) {
+            System.out.println("Nenhum frame de memória alocado para este processo.");
+        }
+    }
+
+    /**
+     * Exibe o conteúdo da memória física em um dado intervalo.
+     * @param inicio Endereço físico inicial.
+     * @param fim Endereço físico final.
+     */
+    public void dumpMemoriaFisica(int inicio, int fim) {
+        if (inicio < 0 || fim > tamMem || inicio > fim) {
+            System.err.printf("Intervalo de memória inválido: [%d, %d]. Válido: [0, %d]\n", inicio, fim, tamMem - 1);
+            return;
+        }
+        for (int i = inicio; i < fim; i++) {
+            System.out.printf("[%04d]: %s\n", i, memoria[i].toString());
+        }
+    }
 }

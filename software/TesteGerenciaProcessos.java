@@ -1,13 +1,12 @@
 package software;
 
 import hardware.HW;
-import hardware.Word;
 import hardware.Opcode;
-import memory.MemoryManagerPonte;
-import programs.Program;
-
+import hardware.Word;
 import java.util.ArrayList;
 import java.util.List;
+import memory.MemoryManagerPonte;
+import programs.Program;
 
 /**
  * Teste modular para os componentes de Gerência de Processos
@@ -153,8 +152,8 @@ public class TesteGerenciaProcessos {
         System.out.println("=== TESTE 4: ProcessManager ===");
         
         // Inicializa componentes
-        HW hardware = new HW(1024);
         MemoryManagerPonte memoriaManager = new MemoryManagerPonte(1024, 8);
+        HW hardware = new HW(1024, memoriaManager);
         ProcessManager processManager = new ProcessManager(hardware, memoriaManager);
         
         // Testa criação de processo
@@ -188,8 +187,8 @@ public class TesteGerenciaProcessos {
         System.out.println("=== TESTE 5: Execução Concorrente ===");
         
         // Inicializa sistema
-        HW hardware = new HW(1024);
         MemoryManagerPonte memoriaManager = new MemoryManagerPonte(1024, 8);
+        HW hardware = new HW(1024, memoriaManager);
         ProcessManager processManager = new ProcessManager(hardware, memoriaManager);
         
         // Cria múltiplos programas
@@ -247,8 +246,8 @@ public class TesteGerenciaProcessos {
         System.out.println("\n=== DEMONSTRAÇÃO COMPLETA ===");
         
         // Setup do sistema
-        HW hardware = new HW(1024);
         MemoryManagerPonte memoriaManager = new MemoryManagerPonte(1024, 8);
+        HW hardware = new HW(1024, memoriaManager);
         ProcessManager processManager = new ProcessManager(hardware, memoriaManager);
         
         // Configura quantum menor para melhor visualização

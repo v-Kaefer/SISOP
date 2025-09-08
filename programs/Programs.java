@@ -1,15 +1,32 @@
 package programs;
 
-import hardware.Word;
 import hardware.Opcode;
+import hardware.Word;
+import java.util.Arrays;
 public class Programs {
 
 		public Word[] retrieveProgram(String pname) {
 			for (Program p : progs) {
-				if (p != null & p.name == pname)
+				// Use .equals() for string comparison
+				if (p != null && p.name.equals(pname))
 					return p.image;
 			}
 			return null;
+		}
+
+		/**
+		 * Retorna os nomes de todos os programas disponíveis.
+		 */
+		public String[] getProgramNames() {
+			return Arrays.stream(progs).map(p -> p.name).toArray(String[]::new);
+		}
+
+		/**
+		 * Retorna um programa como um objeto Program.
+		 */
+		public Program getProgramByName(String name) {
+			Word[] code = retrieveProgram(name);
+			return (code != null) ? new Program(name, code) : null;
 		}
 
 		public Program[] progs = {
