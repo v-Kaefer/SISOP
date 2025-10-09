@@ -11,6 +11,23 @@ javac Sistema.java
 java Sistema
 ```
 
+## Testes Automatizados
+
+Para testar as funções do sistema programaticamente sem entrada manual:
+
+```bash
+javac TesteSistemaInterativo.java
+java TesteSistemaInterativo
+```
+
+O teste automatizado verifica:
+- ✅ Inicialização do sistema
+- ✅ Execução de programas individuais (fatorialV2, fibonacci10, progMinimo, fatorial)
+- ✅ Listagem de programas disponíveis
+- ✅ Tratamento de erros (programa não encontrado)
+- ✅ Parada do sistema (método stop())
+- ✅ Múltiplas execuções sequenciais
+
 ## Menu Principal
 
 O sistema apresenta o seguinte menu:

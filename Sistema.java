@@ -4,6 +4,7 @@ import programs.Programs;
 import programs.Program;
 import hardware.Word;
 import java.util.Scanner;
+import java.io.InputStream;
 
 public class Sistema {
     public HW hw;
@@ -13,11 +14,15 @@ public class Sistema {
     private boolean running;
 
     public Sistema(int tamMem) {
+        this(tamMem, System.in);
+    }
+
+    public Sistema(int tamMem, InputStream inputStream) {
         hw = new HW(tamMem);
         so = new SO(hw);
         hw.cpu.setUtilities(so.utils);
         progs = new Programs();
-        scanner = new Scanner(System.in);
+        scanner = new Scanner(inputStream);
         running = true;
     }
 
@@ -71,6 +76,14 @@ public class Sistema {
         } else {
             System.out.println("[ERRO] Nome inválido!");
         }
+    }
+
+    public void stop() {
+        running = false;
+    }
+
+    public boolean isRunning() {
+        return running;
     }
 
     public void run() {
