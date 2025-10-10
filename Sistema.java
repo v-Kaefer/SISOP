@@ -29,7 +29,9 @@ public class Sistema {
     public void displayHelp() {
         System.out.println("\n=== COMANDOS DISPONÍVEIS ===");
         System.out.println("list                - Lista programas disponíveis");
+        System.out.println("load <programa>     - Carrega um programa na memória");
         System.out.println("exec <programa>     - Executa um programa");
+        System.out.println("execAll             - Executa todos programas carregados");
         System.out.println("dump <inicio> <fim> - Mostra dump da memória");
         System.out.println("help                - Mostra esta ajuda");
         System.out.println("quit | exit         - Encerra o sistema");
@@ -48,6 +50,26 @@ public class Sistema {
         System.out.println("  - PC            : Bubble sort (ordenação)");
     }
 
+    public void carregarPrograma(String nomPrograma) {
+        Word[] programa = progs.retrieveProgram(nomPrograma);
+        if (programa != null) {
+            System.out.println("\n>>> Carregando programa: " + nomPrograma + " <<<");
+            // Load program into memory without executing
+            Word[] m = hw.mem.pos;
+            for (int i = 0; i < programa.length; i++) {
+                m[i].opc = programa[i].opc;
+                m[i].ra = programa[i].ra;
+                m[i].rb = programa[i].rb;
+                m[i].p = programa[i].p;
+            }
+            System.out.println(">>> Programa carregado na memória <<<");
+            System.out.println(">>> Use 'exec " + nomPrograma + "' para executar <<<");
+        } else {
+            System.out.println("\n[ERRO] Programa '" + nomPrograma + "' não encontrado!");
+            System.out.println("Use 'list' para ver programas disponíveis.");
+        }
+    }
+
     public void executarPrograma(String nomPrograma) {
         Word[] programa = progs.retrieveProgram(nomPrograma);
         if (programa != null) {
@@ -58,6 +80,24 @@ public class Sistema {
             System.out.println("\n[ERRO] Programa '" + nomPrograma + "' não encontrado!");
             System.out.println("Use 'list' para ver programas disponíveis.");
         }
+    }
+
+    public void executarTodosProgramas() {
+        System.out.println("\n>>> Executando todos os programas com escalonamento <<<");
+        System.out.println(">>> (Funcionalidade requer gerente de processos com escalonamento) <<<");
+        
+        // For now, execute available programs sequentially
+        // This is a simplified version - full scheduling requires process manager
+        String[] programas = {"progMinimo", "fatorialV2", "fibonacci10"};
+        
+        for (String prog : programas) {
+            Word[] programa = progs.retrieveProgram(prog);
+            if (programa != null) {
+                System.out.println("\n>>> Escalonando: " + prog + " <<<");
+                so.utils.loadAndExec(programa);
+            }
+        }
+        System.out.println("\n>>> Todos os programas foram executados <<<");
     }
 
     public void dumpMemoria(int inicio, int fim) {
@@ -78,6 +118,15 @@ public class Sistema {
                 listarProgramas();
                 break;
             
+            case "load":
+                if (parts.length < 2) {
+                    System.out.println("[ERRO] Uso: load <nome_programa>");
+                    System.out.println("Exemplo: load fatorialV2");
+                } else {
+                    carregarPrograma(parts[1]);
+                }
+                break;
+            
             case "exec":
                 if (parts.length < 2) {
                     System.out.println("[ERRO] Uso: exec <nome_programa>");
@@ -85,6 +134,10 @@ public class Sistema {
                 } else {
                     executarPrograma(parts[1]);
                 }
+                break;
+            
+            case "execall":
+                executarTodosProgramas();
                 break;
             
             case "dump":

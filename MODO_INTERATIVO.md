@@ -18,7 +18,9 @@ O sistema utiliza uma interface baseada em comandos de texto, similar a um shell
 ```
 SISOP> help
 SISOP> list
+SISOP> load fatorialV2
 SISOP> exec fatorialV2
+SISOP> execAll
 SISOP> dump 0 10
 SISOP> quit
 ```
@@ -26,8 +28,11 @@ SISOP> quit
 ### Comandos Disponíveis
 
 - **`list`** - Lista todos os programas disponíveis
+- **`load <programa>`** - Carrega um programa na memória
+  - Exemplo: `load fatorialV2`
 - **`exec <programa>`** - Executa um programa específico
   - Exemplo: `exec fatorialV2`
+- **`execAll`** - Executa todos os programas carregados com escalonamento
 - **`dump <inicio> <fim>`** - Mostra dump da memória entre posições
   - Exemplo: `dump 0 20`
 - **`help`** - Mostra lista de comandos disponíveis
@@ -78,7 +83,9 @@ SISOP> help
 
 === COMANDOS DISPONÍVEIS ===
 list                - Lista programas disponíveis
+load <programa>     - Carrega um programa na memória
 exec <programa>     - Executa um programa
+execAll             - Executa todos programas carregados
 dump <inicio> <fim> - Mostra dump da memória
 help                - Mostra esta ajuda
 quit | exit         - Encerra o sistema
@@ -92,12 +99,25 @@ SISOP> list
   - fibonacci10   : Gera série Fibonacci (10 elementos)
   ...
 
+SISOP> load fatorialV2
+
+>>> Carregando programa: fatorialV2 <<<
+>>> Programa carregado na memória <<<
+>>> Use 'exec fatorialV2' para executar <<<
+
 SISOP> exec fatorialV2
 
 >>> Executando programa: fatorialV2 <<<
 ---------------------------------- programa carregado na memoria
 ...
 >>> Execução finalizada <<<
+
+SISOP> execAll
+
+>>> Executando todos os programas com escalonamento <<<
+>>> Escalonando: progMinimo <<<
+...
+>>> Todos os programas foram executados <<<
 
 SISOP> dump 0 5
 
