@@ -92,6 +92,7 @@ public class TesteSistemaInterativo {
         System.out.println("Teste 2: Executar FatorialV2");
         try {
             Sistema s = new Sistema(1024);
+            s.carregarPrograma("fatorialV2"); // Load first
             s.executarPrograma("fatorialV2");
             System.out.println("✓ FatorialV2 executado com sucesso");
             passCount++;
@@ -106,6 +107,7 @@ public class TesteSistemaInterativo {
         System.out.println("Teste 3: Executar Fibonacci10");
         try {
             Sistema s = new Sistema(1024);
+            s.carregarPrograma("fibonacci10"); // Load first
             s.executarPrograma("fibonacci10");
             System.out.println("✓ Fibonacci10 executado com sucesso");
             passCount++;
@@ -120,6 +122,7 @@ public class TesteSistemaInterativo {
         System.out.println("Teste 4: Executar ProgMinimo");
         try {
             Sistema s = new Sistema(1024);
+            s.carregarPrograma("progMinimo"); // Load first
             s.executarPrograma("progMinimo");
             System.out.println("✓ ProgMinimo executado com sucesso");
             passCount++;
@@ -134,6 +137,7 @@ public class TesteSistemaInterativo {
         System.out.println("Teste 5: Executar Programa por Nome (fatorial)");
         try {
             Sistema s = new Sistema(1024);
+            s.carregarPrograma("fatorial"); // Load first
             s.executarPrograma("fatorial");
             System.out.println("✓ Fatorial executado com sucesso");
             passCount++;
@@ -237,6 +241,11 @@ public class TesteSistemaInterativo {
         System.out.println("Teste 9: Múltiplas Execuções Sequenciais");
         try {
             Sistema s = new Sistema(1024);
+            
+            // Load programs first
+            s.carregarPrograma("progMinimo");
+            s.carregarPrograma("fatorialV2");
+            s.carregarPrograma("fibonacci10");
             
             // Executar vários programas em sequência
             s.executarPrograma("progMinimo");

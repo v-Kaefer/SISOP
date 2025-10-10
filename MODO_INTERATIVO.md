@@ -30,9 +30,13 @@ SISOP> quit
 - **`list`** - Lista todos os programas disponíveis
 - **`load <programa>`** - Carrega um programa na memória
   - Exemplo: `load fatorialV2`
-- **`exec <programa>`** - Executa um programa específico
+  - **Obrigatório**: Programas devem ser carregados antes de serem executados
+- **`exec <programa>`** - Executa um programa previamente carregado
   - Exemplo: `exec fatorialV2`
+  - **Requer**: O programa deve ter sido carregado primeiro com `load`
 - **`execAll`** - Executa todos os programas carregados com escalonamento
+  - Executa todos os programas que foram previamente carregados na memória
+  - Segue requisito da seção 3.1 do Enunciado_do_Trabalho.md
 - **`dump <inicio> <fim>`** - Mostra dump da memória entre posições
   - Exemplo: `dump 0 20`
 - **`help`** - Mostra lista de comandos disponíveis
@@ -103,7 +107,7 @@ SISOP> load fatorialV2
 
 >>> Carregando programa: fatorialV2 <<<
 >>> Programa carregado na memória <<<
->>> Use 'exec fatorialV2' para executar <<<
+>>> Use 'exec fatorialV2' ou 'execAll' para executar <<<
 
 SISOP> exec fatorialV2
 
@@ -112,12 +116,29 @@ SISOP> exec fatorialV2
 ...
 >>> Execução finalizada <<<
 
+SISOP> load progMinimo
+
+>>> Carregando programa: progMinimo <<<
+>>> Programa carregado na memória <<<
+>>> Use 'exec progMinimo' ou 'execAll' para executar <<<
+
+SISOP> load fibonacci10
+
+>>> Carregando programa: fibonacci10 <<<
+>>> Programa carregado na memória <<<
+>>> Use 'exec fibonacci10' ou 'execAll' para executar <<<
+
 SISOP> execAll
 
->>> Executando todos os programas com escalonamento <<<
+>>> Executando todos os programas carregados com escalonamento <<<
+>>> Programas carregados: 3 <<<
+>>> Escalonando: fatorialV2 <<<
+...
 >>> Escalonando: progMinimo <<<
 ...
->>> Todos os programas foram executados <<<
+>>> Escalonando: fibonacci10 <<<
+...
+>>> Todos os programas carregados foram executados <<<
 
 SISOP> dump 0 5
 

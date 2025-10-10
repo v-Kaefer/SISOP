@@ -5,6 +5,8 @@ import programs.Program;
 import hardware.Word;
 import java.util.Scanner;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Sistema {
     public HW hw;
@@ -12,6 +14,7 @@ public class Sistema {
     public Programs progs;
     private Scanner scanner;
     private boolean running;
+    private List<String> programasCarregados; // Track loaded programs
 
     public Sistema(int tamMem) {
         this(tamMem, System.in);
@@ -24,6 +27,7 @@ public class Sistema {
         progs = new Programs();
         scanner = new Scanner(inputStream);
         running = true;
+        programasCarregados = new ArrayList<>();
     }
 
     public void displayHelp() {
@@ -62,8 +66,12 @@ public class Sistema {
                 m[i].rb = programa[i].rb;
                 m[i].p = programa[i].p;
             }
+            // Track that this program has been loaded
+            if (!programasCarregados.contains(nomPrograma)) {
+                programasCarregados.add(nomPrograma);
+            }
             System.out.println(">>> Programa carregado na memória <<<");
-            System.out.println(">>> Use 'exec " + nomPrograma + "' para executar <<<");
+            System.out.println(">>> Use 'exec " + nomPrograma + "' ou 'execAll' para executar <<<");
         } else {
             System.out.println("\n[ERRO] Programa '" + nomPrograma + "' não encontrado!");
             System.out.println("Use 'list' para ver programas disponíveis.");
@@ -71,6 +79,13 @@ public class Sistema {
     }
 
     public void executarPrograma(String nomPrograma) {
+        // Check if program has been loaded first
+        if (!programasCarregados.contains(nomPrograma)) {
+            System.out.println("\n[ERRO] Programa '" + nomPrograma + "' não foi carregado!");
+            System.out.println("Use 'load " + nomPrograma + "' primeiro para carregar o programa.");
+            return;
+        }
+        
         Word[] programa = progs.retrieveProgram(nomPrograma);
         if (programa != null) {
             System.out.println("\n>>> Executando programa: " + nomPrograma + " <<<");
@@ -78,26 +93,27 @@ public class Sistema {
             System.out.println(">>> Execução finalizada <<<");
         } else {
             System.out.println("\n[ERRO] Programa '" + nomPrograma + "' não encontrado!");
-            System.out.println("Use 'list' para ver programas disponíveis.");
         }
     }
 
     public void executarTodosProgramas() {
-        System.out.println("\n>>> Executando todos os programas com escalonamento <<<");
-        System.out.println(">>> (Funcionalidade requer gerente de processos com escalonamento) <<<");
+        if (programasCarregados.isEmpty()) {
+            System.out.println("\n[ERRO] Nenhum programa foi carregado na memória!");
+            System.out.println("Use 'load <programa>' para carregar programas primeiro.");
+            return;
+        }
         
-        // For now, execute available programs sequentially
-        // This is a simplified version - full scheduling requires process manager
-        String[] programas = {"progMinimo", "fatorialV2", "fibonacci10"};
+        System.out.println("\n>>> Executando todos os programas carregados com escalonamento <<<");
+        System.out.println(">>> Programas carregados: " + programasCarregados.size() + " <<<");
         
-        for (String prog : programas) {
+        for (String prog : programasCarregados) {
             Word[] programa = progs.retrieveProgram(prog);
             if (programa != null) {
                 System.out.println("\n>>> Escalonando: " + prog + " <<<");
                 so.utils.loadAndExec(programa);
             }
         }
-        System.out.println("\n>>> Todos os programas foram executados <<<");
+        System.out.println("\n>>> Todos os programas carregados foram executados <<<");
     }
 
     public void dumpMemoria(int inicio, int fim) {
