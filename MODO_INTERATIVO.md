@@ -1,8 +1,8 @@
-# Sistema Operacional SISOP - Modo Interativo
+# Sistema Operacional SISOP - Modo Comando
 
 ## Descrição
 
-O sistema SISOP agora opera em **modo interativo contínuo**, permitindo executar múltiplas funções sem encerrar o programa. O sistema aguarda comandos do usuário e só encerra quando solicitado explicitamente.
+O sistema SISOP agora opera em **modo comando contínuo**, permitindo executar múltiplas funções através de comandos de texto. O sistema aguarda comandos do usuário e só encerra quando solicitado explicitamente.
 
 ## Como Executar
 
@@ -10,6 +10,28 @@ O sistema SISOP agora opera em **modo interativo contínuo**, permitindo executa
 javac Sistema.java
 java Sistema
 ```
+
+## Interface de Comandos
+
+O sistema utiliza uma interface baseada em comandos de texto, similar a um shell:
+
+```
+SISOP> help
+SISOP> list
+SISOP> exec fatorialV2
+SISOP> dump 0 10
+SISOP> quit
+```
+
+### Comandos Disponíveis
+
+- **`list`** - Lista todos os programas disponíveis
+- **`exec <programa>`** - Executa um programa específico
+  - Exemplo: `exec fatorialV2`
+- **`dump <inicio> <fim>`** - Mostra dump da memória entre posições
+  - Exemplo: `dump 0 20`
+- **`help`** - Mostra lista de comandos disponíveis
+- **`quit` ou `exit`** - Encerra o sistema
 
 ## Testes Automatizados
 
@@ -28,27 +50,9 @@ O teste automatizado verifica:
 - ✅ Parada do sistema (método stop())
 - ✅ Múltiplas execuções sequenciais
 
-## Menu Principal
+## Programas Disponíveis
 
-O sistema apresenta o seguinte menu:
-
-```
-===============================================
-           SISTEMA OPERACIONAL SISOP          
-===============================================
-1. Listar programas disponíveis
-2. Executar programa
-3. Executar fatorialV2 (demonstração)
-4. Executar fibonacci10 (demonstração)
-5. Executar progMinimo (demonstração)
-0. Sair
-===============================================
-```
-
-## Opções Disponíveis
-
-### 1. Listar programas disponíveis
-Exibe todos os programas disponíveis na biblioteca do sistema:
+O sistema inclui uma biblioteca de programas prontos para execução:
 - **fatorial** - Calcula fatorial de 7
 - **fatorialV2** - Calcula fatorial de 5 com syscall
 - **fibonacci10** - Gera série Fibonacci (10 elementos)
@@ -58,28 +62,6 @@ Exibe todos os programas disponíveis na biblioteca do sistema:
 - **PB** - Teste de fatorial com condicionais
 - **PC** - Bubble sort (ordenação)
 
-### 2. Executar programa
-Permite executar qualquer programa disponível digitando seu nome.
-
-**Exemplo:**
-```
-Escolha uma opção: 2
-Digite o nome do programa para executar:
-Nome: fibonacci10
-```
-
-### 3. Executar fatorialV2 (demonstração)
-Executa diretamente o programa fatorialV2, que calcula 5! = 120.
-
-### 4. Executar fibonacci10 (demonstração)
-Executa diretamente o programa fibonacci10, que gera a sequência de Fibonacci.
-
-### 5. Executar progMinimo (demonstração)
-Executa o programa mínimo de teste.
-
-### 0. Sair
-Encerra o sistema de forma controlada.
-
 ## Exemplo de Uso
 
 ```bash
@@ -87,36 +69,47 @@ $ java Sistema
 
 ╔════════════════════════════════════════════╗
 ║  Bem-vindo ao Sistema Operacional SISOP   ║
-║  Sistema em modo interativo                ║
+║  Sistema em modo comando                   ║
 ╚════════════════════════════════════════════╝
 
-===============================================
-           SISTEMA OPERACIONAL SISOP          
-===============================================
-1. Listar programas disponíveis
-2. Executar programa
-3. Executar fatorialV2 (demonstração)
-4. Executar fibonacci10 (demonstração)
-5. Executar progMinimo (demonstração)
-0. Sair
-===============================================
-Escolha uma opção: 1
+Digite 'help' para ver comandos disponíveis.
 
-=== PROGRAMAS DISPONÍVEIS ===
-1. fatorial - Calcula fatorial de 7
-2. fatorialV2 - Calcula fatorial de 5 com syscall
-...
+SISOP> help
 
-Escolha uma opção: 3
+=== COMANDOS DISPONÍVEIS ===
+list                - Lista programas disponíveis
+exec <programa>     - Executa um programa
+dump <inicio> <fim> - Mostra dump da memória
+help                - Mostra esta ajuda
+quit | exit         - Encerra o sistema
+============================
+
+SISOP> list
+
+>>> Programas disponíveis:
+  - fatorial      : Calcula fatorial de 7
+  - fatorialV2    : Calcula fatorial de 5 com syscall
+  - fibonacci10   : Gera série Fibonacci (10 elementos)
+  ...
+
+SISOP> exec fatorialV2
 
 >>> Executando programa: fatorialV2 <<<
+---------------------------------- programa carregado na memoria
 ...
 >>> Execução finalizada <<<
 
-Escolha uma opção: 0
+SISOP> dump 0 5
+
+>>> Dump da memória [0 - 5]:
+0:  [ LDI, 0, -1, 5  ]
+1:  [ STD, 0, -1, 19  ]
+...
+
+SISOP> quit
 
 >>> Encerrando sistema... <<<
-Sistema encerrado com sucesso.
+>>> Sistema encerrado com sucesso <<<
 ```
 
 ## Diferenças em Relação ao Sistema Original
@@ -126,18 +119,21 @@ Sistema encerrado com sucesso.
 - Não havia interação com o usuário
 - Necessário recompilar para executar outro programa
 
-### Sistema Novo (Modo Interativo)
+### Sistema Novo (Modo Comando)
 - ✅ **Execução contínua** - aguarda comandos do usuário
-- ✅ **Menu interativo** - interface amigável
+- ✅ **Interface de comandos** - similar a um shell
 - ✅ **Múltiplas execuções** - execute quantos programas desejar
-- ✅ **Seleção dinâmica** - escolha o programa em tempo de execução
-- ✅ **Encerramento controlado** - saia quando desejar (opção 0)
+- ✅ **Comandos flexíveis** - exec, list, dump, help, quit
+- ✅ **Encerramento controlado** - saia quando desejar (quit/exit)
+- ✅ **Dump de memória** - visualize o estado da memória
+- ✅ **Mensagens de log** - todas as mensagens preservadas
 
 ## Tratamento de Erros
 
 O sistema inclui tratamento de erros para:
 - Nomes de programas inválidos
-- Entrada de dados incorreta
+- Comandos desconhecidos
+- Parâmetros incorretos para dump
 - Erros durante a execução dos programas
 
 ## Notas Técnicas
@@ -161,5 +157,6 @@ Este sistema atende ao requisito do problema:
 O sistema agora:
 - ✅ Opera como programa constante
 - ✅ Executa funções modulares (programas disponíveis)
-- ✅ Aguarda chamadas de funções (menu interativo)
-- ✅ Encerra apenas sob comando (opção 0)
+- ✅ Aguarda chamadas de funções (comandos de texto)
+- ✅ Encerra apenas sob comando (quit/exit)
+- ✅ Comandos inspirados em definição do trabalho (TrabalhoSO-A-DefinicaoHW.pages)

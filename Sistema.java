@@ -26,55 +26,95 @@ public class Sistema {
         running = true;
     }
 
-    public void displayMenu() {
-        System.out.println("\n===============================================");
-        System.out.println("           SISTEMA OPERACIONAL SISOP          ");
-        System.out.println("===============================================");
-        System.out.println("1. Listar programas disponíveis");
-        System.out.println("2. Executar programa");
-        System.out.println("3. Executar fatorialV2 (demonstração)");
-        System.out.println("4. Executar fibonacci10 (demonstração)");
-        System.out.println("5. Executar progMinimo (demonstração)");
-        System.out.println("0. Sair");
-        System.out.println("===============================================");
-        System.out.print("Escolha uma opção: ");
+    public void displayHelp() {
+        System.out.println("\n=== COMANDOS DISPONÍVEIS ===");
+        System.out.println("list                - Lista programas disponíveis");
+        System.out.println("exec <programa>     - Executa um programa");
+        System.out.println("dump <inicio> <fim> - Mostra dump da memória");
+        System.out.println("help                - Mostra esta ajuda");
+        System.out.println("quit | exit         - Encerra o sistema");
+        System.out.println("============================");
     }
 
     public void listarProgramas() {
-        System.out.println("\n=== PROGRAMAS DISPONÍVEIS ===");
-        System.out.println("1. fatorial - Calcula fatorial de 7");
-        System.out.println("2. fatorialV2 - Calcula fatorial de 5 com syscall");
-        System.out.println("3. fibonacci10 - Gera série Fibonacci (10 elementos)");
-        System.out.println("4. fibonacci10v2 - Fibonacci versão 2");
-        System.out.println("5. progMinimo - Programa mínimo de teste");
-        System.out.println("6. fibonacciREAD - Fibonacci com entrada");
-        System.out.println("7. PB - Teste de fatorial com condicionais");
-        System.out.println("8. PC - Bubble sort (ordenação)");
-        System.out.println("================================");
+        System.out.println("\n>>> Programas disponíveis:");
+        System.out.println("  - fatorial      : Calcula fatorial de 7");
+        System.out.println("  - fatorialV2    : Calcula fatorial de 5 com syscall");
+        System.out.println("  - fibonacci10   : Gera série Fibonacci (10 elementos)");
+        System.out.println("  - fibonacci10v2 : Fibonacci versão 2");
+        System.out.println("  - progMinimo    : Programa mínimo de teste");
+        System.out.println("  - fibonacciREAD : Fibonacci com entrada");
+        System.out.println("  - PB            : Teste de fatorial com condicionais");
+        System.out.println("  - PC            : Bubble sort (ordenação)");
     }
 
     public void executarPrograma(String nomPrograma) {
         Word[] programa = progs.retrieveProgram(nomPrograma);
         if (programa != null) {
-            System.out.println("\n>>> Executando programa: " + nomPrograma + " <<<\n");
+            System.out.println("\n>>> Executando programa: " + nomPrograma + " <<<");
             so.utils.loadAndExec(programa);
-            System.out.println("\n>>> Execução finalizada <<<");
+            System.out.println(">>> Execução finalizada <<<");
         } else {
             System.out.println("\n[ERRO] Programa '" + nomPrograma + "' não encontrado!");
+            System.out.println("Use 'list' para ver programas disponíveis.");
         }
     }
 
-    public void executarProgramaPorEscolha() {
-        System.out.println("\nDigite o nome do programa para executar:");
-        System.out.println("(fatorial, fatorialV2, fibonacci10, fibonacci10v2, progMinimo,");
-        System.out.println(" fibonacciREAD, PB, PC)");
-        System.out.print("Nome: ");
-        String nome = scanner.nextLine().trim();
-        
-        if (!nome.isEmpty()) {
-            executarPrograma(nome);
-        } else {
-            System.out.println("[ERRO] Nome inválido!");
+    public void dumpMemoria(int inicio, int fim) {
+        System.out.println("\n>>> Dump da memória [" + inicio + " - " + fim + "]:");
+        so.utils.dump(inicio, fim);
+    }
+
+    private void processCommand(String input) {
+        String[] parts = input.trim().split("\\s+");
+        if (parts.length == 0 || parts[0].isEmpty()) {
+            return;
+        }
+
+        String command = parts[0].toLowerCase();
+
+        switch (command) {
+            case "list":
+                listarProgramas();
+                break;
+            
+            case "exec":
+                if (parts.length < 2) {
+                    System.out.println("[ERRO] Uso: exec <nome_programa>");
+                    System.out.println("Exemplo: exec fatorialV2");
+                } else {
+                    executarPrograma(parts[1]);
+                }
+                break;
+            
+            case "dump":
+                if (parts.length < 3) {
+                    System.out.println("[ERRO] Uso: dump <inicio> <fim>");
+                    System.out.println("Exemplo: dump 0 10");
+                } else {
+                    try {
+                        int inicio = Integer.parseInt(parts[1]);
+                        int fim = Integer.parseInt(parts[2]);
+                        dumpMemoria(inicio, fim);
+                    } catch (NumberFormatException e) {
+                        System.out.println("[ERRO] Os parâmetros devem ser números inteiros");
+                    }
+                }
+                break;
+            
+            case "help":
+                displayHelp();
+                break;
+            
+            case "quit":
+            case "exit":
+                System.out.println("\n>>> Encerrando sistema... <<<");
+                running = false;
+                break;
+            
+            default:
+                System.out.println("[ERRO] Comando desconhecido: " + command);
+                System.out.println("Digite 'help' para ver comandos disponíveis.");
         }
     }
 
@@ -89,53 +129,29 @@ public class Sistema {
     public void run() {
         System.out.println("\n╔════════════════════════════════════════════╗");
         System.out.println("║  Bem-vindo ao Sistema Operacional SISOP   ║");
-        System.out.println("║  Sistema em modo interativo                ║");
+        System.out.println("║  Sistema em modo comando                   ║");
         System.out.println("╚════════════════════════════════════════════╝");
+        System.out.println("\nDigite 'help' para ver comandos disponíveis.\n");
 
         while (running) {
-            displayMenu();
+            System.out.print("SISOP> ");
             
             try {
-                String input = scanner.nextLine().trim();
+                String input = scanner.nextLine();
                 
-                if (input.isEmpty()) {
+                if (input == null || input.trim().isEmpty()) {
                     continue;
                 }
 
-                int opcao = Integer.parseInt(input);
-
-                switch (opcao) {
-                    case 1:
-                        listarProgramas();
-                        break;
-                    case 2:
-                        executarProgramaPorEscolha();
-                        break;
-                    case 3:
-                        executarPrograma("fatorialV2");
-                        break;
-                    case 4:
-                        executarPrograma("fibonacci10");
-                        break;
-                    case 5:
-                        executarPrograma("progMinimo");
-                        break;
-                    case 0:
-                        System.out.println("\n>>> Encerrando sistema... <<<");
-                        running = false;
-                        break;
-                    default:
-                        System.out.println("\n[ERRO] Opção inválida! Tente novamente.");
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("\n[ERRO] Por favor, digite um número válido.");
+                processCommand(input);
+                
             } catch (Exception e) {
-                System.out.println("\n[ERRO] Erro inesperado: " + e.getMessage());
+                System.out.println("\n[ERRO] Erro ao processar comando: " + e.getMessage());
             }
         }
 
         scanner.close();
-        System.out.println("\nSistema encerrado com sucesso.");
+        System.out.println("\n>>> Sistema encerrado com sucesso <<<");
     }
 
     public static void main(String[] args) {
