@@ -7,14 +7,34 @@ import java.util.Scanner;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Sistema {
+    // Simple Process representation
+    private class Processo {
+        int id;
+        String nome;
+        Word[] programa;
+        boolean carregado;
+        
+        Processo(int id, String nome, Word[] programa) {
+            this.id = id;
+            this.nome = nome;
+            this.programa = programa;
+            this.carregado = false;
+        }
+    }
+    
     public HW hw;
     public SO so;
     public Programs progs;
     private Scanner scanner;
     private boolean running;
-    private List<String> programasCarregados; // Track loaded programs
+    private List<String> programasCarregados; // Track loaded programs (legacy)
+    private Map<Integer, Processo> processos; // Track processes by ID
+    private int nextProcessId; // Next process ID to assign
+    private boolean traceMode; // Trace execution mode
 
     public Sistema(int tamMem) {
         this(tamMem, System.in);
@@ -28,15 +48,24 @@ public class Sistema {
         scanner = new Scanner(inputStream);
         running = true;
         programasCarregados = new ArrayList<>();
+        processos = new HashMap<>();
+        nextProcessId = 1;
+        traceMode = false;
     }
 
     public void displayHelp() {
         System.out.println("\n=== COMANDOS DISPONÍVEIS ===");
         System.out.println("list                - Lista programas disponíveis");
-        System.out.println("load <programa>     - Carrega um programa na memória");
-        System.out.println("exec <programa>     - Executa um programa");
+        System.out.println("load <programa>     - Carrega um programa na memória (compatibilidade)");
+        System.out.println("new <programa>      - Cria processo com ID único");
+        System.out.println("rm <id>             - Remove processo por ID");
+        System.out.println("ps                  - Lista todos os processos");
+        System.out.println("exec <programa|id>  - Executa programa ou processo por ID");
         System.out.println("execAll             - Executa todos programas carregados");
-        System.out.println("dump <inicio> <fim> - Mostra dump da memória");
+        System.out.println("dump <id>           - Dump do processo (PCB e memória)");
+        System.out.println("dumpM <inicio> <fim>- Dump da memória");
+        System.out.println("traceOn             - Liga modo trace");
+        System.out.println("traceOff            - Desliga modo trace");
         System.out.println("help                - Mostra esta ajuda");
         System.out.println("quit | exit         - Encerra o sistema");
         System.out.println("============================");
@@ -121,6 +150,99 @@ public class Sistema {
         so.utils.dump(inicio, fim);
     }
 
+    // New process management commands
+    
+    public void criarProcesso(String nomPrograma) {
+        Word[] programa = progs.retrieveProgram(nomPrograma);
+        if (programa != null) {
+            int id = nextProcessId++;
+            Processo processo = new Processo(id, nomPrograma, programa);
+            processos.put(id, processo);
+            System.out.println("\n>>> Processo criado com ID: " + id + " <<<");
+            System.out.println(">>> Programa: " + nomPrograma + " <<<");
+            System.out.println(">>> Use 'exec " + id + "' para executar <<<");
+        } else {
+            System.out.println("\n[ERRO] Programa '" + nomPrograma + "' não encontrado!");
+            System.out.println("Use 'list' para ver programas disponíveis.");
+        }
+    }
+    
+    public void removerProcesso(int id) {
+        if (processos.containsKey(id)) {
+            Processo processo = processos.get(id);
+            processos.remove(id);
+            System.out.println("\n>>> Processo " + id + " (" + processo.nome + ") removido <<<");
+        } else {
+            System.out.println("\n[ERRO] Processo com ID " + id + " não encontrado!");
+            System.out.println("Use 'ps' para ver processos disponíveis.");
+        }
+    }
+    
+    public void listarProcessos() {
+        if (processos.isEmpty()) {
+            System.out.println("\n>>> Nenhum processo criado <<<");
+            return;
+        }
+        
+        System.out.println("\n>>> Processos no sistema:");
+        System.out.println("ID\tPrograma\t\tStatus");
+        System.out.println("----------------------------------------");
+        for (Map.Entry<Integer, Processo> entry : processos.entrySet()) {
+            Processo p = entry.getValue();
+            String status = p.carregado ? "Carregado" : "Criado";
+            System.out.println(p.id + "\t" + p.nome + "\t\t" + status);
+        }
+    }
+    
+    public void executarProcessoPorId(int id) {
+        if (!processos.containsKey(id)) {
+            System.out.println("\n[ERRO] Processo com ID " + id + " não encontrado!");
+            System.out.println("Use 'ps' para ver processos disponíveis.");
+            return;
+        }
+        
+        Processo processo = processos.get(id);
+        System.out.println("\n>>> Executando processo ID " + id + ": " + processo.nome + " <<<");
+        
+        if (traceMode) {
+            System.out.println(">>> Modo TRACE ativado <<<");
+        }
+        
+        so.utils.loadAndExec(processo.programa);
+        processo.carregado = true;
+        System.out.println(">>> Execução finalizada <<<");
+    }
+    
+    public void dumpProcesso(int id) {
+        if (!processos.containsKey(id)) {
+            System.out.println("\n[ERRO] Processo com ID " + id + " não encontrado!");
+            System.out.println("Use 'ps' para ver processos disponíveis.");
+            return;
+        }
+        
+        Processo processo = processos.get(id);
+        System.out.println("\n>>> Dump do Processo ID " + id + " <<<");
+        System.out.println("Nome: " + processo.nome);
+        System.out.println("Status: " + (processo.carregado ? "Executado" : "Aguardando execução"));
+        System.out.println("Tamanho: " + processo.programa.length + " palavras");
+        System.out.println("\n>>> Conteúdo do Programa:");
+        for (int i = 0; i < processo.programa.length; i++) {
+            Word w = processo.programa[i];
+            System.out.println(i + ": " + w.opc + " ra=" + w.ra + " rb=" + w.rb + " p=" + w.p);
+        }
+    }
+    
+    public void ativarTrace() {
+        traceMode = true;
+        System.out.println("\n>>> Modo TRACE ativado <<<");
+        System.out.println(">>> Cada instrução será exibida durante execução <<<");
+    }
+    
+    public void desativarTrace() {
+        traceMode = false;
+        System.out.println("\n>>> Modo TRACE desativado <<<");
+    }
+
     private void processCommand(String input) {
         String[] parts = input.trim().split("\\s+");
         if (parts.length == 0 || parts[0].isEmpty()) {
@@ -143,12 +265,46 @@ public class Sistema {
                 }
                 break;
             
+            case "new":
+                if (parts.length < 2) {
+                    System.out.println("[ERRO] Uso: new <nome_programa>");
+                    System.out.println("Exemplo: new fatorialV2");
+                } else {
+                    criarProcesso(parts[1]);
+                }
+                break;
+            
+            case "rm":
+                if (parts.length < 2) {
+                    System.out.println("[ERRO] Uso: rm <id>");
+                    System.out.println("Exemplo: rm 1");
+                } else {
+                    try {
+                        int id = Integer.parseInt(parts[1]);
+                        removerProcesso(id);
+                    } catch (NumberFormatException e) {
+                        System.out.println("[ERRO] O ID deve ser um número inteiro");
+                    }
+                }
+                break;
+            
+            case "ps":
+                listarProcessos();
+                break;
+            
             case "exec":
                 if (parts.length < 2) {
-                    System.out.println("[ERRO] Uso: exec <nome_programa>");
-                    System.out.println("Exemplo: exec fatorialV2");
+                    System.out.println("[ERRO] Uso: exec <nome_programa|id>");
+                    System.out.println("Exemplo: exec fatorialV2  ou  exec 1");
                 } else {
-                    executarPrograma(parts[1]);
+                    // Try to parse as ID first, if fails treat as program name
+                    try {
+                        int id = Integer.parseInt(parts[1]);
+                        executarProcessoPorId(id);
+                    } catch (NumberFormatException e) {
+                        // Not a number, treat as program name (legacy)
+                        executarPrograma(parts[1]);
+                    }
                 }
                 break;
             
@@ -157,9 +313,24 @@ public class Sistema {
                 break;
             
             case "dump":
+                if (parts.length < 2) {
+                    System.out.println("[ERRO] Uso: dump <id>");
+                    System.out.println("Exemplo: dump 1");
+                } else {
+                    try {
+                        int id = Integer.parseInt(parts[1]);
+                        dumpProcesso(id);
+                    } catch (NumberFormatException e) {
+                        System.out.println("[ERRO] O ID deve ser um número inteiro");
+                        System.out.println("Use 'dumpM <inicio> <fim>' para dump de memória");
+                    }
+                }
+                break;
+            
+            case "dumpm":
                 if (parts.length < 3) {
-                    System.out.println("[ERRO] Uso: dump <inicio> <fim>");
-                    System.out.println("Exemplo: dump 0 10");
+                    System.out.println("[ERRO] Uso: dumpM <inicio> <fim>");
+                    System.out.println("Exemplo: dumpM 0 10");
                 } else {
                     try {
                         int inicio = Integer.parseInt(parts[1]);
@@ -169,6 +340,14 @@ public class Sistema {
                         System.out.println("[ERRO] Os parâmetros devem ser números inteiros");
                     }
                 }
+                break;
+            
+            case "traceon":
+                ativarTrace();
+                break;
+            
+            case "traceoff":
+                desativarTrace();
                 break;
             
             case "help":

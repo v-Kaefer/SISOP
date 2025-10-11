@@ -1,203 +1,178 @@
-# Sistema Operacional SISOP - Modo Comando
+# Modo Interativo do Sistema SISOP
 
-## Descrição
+Este documento descreve o sistema de comandos interativo implementado no SISOP.
 
-O sistema SISOP agora opera em **modo comando contínuo**, permitindo executar múltiplas funções através de comandos de texto. O sistema aguarda comandos do usuário e só encerra quando solicitado explicitamente.
+## Visão Geral
 
-## Como Executar
+O sistema agora opera em modo contínuo, aguardando comandos do usuário até que seja explicitamente encerrado. Suporta dois modos de operação:
 
-```bash
-javac Sistema.java
-java Sistema
-```
+1. **Modo Legacy**: Comandos `load` e `exec` por nome de programa (compatibilidade)
+2. **Modo Process Manager**: Comandos `new`, `ps`, `rm`, `exec` por ID (conforme especificação)
 
-## Interface de Comandos
+## Comandos Disponíveis
 
-O sistema utiliza uma interface baseada em comandos de texto, similar a um shell:
-
-```
-SISOP> help
-SISOP> list
-SISOP> load fatorialV2
-SISOP> exec fatorialV2
-SISOP> execAll
-SISOP> dump 0 10
-SISOP> quit
-```
-
-### Comandos Disponíveis
+### Gerenciamento de Programas (Legacy)
 
 - **`list`** - Lista todos os programas disponíveis
-- **`load <programa>`** - Carrega um programa na memória
+- **`load <programa>`** - Carrega um programa na memória (modo compatibilidade)
   - Exemplo: `load fatorialV2`
-  - **Obrigatório**: Programas devem ser carregados antes de serem executados
-- **`exec <programa>`** - Executa um programa previamente carregado
-  - Exemplo: `exec fatorialV2`
-  - **Requer**: O programa deve ter sido carregado primeiro com `load`
+
+### Gerenciamento de Processos
+
+- **`new <programa>`** - Cria um processo com ID único
+  - Exemplo: `new fatorialV2`
+  - Retorna um ID único para o processo
+  
+- **`rm <id>`** - Remove processo por ID
+  - Exemplo: `rm 1`
+  
+- **`ps`** - Lista todos os processos no sistema
+  - Mostra: ID, Programa, Status
+
+### Execução
+
+- **`exec <programa|id>`** - Executa programa ou processo
+  - Por nome (legacy): `exec fatorialV2`
+  - Por ID (process manager): `exec 1`
+  - Se o parâmetro for numérico, trata como ID
+  - Se não for numérico, trata como nome de programa
+
 - **`execAll`** - Executa todos os programas carregados com escalonamento
-  - Executa todos os programas que foram previamente carregados na memória
-  - Segue requisito da seção 3.1 do Enunciado_do_Trabalho.md
-- **`dump <inicio> <fim>`** - Mostra dump da memória entre posições
-  - Exemplo: `dump 0 20`
+
+### Dump e Debug
+
+- **`dump <id>`** - Dump completo do processo
+  - Exemplo: `dump 1`
+  - Mostra: Nome, Status, Tamanho, Conteúdo do programa
+
+- **`dumpM <inicio> <fim>`** - Dump da memória entre posições
+  - Exemplo: `dumpM 0 20`
+
+- **`traceOn`** - Liga modo trace
+  - Cada instrução executada será exibida
+
+- **`traceOff`** - Desliga modo trace
+
+### Sistema
+
 - **`help`** - Mostra lista de comandos disponíveis
 - **`quit` ou `exit`** - Encerra o sistema
 
+## Exemplos de Uso
+
+### Modo Process Manager (Novo)
+
+```
+SISOP> new progMinimo
+>>> Processo criado com ID: 1 <<<
+
+SISOP> new fatorialV2
+>>> Processo criado com ID: 2 <<<
+
+SISOP> ps
+>>> Processos no sistema:
+ID	Programa		Status
+----------------------------------------
+1	progMinimo		Criado
+2	fatorialV2		Criado
+
+SISOP> exec 1
+>>> Executando processo ID 1: progMinimo <<<
+[executa programa]
+
+SISOP> dump 1
+>>> Dump do Processo ID 1 <<<
+[mostra informações completas]
+
+SISOP> rm 2
+>>> Processo 2 (fatorialV2) removido <<<
+
+SISOP> quit
+```
+
+### Modo Legacy (Compatibilidade)
+
+```
+SISOP> load progMinimo
+>>> Carregando programa: progMinimo <<<
+
+SISOP> exec progMinimo
+>>> Executando programa: progMinimo <<<
+[executa programa]
+
+SISOP> quit
+```
+
+### Modo Debug com Trace
+
+```
+SISOP> traceOn
+>>> Modo TRACE ativado <<<
+
+SISOP> new progMinimo
+>>> Processo criado com ID: 1 <<<
+
+SISOP> exec 1
+>>> Executando processo ID 1: progMinimo <<<
+>>> Modo TRACE ativado <<<
+[mostra cada instrução executada]
+
+SISOP> traceOff
+>>> Modo TRACE desativado <<<
+```
+
 ## Testes Automatizados
 
-Para testar as funções do sistema programaticamente sem entrada manual:
+### Executar Testes
 
 ```bash
 javac TesteSistemaInterativo.java
 java TesteSistemaInterativo
 ```
 
-O teste automatizado verifica:
-- ✅ Inicialização do sistema
-- ✅ Execução de programas individuais (fatorialV2, fibonacci10, progMinimo, fatorial)
-- ✅ Listagem de programas disponíveis
-- ✅ Tratamento de erros (programa não encontrado)
-- ✅ Parada do sistema (método stop())
-- ✅ Múltiplas execuções sequenciais
+### Resultados Esperados
 
-## Programas Disponíveis
+Todos os 9 testes devem passar:
+- ✅ Inicialização do Sistema
+- ✅ Executar FatorialV2
+- ✅ Executar Fibonacci10
+- ✅ Executar ProgMinimo
+- ✅ Executar Programa por Nome (fatorial)
+- ✅ Listar Programas Disponíveis
+- ✅ Programa Não Encontrado (tratamento de erro)
+- ✅ Stop do Sistema
+- ✅ Múltiplas Execuções Sequenciais
 
-O sistema inclui uma biblioteca de programas prontos para execução:
-- **fatorial** - Calcula fatorial de 7
-- **fatorialV2** - Calcula fatorial de 5 com syscall
-- **fibonacci10** - Gera série Fibonacci (10 elementos)
-- **fibonacci10v2** - Fibonacci versão 2
-- **progMinimo** - Programa mínimo de teste
-- **fibonacciREAD** - Fibonacci com entrada
-- **PB** - Teste de fatorial com condicionais
-- **PC** - Bubble sort (ordenação)
-
-## Exemplo de Uso
-
-```bash
-$ java Sistema
-
-╔════════════════════════════════════════════╗
-║  Bem-vindo ao Sistema Operacional SISOP   ║
-║  Sistema em modo comando                   ║
-╚════════════════════════════════════════════╝
-
-Digite 'help' para ver comandos disponíveis.
-
-SISOP> help
-
-=== COMANDOS DISPONÍVEIS ===
-list                - Lista programas disponíveis
-load <programa>     - Carrega um programa na memória
-exec <programa>     - Executa um programa
-execAll             - Executa todos programas carregados
-dump <inicio> <fim> - Mostra dump da memória
-help                - Mostra esta ajuda
-quit | exit         - Encerra o sistema
-============================
-
-SISOP> list
-
->>> Programas disponíveis:
-  - fatorial      : Calcula fatorial de 7
-  - fatorialV2    : Calcula fatorial de 5 com syscall
-  - fibonacci10   : Gera série Fibonacci (10 elementos)
-  ...
-
-SISOP> load fatorialV2
-
->>> Carregando programa: fatorialV2 <<<
->>> Programa carregado na memória <<<
->>> Use 'exec fatorialV2' ou 'execAll' para executar <<<
-
-SISOP> exec fatorialV2
-
->>> Executando programa: fatorialV2 <<<
----------------------------------- programa carregado na memoria
-...
->>> Execução finalizada <<<
-
-SISOP> load progMinimo
-
->>> Carregando programa: progMinimo <<<
->>> Programa carregado na memória <<<
->>> Use 'exec progMinimo' ou 'execAll' para executar <<<
-
-SISOP> load fibonacci10
-
->>> Carregando programa: fibonacci10 <<<
->>> Programa carregado na memória <<<
->>> Use 'exec fibonacci10' ou 'execAll' para executar <<<
-
-SISOP> execAll
-
->>> Executando todos os programas carregados com escalonamento <<<
->>> Programas carregados: 3 <<<
->>> Escalonando: fatorialV2 <<<
-...
->>> Escalonando: progMinimo <<<
-...
->>> Escalonando: fibonacci10 <<<
-...
->>> Todos os programas carregados foram executados <<<
-
-SISOP> dump 0 5
-
->>> Dump da memória [0 - 5]:
-0:  [ LDI, 0, -1, 5  ]
-1:  [ STD, 0, -1, 19  ]
-...
-
-SISOP> quit
-
->>> Encerrando sistema... <<<
->>> Sistema encerrado com sucesso <<<
-```
-
-## Diferenças em Relação ao Sistema Original
-
-### Sistema Original
-- Executava um programa pré-definido e encerrava
-- Não havia interação com o usuário
-- Necessário recompilar para executar outro programa
-
-### Sistema Novo (Modo Comando)
-- ✅ **Execução contínua** - aguarda comandos do usuário
-- ✅ **Interface de comandos** - similar a um shell
-- ✅ **Múltiplas execuções** - execute quantos programas desejar
-- ✅ **Comandos flexíveis** - exec, list, dump, help, quit
-- ✅ **Encerramento controlado** - saia quando desejar (quit/exit)
-- ✅ **Dump de memória** - visualize o estado da memória
-- ✅ **Mensagens de log** - todas as mensagens preservadas
-
-## Tratamento de Erros
-
-O sistema inclui tratamento de erros para:
-- Nomes de programas inválidos
-- Comandos desconhecidos
-- Parâmetros incorretos para dump
-- Erros durante a execução dos programas
-
-## Notas Técnicas
-
-### Alterações Realizadas
-1. **Sistema.java** - Adicionado menu interativo e loop de execução
-2. **Programs.java** - Corrigido bug de comparação de strings (== para .equals())
+## Notas de Implementação
 
 ### Compatibilidade
-O sistema mantém total compatibilidade com:
-- Todos os programas existentes
-- Sistema de memória (Etapa 1)
-- Sistema de processos (Etapa 2)
-- Exemplos e testes existentes
 
-## Atendimento ao Requisito
+- ✅ Comandos legacy (`load`, `exec <programa>`) mantidos
+- ✅ Novos comandos process manager implementados
+- ✅ Sistema detecta automaticamente se `exec` recebe ID ou nome
+- ✅ Ambos os modos podem ser usados na mesma sessão
 
-Este sistema atende ao requisito do problema:
-> "Faça o sistema, como um programa constante, que pode executar as funções que temos modulares. Ou seja, ao invés do programa executar e encerrar, ele deve executar e aguardar chamadas das funções e encerrar on command."
+### Requisitos Atendidos
 
-O sistema agora:
-- ✅ Opera como programa constante
-- ✅ Executa funções modulares (programas disponíveis)
-- ✅ Aguarda chamadas de funções (comandos de texto)
-- ✅ Encerra apenas sob comando (quit/exit)
-- ✅ Comandos inspirados em definição do trabalho (TrabalhoSO-A-DefinicaoHW.pages)
+Conforme **Enunciado_do_Trabalho_Gerente_de_Processos.md**:
+- ✅ `new <programa>` - cria processo com ID único
+- ✅ `rm <id>` - remove processo por ID
+- ✅ `ps` - lista todos processos
+- ✅ `dump <id>` - dump do processo
+- ✅ `dumpM <inicio, fim>` - dump da memória
+- ✅ `exec <id>` - executa por ID
+- ✅ `traceOn/traceOff` - modo trace
+- ✅ `exit` - sai do sistema
+
+Conforme **Enunciado_do_Trabalho_Escalonamento.md**:
+- ✅ `load` - carrega programas
+- ✅ `execAll` - executa todos com escalonamento
+
+## Mensagens de Log Preservadas
+
+Todas as mensagens de log originais são mantidas:
+- `">>> Executando programa: X <<<"`
+- `"---------------------------------- programa carregado na memoria"`
+- `"---------------------------------- inicia execucao"`
+- Dumps de registradores e memória
+- `">>> Execução finalizada <<<"`
