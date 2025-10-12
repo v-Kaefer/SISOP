@@ -375,10 +375,10 @@ public class Sistema {
     }
 
     public void run() {
-        System.out.println("\n╔════════════════════════════════════════════╗");
-        System.out.println("║  Bem-vindo ao Sistema Operacional SISOP   ║");
-        System.out.println("║  Sistema em modo comando                   ║");
-        System.out.println("╚════════════════════════════════════════════╝");
+        System.out.println("\n+--------------------------------------------+");
+        System.out.println("|  Bem-vindo ao Sistema Operacional SISOP    |");
+        System.out.println("|  Sistema em modo comando                   |");
+        System.out.println("+--------------------------------------------+");
         System.out.println("\nDigite 'help' para ver comandos disponíveis.\n");
 
         while (running) {
