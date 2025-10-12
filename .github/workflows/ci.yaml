@@ -1,4 +1,4 @@
-name: Java CI
+name: CI
 
 on:
   push:
@@ -9,9 +9,11 @@ on:
 
 jobs:
   build:
+    name: build
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v5
+    - name: Checkout code
+      uses: actions/checkout@v5
 
     - name: Set up Java
       uses: actions/setup-java@v5
@@ -21,26 +23,73 @@ jobs:
     
     - name: Compile all project files
       run: |
+        echo "Compiling Sistema and test files..."
         javac Sistema.java
+        javac TesteSistemaInterativo.java
+        
+        echo "Compiling memory module..."
         javac memory/*.java
+        
+        echo "Compiling software module..."
         javac software/*.java
+        
+        echo "Compiling hardware module..."
         javac hardware/*.java 
+        
+        echo "Compiling programs module..."
         javac programs/*.java
+        
+        echo "Compiling examples..."
         javac exemplos/*.java
+        
+        echo "Build completed successfully!"
     
-    - name: Run basic system test
-      run: java Sistema
+    - name: Upload compiled artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: compiled-classes
+        path: |
+          **/*.class
+          **/*.java
+        retention-days: 1
+
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v5
+
+    - name: Set up Java
+      uses: actions/setup-java@v5
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+    
+    - name: Download compiled artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: compiled-classes
+    
+    - name: Run automated interactive system tests
+      run: |
+        echo "Running TesteSistemaInterativo..."
+        java TesteSistemaInterativo
     
     - name: Run memory manager tests (Stage 1)
       run: |
+        echo "Running memory tests..."
         java memory.TesteGerenciadorMemoria
         java memory.TesteIntegracao
     
     - name: Run process management tests (Stage 2)
       run: |
+        echo "Running process management tests..."
         java software.TesteGerenciaProcessos
     
     - name: Run practical examples
       run: |
+        echo "Running practical examples..."
         java exemplos.ExemploGerenciaProcessos
         timeout 10s java exemplos.ExemploExecucaoConcorrente || echo "Concurrent example completed"
