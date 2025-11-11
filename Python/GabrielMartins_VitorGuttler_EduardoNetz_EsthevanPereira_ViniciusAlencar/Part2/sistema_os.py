@@ -2,44 +2,114 @@ import math
 import threading
 import time
 from enum import Enum
-from queue import Queue, Empty
 
 # PUCRS - Escola Politécnica - Sistemas Operacionais
 # Prof. Fernando Dotti
 # Código fornecido como parte da solução do projeto de Sistemas Operacionais
-# FASE 2a: Implementação de Concorrência e I/O Assíncrono
+#
+# TRABALHO T2a: Implementação de Concorrência e I/O Assíncrono
+# Baseado no esquema do SO (multithreaded) fornecido no enunciado
+#
+# Este código implementa:
+# - T1: Gerenciamento de Memória (paginação), Processos e Escalonamento
+# - T2a: Threads concorrentes (Shell, CPU, Console), I/O assíncrono, 3 estados
 
 # -------------------------------------------------------------------------------------------------------
-# --------------------- H A R D W A R E - Definições de HW
+# --------------------- ESTRUTURAS AUXILIARES
 # -------------------------------------------------------------------------------------------------------
 
+# Implementação de fila thread-safe para substituir queue.Queue
+# Utilizada para "Fila Pedidos Console" no esquema do SO multithreaded
+class SimpleQueue:
+    """
+    Fila thread-safe simples para comunicação entre threads.
+    Usada para a fila de requisições de I/O (Console).
+    """
+    def __init__(self):
+        self.items = []
+        self.lock = threading.Lock()
+        self.not_empty = threading.Condition(self.lock)
+    
+    def put(self, item):
+        """Adiciona item na fila (produtor)"""
+        with self.lock:
+            self.items.append(item)
+            self.not_empty.notify()
+    
+    def get(self, timeout=None):
+        """Remove e retorna item da fila (consumidor). Bloqueia se vazia."""
+        with self.not_empty:
+            if timeout is None:
+                while not self.items:
+                    self.not_empty.wait()
+                return self.items.pop(0)
+            else:
+                # Com timeout
+                if not self.not_empty.wait_for(lambda: len(self.items) > 0, timeout):
+                    raise QueueEmpty()
+                return self.items.pop(0)
+
+class QueueEmpty(Exception):
+    """Exceção levantada quando fila está vazia (substitui queue.Empty)"""
+    pass
+
+# -------------------------------------------------------------------------------------------------------
+# --------------------- H A R D W A R E - Definições de HW (Trabalho T1)
+# -------------------------------------------------------------------------------------------------------
+
+# Conjunto de instruções da CPU (ISA - Instruction Set Architecture)
 class Opcode(Enum):
     DATA, ___, JMP, JMPI, JMPIG, JMPIL, JMPIE, JMPIM, JMPIGM, JMPILM, JMPIEM, JMPIGK, JMPILK, JMPIEK, JMPIGT, ADDI, SUBI, ADD, SUB, MULT, LDI, LDD, STD, LDX, STX, MOVE, SYSCALL, STOP = range(28)
 
+# Tipos de interrupções do hardware
+# INT_IO_COMPLETE adicionado para T2a (int IO - retorno de I/O assíncrono)
 class Interrupts(Enum):
     NO_INTERRUPT, INT_ENDERECO_INVALIDO, INT_INSTRUCAO_INVALIDA, INT_OVERFLOW, INT_IO_COMPLETE = range(5)
 
+# Palavra de memória: representa uma instrução ou dado
+# Formato: [opcode, registrador_a, registrador_b, parâmetro]
 class Word:
     def __init__(self, opc, ra, rb, p):
         self.opc, self.ra, self.rb, self.p = opc, ra, rb, p
 
+# ====================================================================================================
+# MEMÓRIA - Componente de hardware (referenciado no esquema do SO como "MEMÓRIA")
+# Acesso direto via DMA para operações de I/O (conforme diagrama)
+# ====================================================================================================
 class Memory:
     def __init__(self, size):
         self.pos = [Word(Opcode.___, -1, -1, -1) for _ in range(size)]
 
+# ====================================================================================================
+# ESTADO CPU - Componente de hardware (caixa "estado CPU" no esquema)
+# Contém: registradores, PC, IR, flags de interrupção
+# Thread CPU usa este componente para execução de instruções
+# ====================================================================================================
 class CPU:
     def __init__(self, mem, debug=False):
+        # Limites para detecção de overflow
         self.max_int, self.min_int = 32767, -32767
+        # Referência à memória física
         self.m = mem.pos
+        # Registradores (R0-R9)
         self.reg = [0] * 10
+        # Modo debug (trace)
         self.debug = debug
+        # Program Counter
         self.pc = 0
+        # Instruction Register
         self.ir = None
+        # Flag de interrupção
         self.irpt = Interrupts.NO_INTERRUPT
+        # Ponteiro para processo em execução (running no diagrama)
         self.running_process = None
+        # Referências para handlers e gerentes
         self.ih, self.sys_call, self.gm, self.u = None, None, None, None
+        # Flag para parar execução
         self.cpu_stop = False
+        # Contador de instruções (para quantum)
         self.instructions_executed = 0
+        # Flag de interrupção de I/O completo (T2a - sinalização do Console para CPU)
         self.irpt_io_complete = None
 
     def set_address_of_handlers(self, ih, sys_call):
@@ -51,6 +121,8 @@ class CPU:
     def set_gerente_memoria(self, gm):
         self.gm = gm
 
+    # Restaura contexto do PCB na CPU (usado pelo Thread Escalonador)
+    # Corresponde a "restaura contexto na CPU" no diagrama
     def set_context(self, pcb):
         self.running_process = pcb
         self.pc = pcb.pc
@@ -59,11 +131,14 @@ class CPU:
         self.instructions_executed = 0
         pcb.state = PCB.ProcessState.RUNNING
 
+    # Verifica se endereço físico é válido (controle de acesso indevido)
     def _legal(self, e):
         if 0 <= e < len(self.m): return True
         self.irpt = Interrupts.INT_ENDERECO_INVALIDO
         return False
 
+    # Mapeamento de endereço lógico para físico (esquema de paginação - T1)
+    # Caixa "Mapeamento de endereço e controle de acesso indevido" no diagrama
     def _translate_address(self, logical_address):
         if not self.running_process:
             self.irpt = Interrupts.INT_ENDERECO_INVALIDO
@@ -190,6 +265,13 @@ class PCB:
     @classmethod
     def reset_count(cls): cls._processo_count = 0
 
+# ====================================================================================================
+# GM: GERENTE DE MEMÓRIA (Trabalho T1 - conforme diagrama "GM" no esquema)
+# Responsável por:
+# - alocar memória (usando esquema de paginação)
+# - desalocar memória
+# O esquema de paginação fica implementado aqui conforme T1
+# ====================================================================================================
 class GerenteMemoria:
     def __init__(self, tam_mem, tam_pg):
         self.tam_mem, self.tam_pg = tam_mem, tam_pg
@@ -260,6 +342,16 @@ class GerenteMemoria:
             print(f"Proc. IDs: {''.join(linha_processos)}")
         print("=========================")
 
+# ====================================================================================================
+# GP: GERENTE DE PROCESSOS (Trabalho T1 e T2a - conforme diagrama "GP" no esquema)
+# Responsável por (T1):
+# - criação de processo: solicita memória, carrega imagem, cria PCB, coloca na fila de prontos
+# - finalização de processos: desaloca PCB e memória, retira de filas
+# 
+# Adições T2a (3 estados):
+# - Gerencia fila de bloqueados (blocked_queue) além de prontos (ready_queue)
+# - Métodos block_process e unblock_process para transições de estado
+# ====================================================================================================
 class GerenteProcessos:
     def __init__(self, gm, hw, utils):
         self.gm, self.hw, self.utils = gm, hw, utils
@@ -414,6 +506,16 @@ class GerenteProcessos:
                 for estado, count in estados.items(): print(f"  {estado}: {count}")
         print("=" * 35)
 
+# ====================================================================================================
+# THREAD CONSOLE (T2a - conforme esquema "Thread Console" no diagrama)
+# Thread concorrente que processa requisições de I/O
+# Funcionalidade (conforme diagrama):
+# - loop sempre: aguarda pedido na fila
+# - pega pedido da fila (consumidor - fila de pedidos Console)
+# - se leitura: lê do usuario e escreve na memória no endereço fornecido (DMA)
+# - se escrita: lê da memória e escreve no console
+# - interrompe CPU: sinaliza conclusão via irpt_io_complete
+# ====================================================================================================
 class IODevice(threading.Thread):
     def __init__(self, hw, gp, io_queue, ih):
         super().__init__(daemon=True, name="IODevice")
@@ -433,7 +535,7 @@ class IODevice(threading.Thread):
                 self.hw.cpu.irpt = Interrupts.INT_IO_COMPLETE
                 self.ih.handle(Interrupts.INT_IO_COMPLETE, pc=self.hw.cpu.pc)  # dispara a rotina agora
                 print(f"[I/O Device] {request.operation} concluído para processo {request.process_id}")
-            except Empty: continue
+            except QueueEmpty: continue
             except Exception as e: print(f"[I/O Device] Erro ao processar I/O: {e}")
     
     def _process_io(self, request):
@@ -464,6 +566,21 @@ class IODevice(threading.Thread):
     def stop(self):
         self.running = False
 
+# ====================================================================================================
+# THREAD CPU + THREAD ESCALONADOR (T2a - conforme esquema do diagrama)
+# No diagrama aparecem separadas, aqui estão integradas em uma única thread
+# 
+# Funcionalidade Thread Escalonador (conforme diagrama):
+# - aguarda bloqueado (semaCPU.wait)
+# - escolhe processo da fila de prontos
+# - restaura contexto na CPU
+# - libera CPU (semaCPU.notify)
+#
+# Funcionalidade Thread CPU (conforme diagrama):
+# - loop: busca e executa instrução
+# - se completou número de instruções no ciclo: liga int timer (quantum)
+# - se tem interrupção: desvia para rotina de tratamento
+# ====================================================================================================
 class CPUThread(threading.Thread):
     def __init__(self, cpu, escalonador, semaphore):
         super().__init__(daemon=True, name="CPU")
@@ -521,6 +638,22 @@ class Escalonador:
         if self.cpu_thread: self.cpu_thread.stop()
         print("[Escalonador] Sistema de escalonamento encerrado!")
 
+# ====================================================================================================
+# ROTINAS DE TRATAMENTO DE INTERRUPÇÕES (conforme esquema do diagrama)
+# 
+# Rot Trat STOP, overflow, Acesso indevido:
+# - Tratamento de STOP, overflow, endereço inválido
+# - Finaliza processo, libera escalonador
+#
+# Rot Trat TIMER:
+# - Salva estado do processo
+# - Coloca na fila de prontos
+# - Libera escalonador (semaSch.notify)
+#
+# Rot Trat Ret IO (T2a - nova interrupção):
+# - Passa processo de bloqueado para pronto
+# - Retorna e continua processo (avança PC!)
+# ====================================================================================================
 #parteT2 - atualizado
 class InterruptHandling:
     def __init__(self, cpu, gp):
@@ -551,6 +684,14 @@ class InterruptHandling:
                 self.cpu.running_process.state = PCB.ProcessState.FINISHED
 
 
+# ====================================================================================================
+# CHAMADA IO / SYSTEM CALL (conforme esquema "Chamada IO" no diagrama)
+# Funcionalidade (conforme diagrama):
+# - Salva estado do processo
+# - Bloqueia processo (passa de RUNNING para BLOCKED)
+# - Empacota pedido para console (adiciona na fila de pedidos)
+# - Libera escalonador (semaSch.notify) - CPU para, volta para escalonador
+# ====================================================================================================
 #parteT2 - atualizado
 class SysCallHandling:
     def __init__(self, hw, io_queue, gp):
@@ -641,7 +782,7 @@ class SO:
         self.ih = InterruptHandling(hw.cpu, self.gp)
         
         # Fila de I/O (produtor/consumidor)
-        self.io_queue = Queue()
+        self.io_queue = SimpleQueue()
         
         # Handlers com acesso à fila de I/O
         self.sc = SysCallHandling(hw, self.io_queue, self.gp)
@@ -913,6 +1054,20 @@ class Programs:
             if p.name.lower() == pname.lower(): return p.image
         return None
 
+# ====================================================================================================
+# SISTEMA PRINCIPAL - Integração de todos os componentes (HW + SO)
+# Implementa THREAD SHELL (conforme esquema "Thread Shell" no diagrama)
+# 
+# Thread Shell (conforme diagrama):
+# - loop: lê entrada do usuário
+# - submete pedido ao SO (cria processo, remove, lista, etc.)
+# - ou manda comando para console (escolhe responder I/O quando Thread Console pede entrada)
+# 
+# Usuário (conforme diagrama):
+# - Fornece nome de programa a executar
+# - Escolhe responder I/O quando requisitado
+# - Fica esperando resposta de pedido de IN
+# ====================================================================================================
 #parteT2 - atualizado
 class Sistema:
     def __init__(self, tam_mem, tam_pg, quantum):
