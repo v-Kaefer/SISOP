@@ -1,0 +1,29 @@
+# Dump de Memoria - Processo 4 (fatorialV2)
+# Gerado em: 2025-11-11 01:43:24.116670
+# PC: 2, Estado: RUNNING
+# Registradores: [5, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+--------------------------------------------------------------------------------
+
+Tabela de Paginas:
+  Pagina 0: Frame=0, Valido=True, Sujo=False, NoSwap=False, Where=mp
+  Pagina 1: Frame=N/A, Valido=False, Sujo=False, NoSwap=False, Where=_
+
+Conteudo da Memoria Fisica (Frames alocados):
+
+--- Frame 0 (Pagina 0) ---
+  Fis[0000]: LDI        R1: 7 R2:-1 P:   5
+  Fis[0001]: STD        R1: 7 R2:-1 P:  45
+  Fis[0002]: LDI        R1: 5 R2:-1 P:  46
+  Fis[0003]: LDI        R1: 0 R2:-1 P:   4
+  Fis[0004]: STD        R1: 0 R2:-1 P:  46
+  Fis[0005]: LDI        R1: 0 R2:-1 P:   3
+  Fis[0006]: STD        R1: 0 R2:-1 P:  47
+  Fis[0007]: LDI        R1: 0 R2:-1 P:   5
+  Fis[0008]: STD        R1: 0 R2:-1 P:  48
+  Fis[0009]: LDI        R1: 0 R2:-1 P:   1
+  Fis[0010]: STD        R1: 0 R2:-1 P:  49
+  Fis[0011]: LDI        R1: 0 R2:-1 P:   2
+  Fis[0012]: DATA       R1:-1 R2:-1 P:  10
+  Fis[0013]: LDI        R1: 3 R2:-1 P:  38
+  Fis[0014]: LDI        R1: 6 R2:-1 P:   0
+  Fis[0015]: LDD        R1: 7 R2:-1 P:  45

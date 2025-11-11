@@ -1,0 +1,49 @@
+# Dump de Memoria - Processo 2 (PB)
+# Gerado em: 2025-11-11 01:43:20.247984
+# PC: 12, Estado: FINISHED
+# Registradores: [0, 5040, 13, 0, 0, 0, 1, 13, 0, 0]
+--------------------------------------------------------------------------------
+
+Tabela de Paginas:
+  Pagina 0: Frame=0, Valido=True, Sujo=True, NoSwap=False, Where=mp
+  Pagina 1: Frame=N/A, Valido=False, Sujo=False, NoSwap=False, Where=_
+  Pagina 2: Frame=N/A, Valido=False, Sujo=False, NoSwap=False, Where=_
+  Pagina 3: Frame=1, Valido=True, Sujo=True, NoSwap=False, Where=mp
+
+Conteudo da Memoria Fisica (Frames alocados):
+
+--- Frame 0 (Pagina 0) ---
+  Fis[0000]: LDI        R1: 0 R2:-1 P:   7
+  Fis[0001]: STD        R1: 0 R2:-1 P:  50
+  Fis[0002]: LDD        R1: 0 R2:-1 P:  50
+  Fis[0003]: LDI        R1: 1 R2:-1 P:  -1
+  Fis[0004]: LDI        R1: 2 R2:-1 P:  13
+  Fis[0005]: JMPIL      R1: 2 R2: 0 P:  -1
+  Fis[0006]: LDI        R1: 1 R2:-1 P:   1
+  Fis[0007]: LDI        R1: 6 R2:-1 P:   1
+  Fis[0008]: LDI        R1: 7 R2:-1 P:  13
+  Fis[0009]: JMPIE      R1: 7 R2: 0 P:   0
+  Fis[0010]: MULT       R1: 1 R2: 0 P:  -1
+  Fis[0011]: SUB        R1: 0 R2: 6 P:  -1
+  Fis[0012]: JMP        R1:-1 R2:-1 P:   9
+  Fis[0013]: STD        R1: 1 R2:-1 P:  15
+  Fis[0014]: STOP       R1:-1 R2:-1 P:  -1
+  Fis[0015]: DATA       R1:-1 R2:-1 P:5040
+
+--- Frame 1 (Pagina 3) ---
+  Fis[0016]: LDI        R1: 0 R2:-1 P:   6
+  Fis[0017]: SYSCALL    R1:-1 R2:-1 P:  -1
+  Fis[0018]: DATA       R1:-1 R2:-1 P:   7
+  Fis[0019]: LDD        R1: 0 R2:-1 P:  50
+  Fis[0020]: LDI        R1: 1 R2:-1 P:   1
+  Fis[0021]: LDI        R1: 2 R2:-1 P:   1
+  Fis[0022]: JMPIE      R1:11 R2: 0 P:   0
+  Fis[0023]: MULT       R1: 1 R2: 0 P:  -1
+  Fis[0024]: SUBI       R1: 0 R2:-1 P:   1
+  Fis[0025]: JMPIG      R1: 7 R2: 0 P:   0
+  Fis[0026]: STD        R1: 1 R2:-1 P:  51
+  Fis[0027]: SYSCALL    R1:-1 R2:-1 P:  -1
+  Fis[0028]: STOP       R1:-1 R2:-1 P:  -1
+  Fis[0029]: DATA       R1:-1 R2:-1 P:  -1
+  Fis[0030]: DATA       R1:-1 R2:-1 P:  -1
+  Fis[0031]: ___        R1:-1 R2:-1 P:  -1
