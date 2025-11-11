@@ -18,39 +18,9 @@ from enum import Enum
 # --------------------- ESTRUTURAS AUXILIARES
 # -------------------------------------------------------------------------------------------------------
 
-# Implementação de fila thread-safe para substituir queue.Queue
-# Utilizada para "Fila Pedidos Console" no esquema do SO multithreaded
-class SimpleQueue:
-    """
-    Fila thread-safe simples para comunicação entre threads.
-    Usada para a fila de requisições de I/O (Console).
-    """
-    def __init__(self):
-        self.items = []
-        self.lock = threading.Lock()
-        self.not_empty = threading.Condition(self.lock)
-    
-    def put(self, item):
-        """Adiciona item na fila (produtor)"""
-        with self.lock:
-            self.items.append(item)
-            self.not_empty.notify()
-    
-    def get(self, timeout=None):
-        """Remove e retorna item da fila (consumidor). Bloqueia se vazia."""
-        with self.not_empty:
-            if timeout is None:
-                while not self.items:
-                    self.not_empty.wait()
-                return self.items.pop(0)
-            else:
-                # Com timeout
-                if not self.not_empty.wait_for(lambda: len(self.items) > 0, timeout):
-                    raise QueueEmpty()
-                return self.items.pop(0)
-
+# Exceção para fila vazia
 class QueueEmpty(Exception):
-    """Exceção levantada quando fila está vazia (substitui queue.Empty)"""
+    """Exceção levantada quando fila está vazia"""
     pass
 
 # -------------------------------------------------------------------------------------------------------
@@ -351,6 +321,10 @@ class GerenteMemoria:
 # Adições T2a (3 estados):
 # - Gerencia fila de bloqueados (blocked_queue) além de prontos (ready_queue)
 # - Métodos block_process e unblock_process para transições de estado
+#
+# FILAS DO ESCALONADOR (conforme diagrama - dentro da área do escalonador):
+# - Fila Prontos (ready_queue): processos prontos para executar
+# - Fila Bloqueados (blocked_queue): processos aguardando I/O
 # ====================================================================================================
 class GerenteProcessos:
     def __init__(self, gm, hw, utils):
@@ -515,11 +489,52 @@ class GerenteProcessos:
 # - se leitura: lê do usuario e escreve na memória no endereço fornecido (DMA)
 # - se escrita: lê da memória e escreve no console
 # - interrompe CPU: sinaliza conclusão via irpt_io_complete
+#
+# FILA PEDIDOS CONSOLE (conforme diagrama - dentro da caixa "Thread Console")
+# Fila thread-safe para requisições de I/O (produtor/consumidor)
 # ====================================================================================================
 class IODevice(threading.Thread):
-    def __init__(self, hw, gp, io_queue, ih):
+    # Classe interna: Fila de pedidos de I/O (conforme "Fila Pedidos Console" no diagrama)
+    class SimpleQueue:
+        """
+        Fila thread-safe para comunicação entre threads.
+        Implementa o padrão produtor/consumidor para requisições de I/O.
+        Localizada na Thread Console conforme esquema do SO multithreaded.
+        """
+        def __init__(self):
+            self.items = []
+            self.lock = threading.Lock()
+            self.not_empty = threading.Condition(self.lock)
+        
+        def put(self, item):
+            """Adiciona item na fila (produtor - SystemCall)"""
+            with self.lock:
+                self.items.append(item)
+                self.not_empty.notify()
+        
+        def get(self, timeout=None):
+            """Remove e retorna item da fila (consumidor - IODevice). Bloqueia se vazia."""
+            with self.not_empty:
+                if timeout is None:
+                    while not self.items:
+                        self.not_empty.wait()
+                    return self.items.pop(0)
+                else:
+                    # Com timeout
+                    if not self.not_empty.wait_for(lambda: len(self.items) > 0, timeout):
+                        raise QueueEmpty()
+                    return self.items.pop(0)
+        
+        def qsize(self):
+            """Retorna tamanho aproximado da fila (para debug)"""
+            with self.lock:
+                return len(self.items)
+    
+    def __init__(self, hw, gp, ih):
         super().__init__(daemon=True, name="IODevice")
-        self.hw, self.gp, self.io_queue, self.ih = hw, gp, io_queue, ih
+        self.hw, self.gp, self.ih = hw, gp, ih
+        # Fila Pedidos Console (interna à Thread Console - conforme diagrama)
+        self.io_queue = IODevice.SimpleQueue()
         self.running, self.io_delay = True, 2.0
 
     def run(self):
@@ -694,9 +709,9 @@ class InterruptHandling:
 # ====================================================================================================
 #parteT2 - atualizado
 class SysCallHandling:
-    def __init__(self, hw, io_queue, gp):
+    def __init__(self, hw, io_device, gp):
         self.hw = hw
-        self.io_queue = io_queue
+        self.io_device = io_device  # Referência à Thread Console (que contém a fila)
         self.gp = gp
     
     def handle(self):
@@ -717,8 +732,8 @@ class SysCallHandling:
         # Cria requisição de I/O
         request = IORequest(pcb.id, 'READ', address, pcb)
         
-        # Produtor: coloca requisição na fila do dispositivo
-        self.io_queue.put(request)
+        # Produtor: coloca requisição na fila do dispositivo (Thread Console)
+        self.io_device.io_queue.put(request)
         
         # Bloqueia o processo (não pode continuar sem o dado)
         self.gp.block_process(pcb)
@@ -738,8 +753,8 @@ class SysCallHandling:
         # Cria requisição de I/O
         request = IORequest(pcb.id, 'WRITE', address, pcb)
         
-        # Produtor: coloca requisição na fila
-        self.io_queue.put(request)
+        # Produtor: coloca requisição na fila (Thread Console)
+        self.io_device.io_queue.put(request)
         
         # Bloqueia o processo
         self.gp.block_process(pcb)
@@ -781,17 +796,15 @@ class SO:
         self.gp = GerenteProcessos(self.gm, hw, self.utils)
         self.ih = InterruptHandling(hw.cpu, self.gp)
         
-        # Fila de I/O (produtor/consumidor)
-        self.io_queue = SimpleQueue()
+        # IMPORTANTE: IODevice (Thread Console) deve ser criado antes de SysCallHandling
+        # pois contém a "Fila Pedidos Console" (conforme diagrama)
+        self.io_device = IODevice(hw, self.gp, self.ih)
         
-        # Handlers com acesso à fila de I/O
-        self.sc = SysCallHandling(hw, self.io_queue, self.gp)
+        # Handlers com acesso ao dispositivo de I/O (que contém a fila)
+        self.sc = SysCallHandling(hw, self.io_device, self.gp)
         
         # Escalonador
         self.escalonador = Escalonador(hw.cpu, self.gp, quantum)
-        
-        # Dispositivo de I/O + parteT2 (ih)
-        self.io_device = IODevice(hw, self.gp, self.io_queue, self.ih)
         
         # Configurações
         hw.cpu.set_address_of_handlers(self.ih, self.sc)
@@ -1149,7 +1162,7 @@ class Sistema:
                 
                 elif cmd == "stats":
                     self.so.gp.estatisticas()
-                    print(f"Requisições de I/O pendentes: {self.so.io_queue.qsize()}")
+                    print(f"Requisições de I/O pendentes: {self.so.io_device.io_queue.qsize()}")
                 
                 elif cmd == "memstat":
                     self.so.gm.mostrar_status()
