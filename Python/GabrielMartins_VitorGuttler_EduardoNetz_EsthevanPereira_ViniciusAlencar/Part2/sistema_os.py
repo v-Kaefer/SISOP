@@ -1,17 +1,13 @@
 import math
+import threading
+import time
 from enum import Enum
+from queue import Queue, Empty
 
 # PUCRS - Escola Politécnica - Sistemas Operacionais
 # Prof. Fernando Dotti
 # Código fornecido como parte da solução do projeto de Sistemas Operacionais
-#
-# Estrutura deste código (versão python):
-#     - Definições de Hardware (HW): Memory, Word, CPU, Opcode, Interrupts.
-#     - Definições de Software (SO):
-#         - PCB, Gerenciadores de Memória e Processos, Escalonador.
-#         - Rotinas de tratamento de Interrupção e System Call.
-#     - Programas exemplo (classe Programs).
-#     - Sistema: classe que monta o sistema e oferece uma CLI para interação.
+# FASE 2a: Implementação de Concorrência e I/O Assíncrono
 
 # -------------------------------------------------------------------------------------------------------
 # --------------------- H A R D W A R E - Definições de HW
@@ -21,14 +17,11 @@ class Opcode(Enum):
     DATA, ___, JMP, JMPI, JMPIG, JMPIL, JMPIE, JMPIM, JMPIGM, JMPILM, JMPIEM, JMPIGK, JMPILK, JMPIEK, JMPIGT, ADDI, SUBI, ADD, SUB, MULT, LDI, LDD, STD, LDX, STX, MOVE, SYSCALL, STOP = range(28)
 
 class Interrupts(Enum):
-    NO_INTERRUPT, INT_ENDERECO_INVALIDO, INT_INSTRUCAO_INVALIDA, INT_OVERFLOW = range(4)
+    NO_INTERRUPT, INT_ENDERECO_INVALIDO, INT_INSTRUCAO_INVALIDA, INT_OVERFLOW, INT_IO_COMPLETE = range(5)
 
 class Word:
     def __init__(self, opc, ra, rb, p):
-        self.opc = opc
-        self.ra = ra
-        self.rb = rb
-        self.p = p
+        self.opc, self.ra, self.rb, self.p = opc, ra, rb, p
 
 class Memory:
     def __init__(self, size):
@@ -47,6 +40,7 @@ class CPU:
         self.ih, self.sys_call, self.gm, self.u = None, None, None, None
         self.cpu_stop = False
         self.instructions_executed = 0
+        self.irpt_io_complete = None
 
     def set_address_of_handlers(self, ih, sys_call):
         self.ih, self.sys_call = ih, sys_call
@@ -66,8 +60,7 @@ class CPU:
         pcb.state = PCB.ProcessState.RUNNING
 
     def _legal(self, e):
-        if 0 <= e < len(self.m):
-            return True
+        if 0 <= e < len(self.m): return True
         self.irpt = Interrupts.INT_ENDERECO_INVALIDO
         return False
 
@@ -76,13 +69,10 @@ class CPU:
             self.irpt = Interrupts.INT_ENDERECO_INVALIDO
             return -1
         tam_pg = self.gm.get_tam_pg()
-        page = logical_address // tam_pg
-        offset = logical_address % tam_pg
-
+        page, offset = logical_address // tam_pg, logical_address % tam_pg
         if not (0 <= page < len(self.running_process.page_table)):
             self.irpt = Interrupts.INT_ENDERECO_INVALIDO
             return -1
-        
         frame = self.running_process.page_table[page]
         return (frame * tam_pg) + offset
 
@@ -94,9 +84,9 @@ class CPU:
 
     def run(self, quantum):
         if not self.running_process: return
-
         self.cpu_stop = False
         while not self.cpu_stop and (self.instructions_executed < quantum or quantum == -1):
+            
             physical_pc = self._translate_address(self.pc)
             if not self._legal(physical_pc): break
             
@@ -146,18 +136,25 @@ class CPU:
                 addr = self._translate_address(p)
                 if self._legal(addr): self.pc = self.m[addr].p if self.reg[rb] == 0 else self.pc + 1
             elif opc == Opcode.JMPIGT: self.pc = p if self.reg[ra] > self.reg[rb] else self.pc + 1
-            elif opc == Opcode.SYSCALL: self.sys_call.handle(); self.pc += 1
+            elif opc == Opcode.SYSCALL:
+                self.sys_call.handle()
+                if not self.cpu_stop: self.pc += 1
             elif opc == Opcode.STOP: self.sys_call.stop(); self.cpu_stop = True
             else: self.irpt = Interrupts.INT_INSTRUCAO_INVALIDA
 
-            if self.irpt != Interrupts.NO_INTERRUPT: self.ih.handle(self.irpt, self.pc); self.cpu_stop = True
-            
+            if self.irpt != Interrupts.NO_INTERRUPT:
+                self.ih.handle(self.irpt, self.pc)
+                if self.irpt != Interrupts.INT_IO_COMPLETE:
+                    self.cpu_stop = True
+                self.irpt = Interrupts.NO_INTERRUPT
             self.instructions_executed += 1
-        
-        if self.running_process and self.running_process.state != PCB.ProcessState.FINISHED:
-            self.running_process.pc = self.pc
-            self.running_process.registers = self.reg.copy()
-            self.running_process.state = PCB.ProcessState.READY
+        # Isso garante que, se a CPU estiver rodando quando a interrupção chega, o handler também roda pela CPU, mas como o device já terá tratado, será idempotente (sem efeitos colaterais).
+        if self.running_process:
+            if self.running_process.state == PCB.ProcessState.RUNNING:
+                self.running_process.state = PCB.ProcessState.READY
+            if self.running_process.state != PCB.ProcessState.FINISHED:
+                self.running_process.pc = self.pc
+                self.running_process.registers = self.reg.copy()
 
 class HW:
     def __init__(self, tam_mem):
@@ -168,146 +165,97 @@ class HW:
 # --------------------- SW - Sistema Operacional
 # -------------------------------------------------------------------------------------------------------
 
+class IORequest:
+    def __init__(self, process_id, operation, address, pcb):
+        self.process_id, self.operation, self.address, self.pcb = process_id, operation, address, pcb
+        self.timestamp = time.time()
+
 class PCB:
-    _processo_count = 0  # Contador separado para estatísticas
+    _processo_count = 0
     
     class ProcessState(Enum): 
         READY, RUNNING, BLOCKED, FINISHED = range(4)
         
     def __init__(self, page_table):
-        # ID agora é o frame inicial onde o processo foi alocado
         self.id = page_table[0] if page_table else 0
-        
-        # Incrementar contador de processos criados (para estatísticas)
         PCB._processo_count += 1
         self.processo_number = PCB._processo_count
-        
-        self.pc = 0
-        self.registers = [0] * 10
+        self.pc, self.registers = 0, [0] * 10
         self.page_table = page_table
         self.state = PCB.ProcessState.READY
     
     @classmethod
-    def get_processo_count(cls):
-        """Retorna o número total de processos criados"""
-        return cls._processo_count
+    def get_processo_count(cls): return cls._processo_count
     
     @classmethod
-    def reset_count(cls):
-        """Reseta o contador (útil para testes)"""
-        cls._processo_count = 0
+    def reset_count(cls): cls._processo_count = 0
 
 class GerenteMemoria:
     def __init__(self, tam_mem, tam_pg):
         self.tam_mem, self.tam_pg = tam_mem, tam_pg
         self.num_frames = tam_mem // tam_pg
         self.free_frames = [True] * self.num_frames
-        # Mapa para rastrear qual processo está em cada frame
         self.frame_to_process = [-1] * self.num_frames
 
     def aloca(self, num_palavras, frame_inicial=None):
-        """
-        Aloca memória para um programa
-        
-        Args:
-            num_palavras: Número de palavras do programa
-            frame_inicial: Frame específico onde começar (opcional)
-        
-        Returns:
-            Lista com os frames alocados ou None se não conseguir alocar
-        """
         paginas_necessarias = math.ceil(num_palavras / self.tam_pg) if num_palavras > 0 else 0
-        
-        if frame_inicial is not None:
-            # Alocação em frame específico
-            return self._aloca_especifico(paginas_necessarias, frame_inicial)
-        else:
-            # Alocação automática (código original)
-            return self._aloca_automatico(paginas_necessarias)
+        if frame_inicial is not None: return self._aloca_especifico(paginas_necessarias, frame_inicial)
+        else: return self._aloca_automatico(paginas_necessarias)
 
     def _aloca_especifico(self, paginas_necessarias, frame_inicial):
-        """Aloca a partir de um frame específico"""
-        # Verificar se o frame inicial é válido
         if not (0 <= frame_inicial < self.num_frames):
             print(f"Erro: Frame {frame_inicial} inválido (0-{self.num_frames-1})")
             return None
-        
-        # Verificar se há frames suficientes consecutivos a partir do frame inicial
         if frame_inicial + paginas_necessarias > self.num_frames:
             print(f"Erro: Não há {paginas_necessarias} frames consecutivos a partir do frame {frame_inicial}")
             return None
-        
-        # Verificar se os frames estão livres
         for i in range(frame_inicial, frame_inicial + paginas_necessarias):
             if not self.free_frames[i]:
                 print(f"Erro: Frame {i} já está ocupado pelo processo ID {self.frame_to_process[i]}")
                 return None
-        
-        # Alocar os frames
         tabela_paginas = []
         for i in range(frame_inicial, frame_inicial + paginas_necessarias):
             self.free_frames[i] = False
             tabela_paginas.append(i)
-            # Marcar qual processo vai ocupar este frame (será definido depois)
-            self.frame_to_process[i] = frame_inicial  # ID será o frame inicial
-        
+            self.frame_to_process[i] = frame_inicial
         print(f"Alocado nos frames consecutivos: {tabela_paginas}")
         return tabela_paginas
 
     def _aloca_automatico(self, paginas_necessarias):
-        """Alocação automática - busca pelo primeiro conjunto de frames livres consecutivos"""
-        # Buscar frames consecutivos livres
         for start_frame in range(self.num_frames - paginas_necessarias + 1):
             frames_disponiveis = True
             for i in range(start_frame, start_frame + paginas_necessarias):
-                if not self.free_frames[i]:
-                    frames_disponiveis = False
-                    break
-            
+                if not self.free_frames[i]: frames_disponiveis = False; break
             if frames_disponiveis:
-                # Alocar os frames consecutivos
                 tabela_paginas = []
                 for i in range(start_frame, start_frame + paginas_necessarias):
                     self.free_frames[i] = False
                     tabela_paginas.append(i)
-                    self.frame_to_process[i] = start_frame  # ID será o frame inicial
-                
+                    self.frame_to_process[i] = start_frame
                 print(f"Alocado automaticamente nos frames: {tabela_paginas}")
                 return tabela_paginas
-        
-        # Não encontrou frames consecutivos suficientes
         return None
     
     def desaloca(self, tabela_paginas):
-        """Desaloca frames e limpa o mapeamento"""
         if tabela_paginas:
             for frame in tabela_paginas:
                 if 0 <= frame < self.num_frames: 
                     self.free_frames[frame] = True
                     self.frame_to_process[frame] = -1
 
-    def get_tam_pg(self): 
-        return self.tam_pg
+    def get_tam_pg(self): return self.tam_pg
     
     def mostrar_status(self):
-        """Mostra o status atual da memória"""
         print(f"=== STATUS DA MEMÓRIA ===")
         print(f"Total de frames: {self.num_frames}")
         print(f"Frames livres: {self.free_frames.count(True)}")
         print(f"Frames ocupados: {self.free_frames.count(False)}")
-        
         print(f"\nMapa de ocupação:")
-        for i in range(0, self.num_frames, 16):  # Mostrar 16 frames por linha
-            linha_status = []
-            linha_processos = []
+        for i in range(0, self.num_frames, 16):
+            linha_status, linha_processos = [], []
             for j in range(i, min(i + 16, self.num_frames)):
-                if self.free_frames[j]:
-                    linha_status.append(".")
-                    linha_processos.append("  ")
-                else:
-                    linha_status.append("X")
-                    linha_processos.append(f"{self.frame_to_process[j]:2d}")
-            
+                if self.free_frames[j]: linha_status.append("."); linha_processos.append("  ")
+                else: linha_status.append("X"); linha_processos.append(f"{self.frame_to_process[j]:2d}")
             print(f"Frames {i:2d}-{min(i+15, self.num_frames-1):2d}: {''.join(linha_status)}")
             print(f"Proc. IDs: {''.join(linha_processos)}")
         print("=========================")
@@ -315,50 +263,37 @@ class GerenteMemoria:
 class GerenteProcessos:
     def __init__(self, gm, hw, utils):
         self.gm, self.hw, self.utils = gm, hw, utils
-        self.ready_queue, self.all_processes = [], []
+        self.ready_queue, self.blocked_queue, self.all_processes = [], [], []
+        self.lock = threading.Lock()
 
     def cria_processo(self, programa, frame_inicial=None):
-        """
-        Cria um processo com ID baseado no frame inicial
-        
-        Args:
-            programa: Lista de instruções do programa
-            frame_inicial: Frame específico onde alocar (opcional)
-        """
         if not programa:
             print("Erro: Programa não encontrado.")
             return -1
-        
-        # Tentar alocar memória
         if frame_inicial is not None:
             print(f"Tentando alocar programa no frame {frame_inicial}...")
             page_table = self.gm.aloca(len(programa), frame_inicial)
         else:
             print("Alocando programa automaticamente...")
             page_table = self.gm.aloca(len(programa))
-        
         if page_table is None:
             print("Erro: Não há memória suficiente para criar o processo.")
             return -1
-        
-        # Verificar se já existe um processo com este ID (frame inicial)
         processo_id = page_table[0]
         if self._find_pcb(processo_id) is not None:
             print(f"ERRO INTERNO: Processo com ID {processo_id} já existe!")
             self.gm.desaloca(page_table)
             return -1
-        
         pcb = PCB(page_table)
-        self.all_processes.append(pcb)
+        with self.lock:
+            self.all_processes.append(pcb)
+            self.ready_queue.append(pcb)
         self._load_program_to_memory(programa, pcb.page_table)
-        self.ready_queue.append(pcb)
-        
         print(f"Processo criado:")
         print(f"  ID (Frame inicial): {pcb.id}")
         print(f"  Número sequencial: {pcb.processo_number}")
         print(f"  Frames ocupados: {pcb.page_table}")
         print(f"  Total de processos criados: {PCB.get_processo_count()}")
-        
         return pcb.id
 
     def _load_program_to_memory(self, program, page_table):
@@ -372,49 +307,65 @@ class GerenteProcessos:
     def desaloca_processo(self, proc_id):
         pcb = self._find_pcb(proc_id)
         if pcb:
-            self.gm.desaloca(pcb.page_table)
-            if pcb in self.ready_queue: 
-                self.ready_queue.remove(pcb)
-            self.all_processes.remove(pcb)
+            with self.lock:
+                self.gm.desaloca(pcb.page_table)
+                if pcb in self.ready_queue: self.ready_queue.remove(pcb)
+                if pcb in self.blocked_queue: self.blocked_queue.remove(pcb)
+                self.all_processes.remove(pcb)
             print(f"Processo {proc_id} (frame {proc_id}) removido.")
-        else: 
-            print(f"Erro: Processo com ID {proc_id} não encontrado.")
+        else: print(f"Erro: Processo com ID {proc_id} não encontrado.")
     
-    def get_next_ready(self): 
-        return self.ready_queue.pop(0) if self.ready_queue else None
+    def get_next_ready(self):
+        with self.lock:
+            return self.ready_queue.pop(0) if self.ready_queue else None
     
-    def add_ready(self, pcb): 
-        self.ready_queue.append(pcb)
+    def add_ready(self, pcb):
+        with self.lock:
+            if pcb not in self.ready_queue:
+                pcb.state = PCB.ProcessState.READY
+                self.ready_queue.append(pcb)
+    
+    def block_process(self, pcb):
+        with self.lock:
+            pcb.state = PCB.ProcessState.BLOCKED
+            if pcb in self.ready_queue: self.ready_queue.remove(pcb)
+            if pcb not in self.blocked_queue: self.blocked_queue.append(pcb)
+    
+    def unblock_process(self, proc_id):
+        with self.lock:
+            for pcb in self.blocked_queue:
+                if pcb.id == proc_id:
+                    self.blocked_queue.remove(pcb)
+                    pcb.state = PCB.ProcessState.READY
+                    self.ready_queue.append(pcb)
+                    print(f"[GP] Processo {proc_id} desbloqueado e pronto para executar")
+                    return True
+            return False
 
     def list_all_processes(self):
         print("=" * 70)
         print("LISTA DE PROCESSOS")
         print("=" * 70)
-        if not self.all_processes: 
-            print("Nenhum processo no sistema.")
-        else:
-            print(f"{'ID':<3} {'Seq':<4} {'Estado':<8} {'PC':<3} {'Frames':<20} {'Endereços Físicos'}")
+        with self.lock:
+            if not self.all_processes: print("Nenhum processo no sistema.")
+            else:
+                print(f"{'ID':<3} {'Seq':<4} {'Estado':<8} {'PC':<3} {'Frames':<20} {'Endereços Físicos'}")
+                print("-" * 70)
+                for pcb in sorted(self.all_processes, key=lambda p: p.id):
+                    frames_str = str(pcb.page_table)
+                    tam_pg = self.gm.get_tam_pg()
+                    inicio_fisico = pcb.page_table[0] * tam_pg
+                    fim_fisico = pcb.page_table[-1] * tam_pg + tam_pg - 1
+                    enderecos_str = f"{inicio_fisico}-{fim_fisico}"
+                    print(f"{pcb.id:<3} {pcb.processo_number:<4} {pcb.state.name:<8} {pcb.pc:<3} {frames_str:<20} {enderecos_str}")
             print("-" * 70)
-            for pcb in sorted(self.all_processes, key=lambda p: p.id):
-                frames_str = str(pcb.page_table)
-                tam_pg = self.gm.get_tam_pg()
-                inicio_fisico = pcb.page_table[0] * tam_pg
-                fim_fisico = pcb.page_table[-1] * tam_pg + tam_pg - 1
-                enderecos_str = f"{inicio_fisico}-{fim_fisico}"
-                
-                print(f"{pcb.id:<3} {pcb.processo_number:<4} {pcb.state.name:<8} {pcb.pc:<3} {frames_str:<20} {enderecos_str}")
-        
-        print("-" * 70)
-        print(f"Total de processos ativos: {len(self.all_processes)}")
-        print(f"Total de processos criados: {PCB.get_processo_count()}")
+            print(f"Total de processos ativos: {len(self.all_processes)}")
+            print(f"Total de processos criados: {PCB.get_processo_count()}")
         print("=" * 70)
 
     def dump_processo(self, proc_id):
         pcb = self._find_pcb(proc_id)
-        if not pcb: 
-            print(f"Erro: Processo com ID {proc_id} não encontrado.")
-            return
-        
+        if not pcb: print(f"Erro: Processo com ID {proc_id} não encontrado."); return
         print(f"\n{'='*50}")
         print(f"DUMP Processo ID: {pcb.id} (Processo #{pcb.processo_number})")
         print(f"{'='*50}")
@@ -422,24 +373,18 @@ class GerenteProcessos:
         print(f"PC: {pcb.pc}")
         print(f"Registradores: {pcb.registers}")
         print(f"Tabela de Páginas: {pcb.page_table}")
-        
-        # Mostrar mapeamento detalhado
         tam_pg = self.gm.get_tam_pg()
         print(f"\nMapeamento Lógico → Físico:")
         for i, frame in enumerate(pcb.page_table):
-            log_inicio = i * tam_pg
-            log_fim = log_inicio + tam_pg - 1
-            fis_inicio = frame * tam_pg
-            fis_fim = fis_inicio + tam_pg - 1
+            log_inicio, log_fim = i * tam_pg, i * tam_pg + tam_pg - 1
+            fis_inicio, fis_fim = frame * tam_pg, frame * tam_pg + tam_pg - 1
             print(f"  Página {i}: Lógico {log_inicio:3d}-{log_fim:3d} → Frame {frame} → Físico {fis_inicio:4d}-{fis_fim:4d}")
-        
         print(f"\nConteúdo da Memória do Processo:")
         print("-" * 50)
         logical_size = len(pcb.page_table) * tam_pg
         for log_addr in range(min(logical_size, len(pcb.page_table) * tam_pg)):
             page, offset = log_addr // tam_pg, log_addr % tam_pg
-            if page >= len(pcb.page_table): 
-                continue
+            if page >= len(pcb.page_table): continue
             frame = pcb.page_table[page]
             phys_addr = (frame * tam_pg) + offset
             if phys_addr < len(self.hw.mem.pos):
@@ -450,72 +395,223 @@ class GerenteProcessos:
 
     def _find_pcb(self, proc_id):
         for pcb in self.all_processes:
-            if pcb.id == proc_id: 
-                return pcb
+            if pcb.id == proc_id: return pcb
         return None
     
     def estatisticas(self):
-        """Mostra estatísticas dos processos"""
         print(f"\n=== ESTATÍSTICAS DE PROCESSOS ===")
-        print(f"Processos ativos: {len(self.all_processes)}")
-        print(f"Processos na fila de prontos: {len(self.ready_queue)}")
-        print(f"Total de processos criados: {PCB.get_processo_count()}")
-        
-        if self.all_processes:
-            estados = {}
-            for pcb in self.all_processes:
-                estado = pcb.state.name
-                estados[estado] = estados.get(estado, 0) + 1
-            
-            print(f"Distribuição por estado:")
-            for estado, count in estados.items():
-                print(f"  {estado}: {count}")
+        with self.lock:
+            print(f"Processos ativos: {len(self.all_processes)}")
+            print(f"Processos na fila de prontos: {len(self.ready_queue)}")
+            print(f"Processos bloqueados: {len(self.blocked_queue)}")
+            print(f"Total de processos criados: {PCB.get_processo_count()}")
+            if self.all_processes:
+                estados = {}
+                for pcb in self.all_processes:
+                    estado = pcb.state.name
+                    estados[estado] = estados.get(estado, 0) + 1
+                print(f"Distribuição por estado:")
+                for estado, count in estados.items(): print(f"  {estado}: {count}")
         print("=" * 35)
+
+class IODevice(threading.Thread):
+    def __init__(self, hw, gp, io_queue, ih):
+        super().__init__(daemon=True, name="IODevice")
+        self.hw, self.gp, self.io_queue, self.ih = hw, gp, io_queue, ih
+        self.running, self.io_delay = True, 2.0
+
+    def run(self):
+        print("[I/O Device] Dispositivo iniciado e aguardando requisições...")
+        while self.running:
+            try:
+                request = self.io_queue.get(timeout=0.5)
+                print(f"[I/O Device] Processando {request.operation} para processo {request.process_id}...")
+                time.sleep(self.io_delay)
+                # T2 - sinaliza e manda pro handler:
+                self._process_io(request)
+                self.hw.cpu.irpt_io_complete = request.process_id
+                self.hw.cpu.irpt = Interrupts.INT_IO_COMPLETE
+                self.ih.handle(Interrupts.INT_IO_COMPLETE, pc=self.hw.cpu.pc)  # dispara a rotina agora
+                print(f"[I/O Device] {request.operation} concluído para processo {request.process_id}")
+            except Empty: continue
+            except Exception as e: print(f"[I/O Device] Erro ao processar I/O: {e}")
+    
+    def _process_io(self, request):
+        tam_pg = self.gp.gm.get_tam_pg()
+        page, offset = request.address // tam_pg, request.address % tam_pg
+        if page >= len(request.pcb.page_table):
+            print(f"[I/O Device] ERRO: Endereço inválido {request.address}")
+            return
+        frame = request.pcb.page_table[page]
+        physical_addr = (frame * tam_pg) + offset
+        if request.operation == 'READ':
+            print(f"\n{'='*50}")
+            print(f"[I/O Device] ENTRADA necessária para processo {request.process_id}")
+            try:
+                value = int(input(f"Digite um valor inteiro: "))
+                self.hw.mem.pos[physical_addr] = Word(Opcode.DATA, -1, -1, value)
+                print(f"[I/O Device] Valor {value} escrito no endereço físico {physical_addr}")
+            except ValueError:
+                print("[I/O Device] Valor inválido! Usando 0.")
+                self.hw.mem.pos[physical_addr] = Word(Opcode.DATA, -1, -1, 0)
+            print(f"{'='*50}\n")
+        elif request.operation == 'WRITE':
+            value = self.hw.mem.pos[physical_addr].p
+            print(f"\n{'='*50}")
+            print(f"[I/O Device] SAÍDA do processo {request.process_id}: {value}")
+            print(f"{'='*50}\n")
+    
+    def stop(self):
+        self.running = False
+
+class CPUThread(threading.Thread):
+    def __init__(self, cpu, escalonador, semaphore):
+        super().__init__(daemon=True, name="CPU")
+        self.cpu, self.escalonador, self.semaphore = cpu, escalonador, semaphore
+        self.running = True
+
+    def run(self):
+        print("[CPU Thread] CPU iniciada e aguardando processos...")
+        while self.running:
+            self.semaphore.acquire()
+            if not self.running: break
+            pcb = self.escalonador.gp.get_next_ready()
+            if pcb is None: continue
+            print(f"\n[CPU Thread] Executando processo {pcb.id} (Quantum: {self.escalonador.quantum})")
+            self.cpu.set_context(pcb)
+            self.cpu.run(self.escalonador.quantum)
+            if pcb.state == PCB.ProcessState.FINISHED:
+                print(f"[CPU Thread] Processo {pcb.id} FINALIZOU")
+                self.escalonador.gp.desaloca_processo(pcb.id)
+            elif pcb.state == PCB.ProcessState.BLOCKED:
+                print(f"[CPU Thread] Processo {pcb.id} BLOQUEADO (aguardando I/O)")
+            elif pcb.state == PCB.ProcessState.READY:
+                print(f"[CPU Thread] Processo {pcb.id} teve quantum expirado")
+                self.escalonador.gp.add_ready(pcb)
+    
+    def stop(self):
+        self.running = False
+        self.semaphore.release()
 
 class Escalonador:
     def __init__(self, cpu, gp, quantum):
         self.cpu, self.gp, self.quantum = cpu, gp, quantum
-        self.running = None
+        self.semaphore = threading.Semaphore(0)
+        self.cpu_thread, self.scheduler_thread = None, None
+        self.running = False
 
-    def run_all(self):
-        print("\n--- Iniciando execucao escalonada ---")
-        self.running = self.gp.get_next_ready()
+    def start(self):
+        if self.running:
+            print("Escalonador já está rodando!")
+            return
+        self.running = True
+        self.cpu_thread = CPUThread(self.cpu, self, self.semaphore)
+        self.cpu_thread.start()
+        self.scheduler_thread = threading.Thread(target=self._scheduler_loop, daemon=True, name="Scheduler")
+        self.scheduler_thread.start()
+        print("[Escalonador] Sistema de escalonamento iniciado!")
+    
+    def _scheduler_loop(self):
         while self.running:
-            print(f"\nExecutando processo ID: {self.running.id} (Quantum: {self.quantum})")
-            self.cpu.set_context(self.running)
-            self.cpu.run(self.quantum)
+            if self.gp.ready_queue: self.semaphore.release()
+            time.sleep(0.01)
+    
+    def stop(self):
+        self.running = False
+        if self.cpu_thread: self.cpu_thread.stop()
+        print("[Escalonador] Sistema de escalonamento encerrado!")
 
-            if self.running.state == PCB.ProcessState.FINISHED:
-                print(f"Processo {self.running.id} terminou.")
-                self.gp.desaloca_processo(self.running.id)
-            else:
-                self.gp.add_ready(self.running)
-            self.running = self.gp.get_next_ready()
-        print("\n--- Fila de prontos vazia. Execucao escalonada encerrada ---")
-
+#parteT2 - atualizado
 class InterruptHandling:
-    def __init__(self, cpu):
+    def __init__(self, cpu, gp):
         self.cpu = cpu
+        self.gp = gp
 
     def handle(self, irpt, pc):
         print(f"      INTERRUPCAO {irpt.name} (PC Logico: {pc})")
-        if irpt in [Interrupts.INT_ENDERECO_INVALIDO, Interrupts.INT_INSTRUCAO_INVALIDA, Interrupts.INT_OVERFLOW]:
+        if irpt == Interrupts.INT_IO_COMPLETE:
+            pid = self.cpu.irpt_io_complete
+            if pid is not None:
+                # 1) pegue o PCB do processo que acabou o I/O
+                pcb = self.gp._find_pcb(pid)
+                if pcb is not None:
+                    # 2) avance o PC para “pular” o SYSCALL que bloqueou
+                    pcb.pc += 1
+                # 3) devolva o processo para READY
+                self.gp.unblock_process(pid)
+            # 4) limpe os registradores de interrupção
+            self.cpu.irpt_io_complete = None
+            self.cpu.irpt = Interrupts.NO_INTERRUPT
+            return
+
+        if irpt in [Interrupts.INT_ENDERECO_INVALIDO,
+                    Interrupts.INT_INSTRUCAO_INVALIDA,
+                    Interrupts.INT_OVERFLOW]:
             if self.cpu.running_process:
                 self.cpu.running_process.state = PCB.ProcessState.FINISHED
 
-class SysCallHandling:
-    def __init__(self, hw):
-        self.hw = hw
 
+#parteT2 - atualizado
+class SysCallHandling:
+    def __init__(self, hw, io_queue, gp):
+        self.hw = hw
+        self.io_queue = io_queue
+        self.gp = gp
+    
+    def handle(self):
+        syscall_id = self.hw.cpu.reg[8]
+        
+        if syscall_id == 1:  # READ
+            self._handle_read()
+        elif syscall_id == 2:  # WRITE
+            self._handle_write()
+    
+    def _handle_read(self):
+        """Syscall READ: requisita leitura e bloqueia processo"""
+        address = self.hw.cpu.reg[9]
+        pcb = self.hw.cpu.running_process
+        
+        print(f"      SYSCALL: READ no endereço lógico {address} (Processo {pcb.id})")
+        
+        # Cria requisição de I/O
+        request = IORequest(pcb.id, 'READ', address, pcb)
+        
+        # Produtor: coloca requisição na fila do dispositivo
+        self.io_queue.put(request)
+        
+        # Bloqueia o processo (não pode continuar sem o dado)
+        self.gp.block_process(pcb)
+        
+        # Para execução na CPU
+        self.hw.cpu.cpu_stop = True
+        
+        print(f"      Processo {pcb.id} BLOQUEADO aguardando I/O")
+    
+    def _handle_write(self):
+        """Syscall WRITE: requisita escrita e bloqueia processo"""
+        address = self.hw.cpu.reg[9]
+        pcb = self.hw.cpu.running_process
+        
+        print(f"      SYSCALL: WRITE do endereço lógico {address} (Processo {pcb.id})")
+        
+        # Cria requisição de I/O
+        request = IORequest(pcb.id, 'WRITE', address, pcb)
+        
+        # Produtor: coloca requisição na fila
+        self.io_queue.put(request)
+        
+        # Bloqueia o processo
+        self.gp.block_process(pcb)
+        
+        # Para execução na CPU
+        self.hw.cpu.cpu_stop = True
+        
+        print(f"      Processo {pcb.id} BLOQUEADO aguardando I/O")
+    
     def stop(self):
         print("      SYSCALL: STOP")
         if self.hw.cpu.running_process:
             self.hw.cpu.running_process.state = PCB.ProcessState.FINISHED
-
-    def handle(self):
-        if self.hw.cpu.reg[8] == 2: # WRITE
-            addr = self.hw.cpu._translate_address(self.hw.cpu.reg[9])
-            if addr != -1: print(f"      SYSCALL: WRITE, CONTEUDO: {self.hw.mem.pos[addr].p}")
 
 class Utilities:
     def __init__(self):
@@ -530,39 +626,36 @@ class Utilities:
                 print(f"Fis.{i:04d}: ", end=""); self.dump(self.hw.mem.pos[i])
         print("--- FIM DUMP ---")
 
+#parteT2 - atualizado
 class SO:
     def __init__(self, hw, tam_pg, quantum):
-        self.hw, self.tam_pg, self.quantum = hw, tam_pg, quantum
-        self.ih = InterruptHandling(hw.cpu)
-        self.sc = SysCallHandling(hw)
+        self.hw = hw
+        self.tam_pg = tam_pg
+        self.quantum = quantum
+        
+        # Estruturas do SO
         self.utils = Utilities()
         self.utils.hw = hw
         self.gm = GerenteMemoria(len(hw.mem.pos), tam_pg)
         self.gp = GerenteProcessos(self.gm, hw, self.utils)
+        self.ih = InterruptHandling(hw.cpu, self.gp)
+        
+        # Fila de I/O (produtor/consumidor)
+        self.io_queue = Queue()
+        
+        # Handlers com acesso à fila de I/O
+        self.sc = SysCallHandling(hw, self.io_queue, self.gp)
+        
+        # Escalonador
         self.escalonador = Escalonador(hw.cpu, self.gp, quantum)
+        
+        # Dispositivo de I/O + parteT2 (ih)
+        self.io_device = IODevice(hw, self.gp, self.io_queue, self.ih)
+        
+        # Configurações
         hw.cpu.set_address_of_handlers(self.ih, self.sc)
         hw.cpu.set_gerente_memoria(self.gm)
         hw.cpu.set_utilities(self.utils)
-
-    def executa_processo(self, proc_id):
-        pcb = self.gp._find_pcb(proc_id)
-        if not pcb: print(f"Erro: Processo com ID {proc_id} nao encontrado."); return
-        if pcb.state != PCB.ProcessState.READY: print(f"Erro: Processo {proc_id} nao esta no estado READY."); return
-
-        print(f"\n--- Executando processo unico ID: {pcb.id} ---")
-        if pcb in self.gp.ready_queue:
-            self.gp.ready_queue.remove(pcb)
-        
-        self.hw.cpu.set_context(pcb)
-        self.hw.cpu.run(quantum=-1)
-
-        if pcb.state == PCB.ProcessState.FINISHED:
-            print(f"Processo {pcb.id} terminou.")
-            self.gp.desaloca_processo(pcb.id)
-        elif pcb.state == PCB.ProcessState.READY:
-            print(f"Processo {pcb.id} pausado, retornando a fila de prontos.")
-            self.gp.add_ready(pcb)
-        print("--- Fim da execucao unica ---")
 
 class Program:
     def __init__(self, name, image): self.name, self.image = name, image
@@ -820,6 +913,7 @@ class Programs:
             if p.name.lower() == pname.lower(): return p.image
         return None
 
+#parteT2 - atualizado
 class Sistema:
     def __init__(self, tam_mem, tam_pg, quantum):
         self.hw = HW(tam_mem)
@@ -828,31 +922,55 @@ class Sistema:
     
     def run(self):
         print("=" * 60)
-        print("SISTEMA OPERACIONAL COM ID BASEADO EM LOCALIZAÇÃO")
+        print("SISTEMA OPERACIONAL CONCORRENTE")
         print("=" * 60)
         print("Comandos disponíveis:")
         print("  new <programa> [frame]  - Criar processo")
-        print("  rm <id>                 - Remover processo") 
+        print("  rm <id>                 - Remover processo")
         print("  ps                      - Listar processos")
-        print("  exec <id>               - Executar processo")
-        print("  execall                 - Executar todos processos")
-        print("  dump <id>               - Dump detalhado do processo")
-        print("  dumpm <inicio> <fim>    - Dump da memória física")
-        print("  memstat                 - Status da memória")
-        print("  stats                   - Estatísticas de processos")
-        print("  traceon/traceoff        - Controle de debug")
+        print("  dump <id>               - Dump do processo")
+        print("  dumpm <ini> <fim>       - Dump memória")
+        print("  memstat                 - Status memória")
+        print("  stats                   - Estatísticas")
+        print("  start                   - Iniciar escalonamento")
+        print("  stop                    - Parar escalonamento")
         print("  exit                    - Sair")
         print("=" * 60)
-        print("NOTA: O ID do processo corresponde ao frame inicial na memória")
+        print("NOTA: Use 'start' para iniciar o sistema após criar processos")
         print("=" * 60)
+        
+        system_started = False
         
         while True:
             try:
-                cmd_line = input(f"[Mem:{self.so.gm.free_frames.count(True)}/{self.so.gm.num_frames}] > ").strip().split()
-                if not cmd_line: continue
+                cmd_line = input(f"\n[Procs:{len(self.so.gp.all_processes)} Ready:{len(self.so.gp.ready_queue)} Blocked:{len(self.so.gp.blocked_queue)}] > ").strip().split()
+                
+                if not cmd_line:
+                    continue
+                
                 cmd = cmd_line[0].lower()
-
-                if cmd == "new":
+                
+                if cmd == "start":
+                    if not system_started:
+                        # Inicia threads (CPU e I/O Device)
+                        self.so.escalonador.start()
+                        self.so.io_device.start()
+                        system_started = True
+                        print("[Sistema] Sistema iniciado! Processos serão escalonados automaticamente.")
+                    else:
+                        print("[Sistema] Sistema já está rodando!")
+                
+                elif cmd == "stop":
+                    if system_started:
+                        self.so.escalonador.stop()
+                        self.so.io_device.stop()
+                        system_started = False
+                        print("[Sistema] Sistema parado!")
+                    else:
+                        print("[Sistema] Sistema não está rodando!")
+                
+                elif cmd == "new":
+                    # Criar processo (código existente)
                     if len(cmd_line) >= 2:
                         programa_nome = cmd_line[1]
                         programa = self.progs.retrieve_program(programa_nome)
@@ -862,78 +980,63 @@ class Sistema:
                             print("Programas disponíveis:", [p.name for p in self.progs.progs])
                             continue
                         
-                        if len(cmd_line) >= 3:
-                            # new programa frame_inicial
-                            try:
-                                frame_inicial = int(cmd_line[2])
-                                self.so.gp.cria_processo(programa, frame_inicial)
-                            except ValueError:
-                                print("Erro: Frame deve ser um número inteiro")
-                        else:
-                            # new programa (alocação automática)
-                            self.so.gp.cria_processo(programa)
-                    else: 
-                        print("Uso: new <nomePrograma> [frame_inicial]")
-                        print("Programas disponíveis:", [p.name for p in self.progs.progs])
+                        frame_inicial = int(cmd_line[2]) if len(cmd_line) >= 3 else None
+                        proc_id = self.so.gp.cria_processo(programa, frame_inicial)
                         
-                elif cmd == "memstat":
-                    self.so.gm.mostrar_status()
+                        if proc_id != -1 and not system_started:
+                            print("Dica: Use 'start' para iniciar o escalonamento!")
+                    else:
+                        print("Uso: new <programa> [frame]")
+                        print("Programas:", [p.name for p in self.progs.progs])
+                
+                elif cmd == "ps":
+                    self.so.gp.list_all_processes()
                 
                 elif cmd == "stats":
                     self.so.gp.estatisticas()
-                    
+                    print(f"Requisições de I/O pendentes: {self.so.io_queue.qsize()}")
+                
+                elif cmd == "memstat":
+                    self.so.gm.mostrar_status()
+                
                 elif cmd == "rm":
-                    if len(cmd_line) > 1: 
+                    if len(cmd_line) > 1:
                         self.so.gp.desaloca_processo(int(cmd_line[1]))
-                    else: 
+                    else:
                         print("Uso: rm <id>")
-                        
-                elif cmd == "ps":
-                    self.so.gp.list_all_processes()
-                    
-                elif cmd == "exec":
-                    if len(cmd_line) > 1: 
-                        self.so.executa_processo(int(cmd_line[1]))
-                    else: 
-                        print("Uso: exec <id>")
-                        
-                elif cmd == "execall":
-                    self.so.escalonador.run_all()
-                    
+                
                 elif cmd == "dump":
-                    if len(cmd_line) > 1: 
+                    if len(cmd_line) > 1:
                         self.so.gp.dump_processo(int(cmd_line[1]))
-                    else: 
+                    else:
                         print("Uso: dump <id>")
-                        
+                
                 elif cmd == "dumpm":
-                    if len(cmd_line) > 2: 
+                    if len(cmd_line) > 2:
                         self.so.utils.dump_memory_range(int(cmd_line[1]), int(cmd_line[2]))
-                    else: 
+                    else:
                         print("Uso: dumpm <inicio> <fim>")
-                        
-                elif cmd == "traceon":
-                    self.hw.cpu.debug = True
-                    print("Modo trace ativado.")
-                    
-                elif cmd == "traceoff":
-                    self.hw.cpu.debug = False
-                    print("Modo trace desativado.")
-                    
+                
                 elif cmd == "exit":
+                    if system_started:
+                        self.so.escalonador.stop()
+                        self.so.io_device.stop()
                     break
-                    
+                
                 else:
                     print(f"Comando desconhecido: '{cmd}'")
-                    
-            except (ValueError, IndexError):
-                print("Argumento inválido ou ausente para o comando.")
+                
+            except (ValueError, IndexError) as e:
+                print(f"Erro: {e}")
             except (EOFError, KeyboardInterrupt):
+                if system_started:
+                    self.so.escalonador.stop()
+                    self.so.io_device.stop()
                 break
-
+        
         print("\n" + "=" * 60)
         print("SISTEMA ENCERRADO")
-        print(f"Total de processos criados durante a sessão: {PCB.get_processo_count()}")
+        print(f"Total de processos criados: {PCB.get_processo_count()}")
         print("=" * 60)
 
 if __name__ == "__main__":
