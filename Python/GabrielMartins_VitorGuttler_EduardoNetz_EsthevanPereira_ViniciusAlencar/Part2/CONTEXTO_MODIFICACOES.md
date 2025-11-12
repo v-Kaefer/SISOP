@@ -1,5 +1,7 @@
 # Contexto para Futuras Modificações - Implementação Python T2a
 
+⚠️ **ATUALIZAÇÃO IMPORTANTE**: Todos os bugs críticos documentados neste arquivo foram **CORRIGIDOS**. Ver `BUGS_CORRIGIDOS.md` para detalhes das correções aplicadas.
+
 Este documento serve como referência para futuras iterações no código Python do projeto T2a (Sistema Operacional Multithreaded).
 
 ## 📋 Índice
@@ -30,7 +32,7 @@ Este documento serve como referência para futuras iterações no código Python
 - ❌ **System Call READ**: Apenas WRITE implementado
 
 ### T2a - Segunda Parte (Concorrência)
-**Conformidade atual: 100% (21/21 requisitos) - COM BUGS**
+**Conformidade atual: 100% (21/21 requisitos) - ✅ BUGS CORRIGIDOS**
 
 #### Implementado:
 - ✅ **Arquitetura Multithreaded**: 3 threads (Shell, CPU, Console)
@@ -108,10 +110,12 @@ Este documento serve como referência para futuras iterações no código Python
 
 ## 🐛 Bugs Conhecidos e Correções
 
-### Bug #1: PC Não Incrementado Após I/O (CRÍTICO)
-**Impacto**: 🔴 Causa loop infinito em SYSCALL
+⚠️ **NOTA**: Todos os bugs listados abaixo foram **CORRIGIDOS** no código atual. Ver `BUGS_CORRIGIDOS.md` para confirmação das correções.
 
-**Localização**: `InterruptHandling.handle_io_complete()` linha ~720
+### Bug #1: PC Não Incrementado Após I/O ✅ CORRIGIDO
+**Impacto**: 🔴 Causava loop infinito em SYSCALL (RESOLVIDO)
+
+**Localização**: `InterruptHandling.handle()` linha 687
 
 **Problema**:
 ```python
@@ -122,75 +126,99 @@ def handle_io_complete(self, process_id):
         self.gp.unblock_process(process_id)
 ```
 
-**Correção**:
+**Correção Aplicada**:
 ```python
-def handle_io_complete(self, process_id):
-    pcb = self.gp._find_pcb(process_id)
-    if pcb and pcb.state == ProcessState.BLOCKED:
-        pcb.pc += 1  # ✅ ADICIONAR ESTA LINHA
-        self.gp.unblock_process(process_id)
+# Código atual (linha 687)
+if pcb is not None:
+    # 2) avance o PC para "pular" o SYSCALL que bloqueou
+    pcb.pc += 1  # ✅ CORRIGIDO
+# 3) devolva o processo para READY
+self.gp.unblock_process(pid)
 ```
 
-**Razão**: Processo retorna com PC apontando para o mesmo SYSCALL, executando-o novamente infinitamente.
+**Status**: ✅ **CORRIGIDO NO CÓDIGO**
+
+**Razão**: Processo retornava com PC apontando para o mesmo SYSCALL, executando-o novamente infinitamente.
 
 ---
 
-### Bug #2: Parâmetro Faltante no Construtor IODevice
-**Impacto**: 🟡 Pode causar erro de inicialização
+### Bug #2: Parâmetro Faltante no Construtor IODevice ✅ CORRIGIDO
+**Impacto**: 🟡 Poderia causar erro de inicialização (RESOLVIDO)
 
-**Localização**: `Sistema.__init__()` linha ~916
+**Localização**: `SO.__init__()` linha 801 e `IODevice.__init__()` linha 533
 
 **Problema**:
 ```python
-# ❌ Falta passar self.ih
-self.io_device = IODevice(self.hw, self.gp, self.ih)
+# ❌ Falta passar self.ih ou parâmetros incorretos
+self.io_device = IODevice(self.hw, self.gp, self.io_queue)
 ```
 
-**Correção**:
+**Correção Aplicada**:
 ```python
-# ✅ Passar self.ih como 4º parâmetro
-self.io_device = IODevice(self.hw, self.gp, self.ih)
+# Código atual (linha 801)
+self.io_device = IODevice(hw, self.gp, self.ih)  # ✅ CORRIGIDO
+
+# IODevice.__init__() (linha 533-535)
+def __init__(self, hw, gp, ih):
+    super().__init__(daemon=True, name="IODevice")
+    self.hw, self.gp, self.ih = hw, gp, ih  # ✅ CORRIGIDO
 ```
 
-**Status**: Verificar se IODevice.`__init__` espera `ih` como parâmetro.
+**Status**: ✅ **CORRIGIDO NO CÓDIGO**
 
 ---
 
-### Bug #3: Race Condition em irpt_io_complete
-**Impacto**: 🟡 Processo pode nunca desbloquear
+### Bug #3: Race Condition em irpt_io_complete ✅ CORRIGIDO
+**Impacto**: 🟡 Processo poderia nunca desbloquear (RESOLVIDO)
 
-**Localização**: `CPUThread.run()` linha ~624 e `IODevice.run()` linha ~585
+**Localização**: `InterruptHandling.handle()` linhas 690-692
 
 **Problema**:
 ```python
-# CPU Thread (linha ~624)
+# CPU Thread limpava ANTES do handler processar
 if self.hw.cpu.irpt_io_complete > 0:
-    self.hw.cpu.irpt_io_complete = 0  # ❌ Limpa ANTES do handler
+    self.hw.cpu.irpt_io_complete = 0  # ❌ Limpa ANTES
     self.ih.handle_io_complete(...)
-
-# IODevice (linha ~585)
-self.hw.cpu.irpt_io_complete = process_id  # Seta flag
 ```
 
-**Correção**:
+**Correção Aplicada**:
 ```python
-# CPU Thread
-if self.hw.cpu.irpt_io_complete > 0:
-    process_id = self.hw.cpu.irpt_io_complete
-    self.ih.handle_io_complete(process_id)
-    self.hw.cpu.irpt_io_complete = 0  # ✅ Limpar DEPOIS
+# Código atual (linhas 690-692)
+self.gp.unblock_process(pid)
+# 4) limpe os registradores de interrupção
+self.cpu.irpt_io_complete = None  # ✅ CORRIGIDO - limpa DEPOIS
+self.cpu.irpt = Interrupts.NO_INTERRUPT
 ```
 
-**Razão**: CPU pode zerar flag antes do handler ler o process_id.
+**Razão**: CPU zerava flag ANTES do handler ler o process_id, causando perda da interrupção.
+
+**Status**: ✅ **CORRIGIDO NO CÓDIGO**
 
 ---
 
-### Bug #4: Loop no Escalonador
-**Impacto**: 🟡 Sistema pode travar com múltiplos processos
+### Bug #4: Loop no Escalonador ✅ CORRIGIDO
+**Impacto**: 🟡 Sistema podia travar com múltiplos processos (RESOLVIDO)
 
 **Causa**: Combinação dos bugs #1, #2, #3
 
-**Correção**: Resolver bugs anteriores primeiro.
+**Correção**: Todos os bugs anteriores foram corrigidos.
+
+**Status**: ✅ **CORRIGIDO NO CÓDIGO**
+
+---
+
+## ✅ Status Atual dos Bugs
+
+Todos os 4 bugs críticos foram **CORRIGIDOS** no código atual:
+
+| Bug | Status | Linha | Verificação |
+|-----|--------|-------|-------------|
+| #1 - PC não incrementado | ✅ CORRIGIDO | 687 | `pcb.pc += 1` presente |
+| #2 - Parâmetro IODevice | ✅ CORRIGIDO | 801, 533 | Parâmetros corretos |
+| #3 - Race condition | ✅ CORRIGIDO | 691 | Limpa DEPOIS |
+| #4 - Loop escalonador | ✅ CORRIGIDO | N/A | Bugs 1-3 resolvidos |
+
+**Próximas melhorias**: Ver seção "Proposições de Melhorias" abaixo.
 
 ---
 
