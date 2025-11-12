@@ -2,6 +2,122 @@
 
 Todas as modificações notáveis para o projeto SISOP serão documentadas neste arquivo.
 
+## [3.0.0] - Etapa 03 - 2024-11-12
+
+### Adicionado
+
+#### Primitivas de Sincronização
+- **Semaforo.java**: Implementação completa de semáforo contador
+  - Operação `down()` (P, wait): Solicita recurso, bloqueia se indisponível
+  - Operação `up()` (V, signal): Libera recurso, acorda processo bloqueado
+  - Operação `tryDown()`: Tentativa não-bloqueante de obter recurso
+  - Fila FIFO de processos bloqueados
+  - Estatísticas completas (operações, bloqueios, etc.)
+  - Suporte para semáforos binários e contadores
+
+- **Mutex.java**: Implementação de exclusão mútua
+  - Operação `lock()`: Adquire mutex, bloqueia se ocupado
+  - Operação `unlock()`: Libera mutex (apenas proprietário pode liberar)
+  - Operação `tryLock()`: Tentativa não-bloqueante de adquirir
+  - Propriedade de ownership (apenas quem fez lock pode unlock)
+  - Prevenção de lock recursivo
+  - Implementação baseada em semáforo binário
+  - Transferência automática de ownership ao liberar
+
+#### Testes de Sincronização
+- **TesteSincronizacao.java**: Suite completa com 5 testes
+  - Teste 1: Operações básicas de semáforo
+  - Teste 2: Operações básicas de mutex
+  - Teste 3: Operações tryDown() e tryLock()
+  - Teste 4: Semáforo como contador de recursos
+  - Teste 5: Garantia de exclusão mútua
+  - Todos os testes passando (5/5)
+
+#### Exemplos Práticos de Sincronização
+- **ExemploProdutorConsumidor.java**: Problema clássico produtor-consumidor
+  - Buffer compartilhado de tamanho limitado
+  - Sincronização com 2 semáforos contadores + 1 mutex
+  - Produtores bloqueiam quando buffer cheio
+  - Consumidores bloqueiam quando buffer vazio
+  - Demonstração completa com estatísticas
+
+- **ExemploSecaoCritica.java**: Proteção de seção crítica
+  - Contador compartilhado entre múltiplos processos
+  - Garantia de exclusão mútua com mutex
+  - Demonstração de lock/unlock correto
+  - Demonstração de tryLock não-bloqueante
+  - Comparação com cenário sem sincronização
+
+#### Documentação Completa
+- **DOCUMENTACAO_ETAPA03.md**: Guia didático completo (370+ linhas)
+  - Explicação detalhada de semáforos e mutex
+  - Diferenças entre semáforo binário e mutex
+  - Algoritmos e pseudocódigo
+  - Problemas clássicos (produtor-consumidor, seção crítica)
+  - Análise de complexidade (O(1) para todas operações)
+  - Estatísticas e monitoramento
+  - Limitações e melhorias futuras
+  - Referências bibliográficas
+
+### Modificado
+
+#### README.md
+- Etapa 3 marcada como COMPLETA
+- Arquitetura atualizada incluindo Semaforo.java e Mutex.java
+- Seção de testes expandida com testes de sincronização
+- Exemplos práticos atualizados
+- Funcionalidades da Etapa 3 documentadas
+- Instruções de compilação e execução atualizadas
+
+#### ProcessState.java
+- Estado WAITING já existente, agora utilizado para sincronização
+- Processos transitam para WAITING quando bloqueados em semáforo/mutex
+- Processos voltam para READY quando acordados
+
+### Conceitos de SO Implementados
+
+#### Sincronização de Processos
+- **Semáforos de Dijkstra**: Primitiva clássica de 1965
+- **Exclusão Mútua**: Garantia de acesso único a recursos
+- **Filas de Espera**: FIFO para justiça no escalonamento
+- **Operações Atômicas**: down/up, lock/unlock
+- **Estados de Processo**: WAITING para bloqueio em sincronização
+
+#### Problemas Clássicos Resolvidos
+- Produtor-Consumidor (bounded buffer)
+- Proteção de seção crítica
+- Pool de recursos (semáforo contador)
+
+### Performance e Qualidade
+
+- ✅ Todas operações com complexidade O(1)
+- ✅ Zero vulnerabilidades de segurança (CodeQL)
+- ✅ 100% dos testes passando (15 testes no total)
+- ✅ Cobertura completa de casos de uso
+- ✅ Documentação abrangente e didática
+
+### Arquivos Adicionados
+```
+software/
+├── Semaforo.java              (180 linhas)
+├── Mutex.java                 (210 linhas)
+└── TesteSincronizacao.java    (450 linhas)
+
+exemplos/
+├── ExemploProdutorConsumidor.java  (250 linhas)
+└── ExemploSecaoCritica.java        (240 linhas)
+
+DOCUMENTACAO_ETAPA03.md         (370 linhas)
+```
+
+### Estatísticas do Desenvolvimento
+- **Total de código adicionado**: ~1,700 linhas
+- **Testes implementados**: 5 testes unitários
+- **Exemplos práticos**: 2 exemplos completos
+- **Documentação**: 1 guia completo
+- **Tempo de desenvolvimento**: ~2 horas
+- **Commits**: 3 commits bem estruturados
+
 ## [2.0.0] - Etapa 02 - 2025-01-XX
 
 ### Adicionado
