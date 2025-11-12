@@ -8,9 +8,9 @@ Este projeto implementa um **Sistema Operacional completo** que funciona em uma 
 ### ✅ Etapas Implementadas
 - **[Etapa 1]** Gerenciamento de Memória com Paginação - **COMPLETA**
 - **[Etapa 2]** Gerenciamento de Processos com Round-Robin - **COMPLETA**
+- **[Etapa 3]** Sincronização entre Processos (Semáforos, Mutex) - **COMPLETA**
 
 ### 📋 Próximas Etapas Planejadas
-- **[Etapa 3]** Sincronização entre Processos (Semáforos, Mutex)
 - **[Etapa 4]** Sistema de Arquivos
 - **[Etapa 5]** Interface Gráfica de Administração
 
@@ -31,22 +31,27 @@ SISOP/
 │   ├── MemoryManagerPonte.java      # Interface de integração
 │   ├── TesteGerenciadorMemoria.java # Testes unitários de memória
 │   └── TesteIntegracao.java         # Testes de integração
-├── software/                         # Sistema Operacional (Etapa 2)
+├── software/                         # Sistema Operacional (Etapas 2 e 3)
 │   ├── SO.java                      # Núcleo do sistema operacional
-│   ├── ProcessState.java            # Estados de processo (NEW, READY, etc.)
+│   ├── ProcessState.java            # Estados de processo (NEW, READY, WAITING, etc.)
 │   ├── ProcessControlBlock.java     # PCB completo com contexto
 │   ├── RoundRobinScheduler.java     # Escalonador Round-Robin
 │   ├── ProcessManager.java          # Gerenciador de processos
+│   ├── Semaforo.java                # Semáforos (Etapa 3)
+│   ├── Mutex.java                   # Mutex - Exclusão Mútua (Etapa 3)
 │   ├── TesteGerenciaProcessos.java  # Testes modulares
+│   ├── TesteSincronizacao.java      # Testes de sincronização (Etapa 3)
 │   ├── Utilities.java               # Funções auxiliares
 │   ├── InterruptHandling.java       # Tratamento de interrupções
 │   └── SysCallHandling.java         # Chamadas de sistema
 ├── programs/                         # Programas executáveis
 │   ├── Programs.java                # Biblioteca de programas
 │   └── Program.java                 # Estrutura de programa
-└── examples/                         # Exemplos práticos
+└── exemplos/                         # Exemplos práticos
     ├── ExemploGerenciaProcessos.java      # Exemplo básico
-    └── ExemploExecucaoConcorrente.java    # Execução concorrente
+    ├── ExemploExecucaoConcorrente.java    # Execução concorrente
+    ├── ExemploProdutorConsumidor.java     # Produtor-Consumidor (Etapa 3)
+    └── ExemploSecaoCritica.java           # Seção Crítica com Mutex (Etapa 3)
 ```
 
 ## Documentação por Etapa
@@ -56,6 +61,9 @@ SISOP/
 
 ### 📚 Etapa 2 - Gerenciamento de Processos  
 - **[DOCUMENTACAO_ETAPA02.md](DOCUMENTACAO_ETAPA02.md)** - Guia completo do gerenciamento de processos
+
+### 📚 Etapa 3 - Sincronização entre Processos
+- **[DOCUMENTACAO_ETAPA03.md](DOCUMENTACAO_ETAPA03.md)** - Guia completo de semáforos e mutex
 
 ## Como Executar o Sistema
 
@@ -83,11 +91,19 @@ javac software/*.java memory/*.java hardware/*.java programs/*.java
 java software.TesteGerenciaProcessos  # Testes modulares completos
 ```
 
+#### Testes de Sincronização (Etapa 3)
+```bash
+javac software/TesteSincronizacao.java
+java software.TesteSincronizacao      # Testes de semáforos e mutex
+```
+
 #### Exemplos Práticos
 ```bash
-javac examples/*.java software/*.java memory/*.java hardware/*.java programs/*.java
-java examples.ExemploGerenciaProcessos      # Exemplo básico
-java examples.ExemploExecucaoConcorrente    # Execução concorrente
+javac exemplos/*.java software/*.java memory/*.java hardware/*.java programs/*.java
+java exemplos.ExemploGerenciaProcessos      # Exemplo básico
+java exemplos.ExemploExecucaoConcorrente    # Execução concorrente
+java exemplos.ExemploProdutorConsumidor     # Produtor-Consumidor (Etapa 3)
+java exemplos.ExemploSecaoCritica           # Seção Crítica com Mutex (Etapa 3)
 ```
 
 ## Funcionalidades Implementadas
@@ -107,6 +123,16 @@ java examples.ExemploExecucaoConcorrente    # Execução concorrente
 - ✅ **Context switching**: Troca eficiente entre processos
 - ✅ **Execução concorrente**: Múltiplos processos simultâneos
 - ✅ **Gestão de recursos**: Criação, admissão e finalização automática
+
+### 🔒 Etapa 3 - Sincronização entre Processos
+- ✅ **Semáforos**: Primitiva clássica de sincronização (down/up)
+- ✅ **Mutex**: Exclusão mútua com ownership
+- ✅ **Operações bloqueantes**: down() e lock() com fila de espera
+- ✅ **Operações não-bloqueantes**: tryDown() e tryLock()
+- ✅ **Fila FIFO**: Processos acordados na ordem de chegada
+- ✅ **Problema Produtor-Consumidor**: Implementação completa
+- ✅ **Proteção de seção crítica**: Garantia de exclusão mútua
+- ✅ **Estatísticas**: Monitoramento de bloqueios e operações
 
 ## Programas Disponíveis
 
