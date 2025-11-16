@@ -337,23 +337,18 @@ class GerenteProcessos:
             print("Erro: Programa não encontrado.")
             return -1
         
-        print(f"\n[CRIAÇÃO] Criando novo processo para programa '{programa.name}'")
-        print(f"  → Tamanho: {len(programa)} instruções")
-        
         if frame_inicial is not None:
-            print(f"  → Tentando alocar no frame específico {frame_inicial}...")
             page_table = self.gm.aloca(len(programa), frame_inicial)
         else:
-            print(f"  → Alocando memória automaticamente...")
             page_table = self.gm.aloca(len(programa))
             
         if page_table is None:
-            print("[ERRO] Não há memória suficiente para criar o processo.")
+            print("Erro: Não há memória suficiente para criar o processo.")
             return -1
             
         processo_id = page_table[0]
         if self._find_pcb(processo_id) is not None:
-            print(f"[ERRO] Processo com ID {processo_id} já existe!")
+            print(f"ERRO: Processo com ID {processo_id} já existe!")
             self.gm.desaloca(page_table)
             return -1
             
@@ -364,13 +359,7 @@ class GerenteProcessos:
             
         self._load_program_to_memory(programa, pcb.page_table)
         
-        print(f"[CRIAÇÃO] ✓ Processo criado com sucesso:")
-        print(f"  → PID (ID): {pcb.id}")
-        print(f"  → Número sequencial: {pcb.processo_number}")
-        print(f"  → Frames alocados: {pcb.page_table}")
-        print(f"  → Estado inicial: READY (pronto para executar)")
-        print(f"  → Na fila de prontos: Sim")
-        print(f"  → Total de processos no sistema: {PCB.get_processo_count()}")
+        print(f"[CRIAÇÃO] Processo {pcb.id} criado (Frames: {pcb.page_table}, Estado: READY)")
         return pcb.id
 
     def _load_program_to_memory(self, program, page_table):
@@ -550,20 +539,17 @@ class IODevice(threading.Thread):
 
     def run(self):
         print("[I/O Device] Dispositivo iniciado e aguardando requisições...")
-        print("[INFO] O dispositivo I/O processa operações READ/WRITE de forma assíncrona")
         while self.running:
             try:
                 request = self.io_queue.get(timeout=0.5)
-                print(f"\n[I/O Device] → Requisição {request.operation} recebida do processo {request.process_id}")
-                print(f"[I/O Device] → Processando (isso leva tempo, CPU continua com outros processos)...")
+                print(f"[I/O Device] Processando {request.operation} para processo {request.process_id}...")
                 time.sleep(self.io_delay)
                 # T2 - sinaliza e manda pro handler:
                 self._process_io(request)
                 self.hw.cpu.irpt_io_complete = request.process_id
                 self.hw.cpu.irpt = Interrupts.INT_IO_COMPLETE
                 self.ih.handle(Interrupts.INT_IO_COMPLETE, pc=self.hw.cpu.pc)  # dispara a rotina agora
-                print(f"[I/O Device] ✓ {request.operation} concluído")
-                print(f"[I/O Device] → Processo {request.process_id} desbloqueado e voltou à fila de prontos")
+                print(f"[I/O Device] {request.operation} concluído para processo {request.process_id}")
             except QueueEmpty: continue
             except Exception as e: print(f"[I/O Device] Erro ao processar I/O: {e}")
     
@@ -618,43 +604,27 @@ class CPUThread(threading.Thread):
 
     def run(self):
         print("[CPU Thread] CPU iniciada e aguardando processos...")
-        print("[INFO] A CPU executa processos usando Round-Robin com quantum de tempo")
         while self.running:
             self.semaphore.acquire()
             if not self.running: break
             pcb = self.escalonador.gp.get_next_ready()
             if pcb is None: continue
             
-            print(f"\n{'='*70}")
-            print(f"[ESCALONADOR] Selecionando próximo processo da fila de prontos")
-            print(f"[ESCALONADOR] → Processo {pcb.id} ('{pcb.name}') selecionado para execução")
-            print(f"[CONTEXTO] Restaurando contexto do processo {pcb.id}:")
-            print(f"  - PC (Program Counter): {pcb.pc}")
-            print(f"  - Quantum disponível: {self.escalonador.quantum} instruções")
-            print(f"{'='*70}")
+            print(f"\n[ESCALONADOR] Processo {pcb.id} selecionado")
+            print(f"[CONTEXTO] Restaurando contexto (PC={pcb.pc}, Quantum={self.escalonador.quantum})")
             
             self.cpu.set_context(pcb)
             instrucoes_antes = self.cpu.instructions_executed
             self.cpu.run(self.escalonador.quantum)
-            instrucoes_executadas = self.cpu.instructions_executed - instrucoes_antes
-            
-            print(f"\n[EXECUÇÃO] Processo {pcb.id} executou {instrucoes_executadas} instruções")
+            instrucoes_exec = self.cpu.instructions_executed - instrucoes_antes
             
             if pcb.state == PCB.ProcessState.FINISHED:
-                print(f"[FINALIZAÇÃO] ✓ Processo {pcb.id} FINALIZOU")
-                print(f"  → Motivo: Executou instrução STOP")
-                print(f"  → Ação: Liberando memória e removendo do sistema")
+                print(f"[FINALIZAÇÃO] Processo {pcb.id} FINALIZOU")
                 self.escalonador.gp.desaloca_processo(pcb.id)
             elif pcb.state == PCB.ProcessState.BLOCKED:
-                print(f"[BLOQUEIO] ⏸ Processo {pcb.id} BLOQUEADO")
-                print(f"  → Motivo: Aguardando operação de I/O (READ ou WRITE)")
-                print(f"  → Ação: Processo movido para fila de bloqueados")
-                print(f"  → Quando I/O completar: Processo retorna à fila de prontos")
+                print(f"[BLOQUEADO] Processo {pcb.id} aguardando I/O")
             elif pcb.state == PCB.ProcessState.READY:
-                print(f"[QUANTUM] ⏱ Processo {pcb.id} teve QUANTUM EXPIRADO")
-                print(f"  → Motivo: Executou {instrucoes_executadas} instruções (limite: {self.escalonador.quantum})")
-                print(f"  → Ação: Processo retorna ao FIM da fila de prontos (Round-Robin)")
-                print(f"  → Próximo: Outro processo terá sua vez de executar")
+                print(f"[QUANTUM EXPIRADO] Processo {pcb.id} - Executou {instrucoes_exec}/{self.escalonador.quantum} instruções")
                 self.escalonador.gp.add_ready(pcb)
     
     def stop(self):
@@ -670,27 +640,14 @@ class Escalonador:
 
     def start(self):
         if self.running:
-            print("[Escalonador] Já está rodando!")
+            print("Escalonador já está rodando!")
             return
-        
-        print("\n" + "="*70)
-        print("[SISTEMA] Iniciando sistema de escalonamento Round-Robin")
-        print("="*70)
-        print("[INFO] Como funciona:")
-        print("  1. Escalonador seleciona processo da fila de prontos (FIFO)")
-        print("  2. CPU executa o processo por até QUANTUM instruções")
-        print("  3. Se quantum expirar: processo volta ao FIM da fila")
-        print("  4. Se I/O solicitado: processo vai para fila de bloqueados")
-        print("  5. Se STOP executado: processo finaliza e memória é liberada")
-        print("  6. Próximo processo da fila recebe CPU (Round-Robin)")
-        print("="*70 + "\n")
-        
         self.running = True
         self.cpu_thread = CPUThread(self.cpu, self, self.semaphore)
         self.cpu_thread.start()
         self.scheduler_thread = threading.Thread(target=self._scheduler_loop, daemon=True, name="Scheduler")
         self.scheduler_thread.start()
-        print("[Escalonador] ✓ Sistema de escalonamento iniciado!")
+        print("[Escalonador] Sistema de escalonamento iniciado!")
     
     def _scheduler_loop(self):
         while self.running:
@@ -776,9 +733,7 @@ class SysCallHandling:
         address = self.hw.cpu.reg[9]
         pcb = self.hw.cpu.running_process
         
-        print(f"\n      [SYSCALL] READ no endereço lógico {address} (Processo {pcb.id})")
-        print(f"      → O processo precisa ler dados de I/O")
-        print(f"      → Processo {pcb.id} será BLOQUEADO até I/O completar")
+        print(f"      [SYSCALL] READ no endereço {address} (Processo {pcb.id})")
         
         # Cria requisição de I/O
         request = IORequest(pcb.id, 'READ', address, pcb)
@@ -791,18 +746,13 @@ class SysCallHandling:
         
         # Para execução na CPU
         self.hw.cpu.cpu_stop = True
-        
-        print(f"      → Requisição enviada ao dispositivo de I/O")
-        print(f"      → CPU liberada para executar outro processo")
     
     def _handle_write(self):
         """Syscall WRITE: requisita escrita e bloqueia processo"""
         address = self.hw.cpu.reg[9]
         pcb = self.hw.cpu.running_process
         
-        print(f"\n      [SYSCALL] WRITE do endereço lógico {address} (Processo {pcb.id})")
-        print(f"      → O processo precisa escrever dados para I/O")
-        print(f"      → Processo {pcb.id} será BLOQUEADO até I/O completar")
+        print(f"      [SYSCALL] WRITE do endereço {address} (Processo {pcb.id})")
         
         # Cria requisição de I/O
         request = IORequest(pcb.id, 'WRITE', address, pcb)
@@ -815,14 +765,9 @@ class SysCallHandling:
         
         # Para execução na CPU
         self.hw.cpu.cpu_stop = True
-        
-        print(f"      → Requisição enviada ao dispositivo de I/O")
-        print(f"      → CPU liberada para executar outro processo")
     
     def stop(self):
-        print("\n      [SYSCALL] STOP")
-        print(f"      → Processo finalizou sua execução normalmente")
-        print(f"      → Estado mudará de RUNNING para FINISHED")
+        print("      [SYSCALL] STOP")
         if self.hw.cpu.running_process:
             self.hw.cpu.running_process.state = PCB.ProcessState.FINISHED
 
