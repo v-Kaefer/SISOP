@@ -86,6 +86,10 @@ class CPU:
         self.page_fault_info = None
         self.irpt_page_save_complete = None
         self.irpt_page_load_complete = None
+        # T2b: Log throttling para processos em loop (como NOP)
+        self.log_slowdown = 2048  # Exibir log a cada 2048 instruções
+        self.instruction_count_global = 0
+        self.last_logged_at = 0
 
     def set_address_of_handlers(self, ih, sys_call):
         self.ih, self.sys_call = ih, sys_call
@@ -145,6 +149,20 @@ class CPU:
             self.irpt = Interrupts.INT_OVERFLOW
             return False
         return True
+    
+    def _should_log_instruction(self):
+        """
+        T2b: Determina se deve exibir log da instrução atual.
+        Usa log_slowdown para reduzir verbosidade em processos loop (ex: NOP).
+        """
+        self.instruction_count_global += 1
+        
+        if self.instruction_count_global - self.last_logged_at >= self.log_slowdown:
+            self.last_logged_at = self.instruction_count_global
+            return True
+        
+        return False
+        return True
 
     def run(self, quantum):
         if not self.running_process: return
@@ -155,8 +173,9 @@ class CPU:
             if not self._legal(physical_pc): break
             
             self.ir = self.m[physical_pc]
-            if self.debug:
-                print(f"    PC: {self.pc} -> INSTR: ", end="")
+            # T2b: Log throttling - exibir apenas a cada log_slowdown instruções
+            if self.debug and self._should_log_instruction():
+                print(f"    [Instrução #{self.instruction_count_global}] PC: {self.pc} -> INSTR: ", end="")
                 self.u.dump(self.ir)
             
             opc, ra, rb, p = self.ir.opc, self.ir.ra, self.ir.rb, self.ir.p
