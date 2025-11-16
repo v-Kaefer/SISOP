@@ -1,8 +1,235 @@
-# Simulador de Sistema Operacional Básico
+# Simulador de Sistema Operacional - Python
 
-Este projeto, desenvolvido para a disciplina de Sistemas Operacionais, é um simulador de um sistema computacional simples, implementado em Python. Ele modela os componentes fundamentais de hardware e software, permitindo a criação, gerenciamento e execução de múltiplos processos em um ambiente com memória paginada e escalonamento preemptivo.
+**PUCRS - Escola Politécnica - Sistemas Operacionais**  
+**Professor**: Fernando Luís Dotti  
+**Versão**: T2b (Memória Virtual)
 
-O código é uma tradução e expansão de um projeto base originalmente fornecido em Java pelo Prof. Fernando Dotti.
+---
+
+## 🎯 Visão Geral
+
+Simulador educacional de sistema operacional implementado em Python, modelando componentes fundamentais de hardware e software.
+
+### Funcionalidades
+
+- ✅ **T1**: Gerenciamento de Memória (paginação), Processos e Escalonamento
+- ✅ **T2a**: Threads concorrentes, I/O assíncrono, 3 estados (READY/RUNNING/BLOCKED)
+- ✅ **T2b**: Memória Virtual (lazy loading, page fault, swap, vitimização FIFO)
+
+---
+
+## 🚀 Início Rápido
+
+### Executar
+
+```bash
+python3 sistema_os.py
+```
+
+### Modo de Operação
+
+**T2a (Memória Completa)** - padrão:
+```python
+USE_VIRTUAL_MEMORY = False  # linha ~1689
+```
+
+**T2b (Memória Virtual)**:
+```python
+USE_VIRTUAL_MEMORY = True  # linha ~1689
+```
+
+### Comandos Básicos
+
+```bash
+> new fibonacci10    # Criar processo
+> start              # Iniciar escalonamento  
+> ps                 # Listar processos
+> stats              # Estatísticas
+> exit               # Sair
+```
+
+---
+
+## 📚 Documentação
+
+| Documento | Finalidade |
+|-----------|------------|
+| **README_CONSOLIDADO.md** | 📖 Documentação completa e guia de uso |
+| **MELHORIAS_PROPOSTAS.md** | 🔧 Propostas de otimização (incluindo NOP) |
+| **T2b-Enunciado.md** | 📋 Especificação oficial T2b |
+| **sistema_os.py** | 💻 Código fonte (~1700 linhas) |
+
+**➡️ Consulte `README_CONSOLIDADO.md` para documentação detalhada**
+
+---
+
+## 🏗️ Arquitetura
+
+```
+┌──────────────┐     ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│ Thread Shell │ ──▶ │  Thread CPU  │ ──▶ │Thread Console│ ──▶ │ Thread Disk  │
+│              │     │+ Escalonador │     │  (IODevice)  │     │ (DiskDevice) │
+│ Comandos     │     │ Round-Robin  │     │   I/O Async  │     │  Paginação   │
+│ Interativa   │     │  Execução    │     │   READ/WRITE │     │   T2b Only   │
+└──────────────┘     └──────────────┘     └──────────────┘     └──────────────┘
+       │                     │                     │                     │
+       ▼                     ▼                     ▼                     ▼
+    GP (PCB)          Memória Paginada       Fila I/O            Swap Space
+```
+
+---
+
+## 🎮 T2b - Memória Virtual
+
+### Carregamento Sob Demanda
+
+```bash
+> new fibonacci10
+[CRIAÇÃO T2b] Processo 0 criado (Página 0 no frame 0, demais NEVER_LOADED)
+```
+
+### Page Fault
+
+```bash
+> start
+[PAGE FAULT] Processo 0, Página 1
+[DISK] Carregando página 1 do processo 0 para frame 1...
+[DISK] Página 1 carregada no frame 1
+```
+
+### Vitimização (memória cheia)
+
+```bash
+[PAGE FAULT] SEM frames livres - escolhendo vítima
+[PAGE FAULT] Vítima: Proc 0, Pág 0, Frame 0 (FIFO)
+[DISK] Salvando vítima...
+[DISK] Vítima salva, frame 0 liberado
+```
+
+---
+
+## 📊 Estrutura do Código
+
+| Componente | Linhas | Trabalho |
+|------------|--------|----------|
+| Hardware (CPU, Memory) | 1-208 | T1 |
+| GerenteMemoria | 209-333 | T1 + T2b |
+| GerenteProcessos | 334-540 | T1 + T2a + T2b |
+| IODevice (Console) | 593-680 | T2a |
+| **DiskDevice (Paginação)** | **681-873** | **T2b** |
+| InterruptHandling | 979-1120 | T1 + T2a + T2b |
+| Programs | 1257-1530 | T1 |
+| Sistema (CLI) | 1531-1688 | T1 + T2a + T2b |
+
+**Total**: ~1700 linhas  
+**Comentários**: Marcados com T1, T2a ou T2b
+
+---
+
+## 🧪 Programas de Teste
+
+| Programa | Descrição | Páginas | T2b |
+|----------|-----------|---------|-----|
+| `fatorial` | Calcula fatorial de 7 | 1 | ❌ |
+| `fibonacci10` | Fibonacci até 10 termos | 2 | ✅ |
+| `fibonacciREAD` | Fibonacci com READ interativo | 3 | ✅ |
+| `PC` | Bubble Sort de vetor | 4+ | ✅ |
+| `nop` | Loop infinito (manter sistema ativo) | 1 | ⚠️ * |
+
+**\*** Ver `MELHORIAS_PROPOSTAS.md` para otimização de log do NOP
+
+---
+
+## 🔧 Configuração
+
+### Parâmetros (main, linha ~1689)
+
+```python
+USE_VIRTUAL_MEMORY = False  # True para T2b
+tam_mem = 512 if USE_VIRTUAL_MEMORY else 1024
+tam_pg = 16      # Tamanho da página (palavras)
+quantum = 50     # Instruções por fatia de tempo
+```
+
+### Memória
+
+- **T2a**: 1024 palavras = 16 frames × 64 palavras
+- **T2b**: 512 palavras = 8 frames × 64 palavras (forçar page faults)
+
+---
+
+## ✅ Status de Implementação
+
+### T1 - Base
+- [x] Gerenciamento de Memória (paginação)
+- [x] Gerenciamento de Processos (PCB)
+- [x] Escalonamento Round-Robin
+- [x] Comandos Shell
+
+### T2a - Concorrência
+- [x] Arquitetura Multithreaded
+- [x] I/O Assíncrono (IODevice)
+- [x] 3 Estados (READY/RUNNING/BLOCKED)
+- [x] Interrupção INT_IO_COMPLETE
+- [x] Bugs corrigidos (PC após I/O, race conditions)
+
+### T2b - Memória Virtual
+- [x] Lazy loading (primeira página apenas)
+- [x] Page fault (detecção e tratamento)
+- [x] Vitimização (política FIFO)
+- [x] DiskDevice (thread de paginação)
+- [x] Swap space
+- [x] Estados de página (NEVER_LOADED, IN_MEMORY, SWAPPED)
+- [x] Compatibilidade T2a mantida
+
+---
+
+## 🐛 Bugs Conhecidos e Corrigidos
+
+### T2a - Corrigidos
+- ✅ PC não incrementado após I/O (causava loop infinito)
+- ✅ Race condition em irpt_io_complete
+- ✅ Parâmetro faltante no IODevice.__init__
+
+### Melhorias Propostas
+- ⏳ Log throttling para processo NOP (ver MELHORIAS_PROPOSTAS.md)
+- ⏳ Comandos vmstat e swapstat (T2b)
+- ⏳ Estatísticas de page fault por processo
+
+---
+
+## 👥 Equipe
+
+- Gabriel Martins
+- Vitor Guttler
+- Eduardo Netz
+- Esthevan Pereira
+- Vinicius Alencar
+
+---
+
+## 📝 Notas
+
+### Para Testes T2b
+
+1. Ativar memória virtual: `USE_VIRTUAL_MEMORY = True`
+2. Usar memória pequena para forçar page faults: `tam_mem=256`
+3. Executar programas maiores: `fibonacci10`, `PC`
+4. Observar logs de page fault e vitimização
+
+### Compatibilidade
+
+- Python 3.6+
+- Sem dependências externas (apenas stdlib)
+- Multiplataforma (Linux, macOS, Windows)
+
+---
+
+**➡️ Documentação completa em `README_CONSOLIDADO.md`**
+
+**Última Atualização**: 2025-11-16  
+**Versão**: T2b (Memória Virtual)  
+**Status**: ✅ Funcional
 
 ## Funcionalidades Principais
 
