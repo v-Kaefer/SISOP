@@ -1,0 +1,3215 @@
+Creating processes: NOP + 2 × fatorial
+Alocado automaticamente nos frames: [0]
+[CRIAÇÃO] Processo 0 criado (Frames: [0], Estado: READY)
+Alocado automaticamente nos frames: [1]
+[CRIAÇÃO] Processo 1 criado (Frames: [1], Estado: READY)
+Alocado automaticamente nos frames: [2]
+[CRIAÇÃO] Processo 2 criado (Frames: [2], Estado: READY)
+Created PIDs: 0 (NOP), 1 (fatorial), 2 (fatorial)
+
+Trace enabled: log every 2048 instructions
+
+Starting system...
+[CPU Thread] CPU iniciada e aguardando processos...
+[Escalonador] Sistema de escalonamento iniciado!
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=0, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+[I/O Device] Dispositivo iniciado e aguardando requisições...
+Running...
+======================================================================
+
+[ESCALONADOR] Processo 1 selecionado
+[CONTEXTO] Restaurando contexto (PC=0, Quantum=50)
+      [SYSCALL] STOP
+[FINALIZAÇÃO] Processo 1 FINALIZOU
+Processo 1 (frame 1) removido.
+
+[ESCALONADOR] Processo 2 selecionado
+[CONTEXTO] Restaurando contexto (PC=0, Quantum=50)
+      [SYSCALL] STOP
+[FINALIZAÇÃO] Processo 2 FINALIZOU
+Processo 2 (frame 2) removido.
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+    [Instrução #2048] PC: 1 -> INSTR: [ ADDI      , R1: 0, R2:-1, P:   1 ]
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+    [Instrução #4096] PC: 1 -> INSTR: [ ADDI      , R1: 0, R2:-1, P:   1 ]
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+    [Instrução #6144] PC: 1 -> INSTR: [ ADDI      , R1: 0, R2:-1, P:   1 ]
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+    [Instrução #8192] PC: 1 -> INSTR: [ ADDI      , R1: 0, R2:-1, P:   1 ]
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+    [Instrução #10240] PC: 1 -> INSTR: [ ADDI      , R1: 0, R2:-1, P:   1 ]
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+    [Instrução #12288] PC: 1 -> INSTR: [ ADDI      , R1: 0, R2:-1, P:   1 ]
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+    [Instrução #14336] PC: 1 -> INSTR: [ ADDI      , R1: 0, R2:-1, P:   1 ]
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+    [Instrução #16384] PC: 1 -> INSTR: [ ADDI      , R1: 0, R2:-1, P:   1 ]
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+    [Instrução #18432] PC: 1 -> INSTR: [ ADDI      , R1: 0, R2:-1, P:   1 ]
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+    [Instrução #20480] PC: 1 -> INSTR: [ ADDI      , R1: 0, R2:-1, P:   1 ]
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+    [Instrução #22528] PC: 1 -> INSTR: [ ADDI      , R1: 0, R2:-1, P:   1 ]
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+    [Instrução #24576] PC: 1 -> INSTR: [ ADDI      , R1: 0, R2:-1, P:   1 ]
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+    [Instrução #26624] PC: 1 -> INSTR: [ ADDI      , R1: 0, R2:-1, P:   1 ]
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+    [Instrução #28672] PC: 1 -> INSTR: [ ADDI      , R1: 0, R2:-1, P:   1 ]
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+    [Instrução #30720] PC: 1 -> INSTR: [ ADDI      , R1: 0, R2:-1, P:   1 ]
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+    [Instrução #32768] PC: 1 -> INSTR: [ ADDI      , R1: 0, R2:-1, P:   1 ]
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+    [Instrução #34816] PC: 1 -> INSTR: [ ADDI      , R1: 0, R2:-1, P:   1 ]
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+    [Instrução #36864] PC: 1 -> INSTR: [ ADDI      , R1: 0, R2:-1, P:   1 ]
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+    [Instrução #38912] PC: 1 -> INSTR: [ ADDI      , R1: 0, R2:-1, P:   1 ]
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+
+[ESCALONADOR] Processo 0 selecionado
+[CONTEXTO] Restaurando contexto (PC=2, Quantum=50)
+[QUANTUM EXPIRADO] Processo 0 - Executou 50/50 instruções
+======================================================================
+
+Stopping system...
+[Escalonador] Sistema de escalonamento encerrado!
+
+=== FINAL STATS ===
+Total instructions executed: 39520
+Last logged at: 38912
+Throttle working: True
+
+SUCCESS: Log throttling is working correctly! ✅

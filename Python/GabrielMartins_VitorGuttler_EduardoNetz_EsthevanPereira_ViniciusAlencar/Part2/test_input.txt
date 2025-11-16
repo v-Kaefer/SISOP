@@ -1,0 +1,5 @@
+new nop
+new fatorial
+new fatorial
+start
+exit

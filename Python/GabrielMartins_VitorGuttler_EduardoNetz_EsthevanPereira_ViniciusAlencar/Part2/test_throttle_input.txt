@@ -1,0 +1,6 @@
+new nop
+new fatorial
+new fatorial
+trace
+start
+exit

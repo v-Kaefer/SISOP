@@ -162,7 +162,6 @@ class CPU:
             return True
         
         return False
-        return True
 
     def run(self, quantum):
         if not self.running_process: return
@@ -1588,6 +1587,7 @@ class Sistema:
         print("  dumpm <ini> <fim>       - Dump memória")
         print("  memstat                 - Status memória")
         print("  stats                   - Estatísticas")
+        print("  trace                   - Ativar/desativar trace")
         print("  start                   - Iniciar escalonamento")
         print("  stop                    - Parar escalonamento")
         print("  exit                    - Sair")
@@ -1682,6 +1682,13 @@ class Sistema:
                         self.so.utils.dump_memory_range(int(cmd_line[1]), int(cmd_line[2]))
                     else:
                         print("Uso: dumpm <inicio> <fim>")
+                
+                elif cmd == "trace":
+                    # T2b: Comando para ativar/desativar trace (debug)
+                    self.hw.cpu.debug = not self.hw.cpu.debug
+                    status = "ATIVADO" if self.hw.cpu.debug else "DESATIVADO"
+                    print(f"[Trace] Modo trace {status}")
+                    print(f"[Trace] Log a cada {self.hw.cpu.log_slowdown} instruções")
                 
                 elif cmd == "exit":
                     if system_started:
