@@ -1208,5 +1208,5 @@ class Sistema:
         print("=" * 60)
 
 if __name__ == "__main__":
-    s = Sistema(tam_mem=1024, tam_pg=16, quantum=20)
+    s = Sistema(tam_mem=1024, tam_pg=16, quantum=50)
     s.run()
