@@ -33,8 +33,9 @@ class Opcode(Enum):
 
 # Tipos de interrupções do hardware
 # INT_IO_COMPLETE adicionado para T2a (int IO - retorno de I/O assíncrono)
+# INT_PAGE_FAULT, INT_PAGE_SAVE_COMPLETE, INT_PAGE_LOAD_COMPLETE adicionados para T2b (memória virtual)
 class Interrupts(Enum):
-    NO_INTERRUPT, INT_ENDERECO_INVALIDO, INT_INSTRUCAO_INVALIDA, INT_OVERFLOW, INT_IO_COMPLETE = range(5)
+    NO_INTERRUPT, INT_ENDERECO_INVALIDO, INT_INSTRUCAO_INVALIDA, INT_OVERFLOW, INT_IO_COMPLETE, INT_PAGE_FAULT, INT_PAGE_SAVE_COMPLETE, INT_PAGE_LOAD_COMPLETE = range(8)
 
 # Palavra de memória: representa uma instrução ou dado
 # Formato: [opcode, registrador_a, registrador_b, parâmetro]
@@ -81,6 +82,10 @@ class CPU:
         self.instructions_executed = 0
         # Flag de interrupção de I/O completo (T2a - sinalização do Console para CPU)
         self.irpt_io_complete = None
+        # Flags T2b - Memória Virtual (page fault)
+        self.page_fault_info = None
+        self.irpt_page_save_complete = None
+        self.irpt_page_load_complete = None
 
     def set_address_of_handlers(self, ih, sys_call):
         self.ih, self.sys_call = ih, sys_call
@@ -107,7 +112,8 @@ class CPU:
         self.irpt = Interrupts.INT_ENDERECO_INVALIDO
         return False
 
-    # Mapeamento de endereço lógico para físico (esquema de paginação - T1)
+    # Mapeamento de endereço lógico para físico (esquema de paginação - T1 e T2b)
+    # T2b: Adiciona verificação de estado da página (IN_MEMORY, NEVER_LOADED, SWAPPED)
     # Caixa "Mapeamento de endereço e controle de acesso indevido" no diagrama
     def _translate_address(self, logical_address):
         if not self.running_process:
@@ -118,7 +124,20 @@ class CPU:
         if not (0 <= page < len(self.running_process.page_table)):
             self.irpt = Interrupts.INT_ENDERECO_INVALIDO
             return -1
-        frame = self.running_process.page_table[page]
+        
+        # T2b: Verificar se página está em memória
+        page_entry = self.running_process.page_table[page]
+        if isinstance(page_entry, dict):
+            # T2b: Nova estrutura de tabela de páginas
+            if page_entry['state'] != 'IN_MEMORY':
+                self.irpt = Interrupts.INT_PAGE_FAULT
+                self.page_fault_info = {'process_id': self.running_process.id, 'page': page}
+                return -1
+            frame = page_entry['frame']
+        else:
+            # T2a: Estrutura antiga (compatibilidade)
+            frame = page_entry
+        
         return (frame * tam_pg) + offset
 
     def _test_overflow(self, v):
@@ -297,6 +316,84 @@ class GerenteMemoria:
 
     def get_tam_pg(self): return self.tam_pg
     
+    # ====================================================================================================
+    # T2b: MÉTODOS PARA MEMÓRIA VIRTUAL
+    # ====================================================================================================
+    
+    def aloca_t2b(self, num_palavras_total, program_name):
+        """
+        T2b: Alocar apenas primeira página em memória.
+        Criar entradas para demais páginas como NEVER_LOADED.
+        Retorna tabela de páginas com estrutura de dicionários.
+        """
+        # Calcular total de páginas necessárias
+        total_pages = math.ceil(num_palavras_total / self.tam_pg) if num_palavras_total > 0 else 1
+        
+        # Alocar frame apenas para primeira página
+        first_frame = None
+        for i in range(self.num_frames):
+            if self.free_frames[i]:
+                first_frame = i
+                break
+        
+        if first_frame is None:
+            print(f"Erro T2b: Sem frames livres para primeira página")
+            return None
+        
+        # Marcar frame como ocupado
+        self.free_frames[first_frame] = False
+        self.frame_to_process[first_frame] = first_frame
+        
+        # Criar tabela de páginas com nova estrutura
+        page_table = []
+        
+        # Primeira página: IN_MEMORY
+        page_table.append({
+            'state': 'IN_MEMORY',
+            'frame': first_frame,
+            'disk_location': program_name
+        })
+        
+        # Demais páginas: NEVER_LOADED
+        for i in range(1, total_pages):
+            page_table.append({
+                'state': 'NEVER_LOADED',
+                'frame': None,
+                'disk_location': program_name
+            })
+        
+        print(f"T2b: Alocado frame {first_frame} para página 0, {total_pages-1} páginas NEVER_LOADED")
+        return page_table
+    
+    def allocate_frame_for_page_fault(self):
+        """T2b: Tentar alocar um frame livre para page fault"""
+        for i in range(self.num_frames):
+            if self.free_frames[i]:
+                self.free_frames[i] = False
+                return i
+        return None
+    
+    def find_victim(self):
+        """T2b: Encontrar página vítima usando política FIFO"""
+        # Política FIFO: escolher primeiro frame ocupado (mais antigo)
+        for i in range(self.num_frames):
+            if not self.free_frames[i]:
+                # Encontrar processo e página que usa este frame
+                proc_id = self.frame_to_process[i]
+                # Retornar informações da vítima
+                return {
+                    'process_id': proc_id,
+                    'page': i,  # Simplificado: usar índice do frame como página
+                    'frame': i
+                }
+        return None
+    
+    def free_frame(self, frame):
+        """T2b: Liberar um frame após salvar vítima"""
+        if 0 <= frame < self.num_frames:
+            self.free_frames[frame] = True
+            self.frame_to_process[frame] = -1
+    
     def mostrar_status(self):
         print(f"=== STATUS DA MEMÓRIA ===")
         print(f"Total de frames: {self.num_frames}")
@@ -332,21 +429,36 @@ class GerenteProcessos:
         self.ready_queue, self.blocked_queue, self.all_processes = [], [], []
         self.lock = threading.Lock()
 
-    def cria_processo(self, programa, frame_inicial=None):
+    def cria_processo(self, programa, frame_inicial=None, use_virtual_memory=False, program_name=None):
+        """
+        Cria processo. Se use_virtual_memory=True, usa memória virtual (T2b).
+        """
         if not programa:
             print("Erro: Programa não encontrado.")
             return -1
         
-        if frame_inicial is not None:
-            page_table = self.gm.aloca(len(programa), frame_inicial)
+        if use_virtual_memory and program_name:
+            # T2b: Memória virtual - alocar apenas primeira página
+            page_table = self.gm.aloca_t2b(len(programa), program_name)
         else:
-            page_table = self.gm.aloca(len(programa))
+            # T2a: Alocar todas as páginas
+            if frame_inicial is not None:
+                page_table = self.gm.aloca(len(programa), frame_inicial)
+            else:
+                page_table = self.gm.aloca(len(programa))
             
         if page_table is None:
             print("Erro: Não há memória suficiente para criar o processo.")
             return -1
+        
+        # Obter ID do processo da tabela de páginas
+        if isinstance(page_table[0], dict):
+            # T2b: estrutura de dicionário
+            processo_id = page_table[0]['frame']
+        else:
+            # T2a: estrutura antiga
+            processo_id = page_table[0]
             
-        processo_id = page_table[0]
         if self._find_pcb(processo_id) is not None:
             print(f"ERRO: Processo com ID {processo_id} já existe!")
             self.gm.desaloca(page_table)
@@ -356,19 +468,49 @@ class GerenteProcessos:
         with self.lock:
             self.all_processes.append(pcb)
             self.ready_queue.append(pcb)
-            
-        self._load_program_to_memory(programa, pcb.page_table)
         
-        print(f"[CRIAÇÃO] Processo {pcb.id} criado (Frames: {pcb.page_table}, Estado: READY)")
+        if use_virtual_memory:
+            # T2b: Carregar apenas primeira página
+            self._load_program_to_memory_t2b(programa, pcb.page_table, load_all=False)
+            print(f"[CRIAÇÃO T2b] Processo {pcb.id} criado (Página 0 no frame {page_table[0]['frame']}, demais NEVER_LOADED)")
+        else:
+            # T2a: Carregar todo o programa
+            self._load_program_to_memory(programa, pcb.page_table)
+            print(f"[CRIAÇÃO] Processo {pcb.id} criado (Frames: {pcb.page_table}, Estado: READY)")
+        
         return pcb.id
 
     def _load_program_to_memory(self, program, page_table):
+        """T2a: Carrega programa completo na memória"""
         tam_pg = self.gm.get_tam_pg()
         for i, instruction in enumerate(program):
             pagina, deslocamento = i // tam_pg, i % tam_pg
-            frame = page_table[pagina]
+            if isinstance(page_table[pagina], dict):
+                frame = page_table[pagina]['frame']
+            else:
+                frame = page_table[pagina]
             endereco_fisico = (frame * tam_pg) + deslocamento
             self.hw.mem.pos[endereco_fisico] = Word(instruction.opc, instruction.ra, instruction.rb, instruction.p)
+    
+    def _load_program_to_memory_t2b(self, program, page_table, load_all=False):
+        """T2b: Carrega apenas primeira página ou todas se load_all=True"""
+        tam_pg = self.gm.get_tam_pg()
+        pages_to_load = len(page_table) if load_all else 1
+        
+        for pagina in range(pages_to_load):
+            if page_table[pagina]['state'] == 'IN_MEMORY':
+                frame = page_table[pagina]['frame']
+                # Carregar instruções desta página
+                for i in range(tam_pg):
+                    prog_idx = pagina * tam_pg + i
+                    if prog_idx < len(program):
+                        instruction = program[prog_idx]
+                        endereco_fisico = frame * tam_pg + i
+                        self.hw.mem.pos[endereco_fisico] = Word(instruction.opc, instruction.ra, instruction.rb, instruction.p)
+                    else:
+                        # Preencher resto com instrução vazia
+                        endereco_fisico = frame * tam_pg + i
+                        self.hw.mem.pos[endereco_fisico] = Word(Opcode.___, -1, -1, -1)
 
     def desaloca_processo(self, proc_id):
         pcb = self._find_pcb(proc_id)
@@ -582,6 +724,205 @@ class IODevice(threading.Thread):
         self.running = False
 
 # ====================================================================================================
+# T2b: DISPOSITIVO DE DISCO (Memória Virtual)
+# Thread que processa pedidos de paginação de forma assíncrona
+# Funcionalidades:
+# - Armazena programas originais (conteúdo inicial das páginas)
+# - Swap space para páginas vitimadas
+# - Simula latência de disco (maior que I/O console)
+# ====================================================================================================
+class DiskDevice(threading.Thread):
+    # Classe interna: Fila de pedidos de disco
+    class SimpleQueue:
+        """Fila thread-safe para pedidos de paginação"""
+        def __init__(self):
+            self.items = []
+            self.lock = threading.Lock()
+            self.not_empty = threading.Condition(self.lock)
+        
+        def put(self, item):
+            """Adiciona pedido na fila"""
+            with self.lock:
+                self.items.append(item)
+                self.not_empty.notify()
+        
+        def get(self, timeout=None):
+            """Remove e retorna pedido da fila. Bloqueia se vazia."""
+            with self.not_empty:
+                if timeout is None:
+                    while not self.items:
+                        self.not_empty.wait()
+                    return self.items.pop(0)
+                else:
+                    if not self.not_empty.wait_for(lambda: len(self.items) > 0, timeout):
+                        raise QueueEmpty()
+                    return self.items.pop(0)
+    
+    def __init__(self, hw, gp, gm, ih):
+        super().__init__(daemon=True, name="DiskDevice")
+        self.hw, self.gp, self.gm, self.ih = hw, gp, gm, ih
+        # Fila de pedidos de disco
+        self.disk_queue = DiskDevice.SimpleQueue()
+        self.running = True
+        # Armazenamento
+        self.programs = {}  # {program_name: [Words]}
+        self.swap_space = {}  # {(process_id, page): [Words]}
+        # Latência de disco (maior que I/O console)
+        self.disk_latency = 3.0
+    
+    def load_program(self, program_name, program_words):
+        """Carrega programa no disco (disponível para paginação)"""
+        self.programs[program_name] = program_words
+        print(f"[DISK] Programa '{program_name}' carregado no disco ({len(program_words)} palavras)")
+    
+    def run(self):
+        print("[DISK] Dispositivo de disco iniciado e aguardando pedidos...")
+        while self.running:
+            try:
+                request = self.disk_queue.get(timeout=0.5)
+                request_type = request['type']
+                
+                if request_type == 'LOAD_PAGE':
+                    self._handle_load_page(request)
+                elif request_type == 'SAVE_AND_LOAD':
+                    self._handle_save_and_load(request)
+                    
+            except QueueEmpty:
+                continue
+            except Exception as e:
+                print(f"[DISK] Erro ao processar pedido: {e}")
+    
+    def load_page(self, process_id, page, frame, page_entry):
+        """Criar pedido para carregar página do disco"""
+        request = {
+            'type': 'LOAD_PAGE',
+            'process_id': process_id,
+            'page': page,
+            'frame': frame,
+            'page_entry': page_entry
+        }
+        self.disk_queue.put(request)
+    
+    def save_and_load_page(self, victim_info, process_id, page, page_entry):
+        """Criar pedido para salvar vítima e carregar página"""
+        request = {
+            'type': 'SAVE_AND_LOAD',
+            'victim_info': victim_info,
+            'process_id': process_id,
+            'page': page,
+            'frame': victim_info['frame'],
+            'page_entry': page_entry
+        }
+        self.disk_queue.put(request)
+    
+    def _handle_load_page(self, request):
+        """Carrega página do disco para memória"""
+        process_id = request['process_id']
+        page = request['page']
+        frame = request['frame']
+        page_entry = request['page_entry']
+        
+        print(f"[DISK] Carregando página {page} do processo {process_id} para frame {frame}...")
+        
+        # Simular latência de disco
+        time.sleep(self.disk_latency)
+        
+        # Copiar dados para memória
+        program_name = page_entry['disk_location']
+        if program_name in self.programs:
+            # Calcular offset da página no programa
+            tam_pg = self.gm.get_tam_pg()
+            start_addr = page * tam_pg
+            program_words = self.programs[program_name]
+            
+            # Copiar palavras da página para o frame
+            for i in range(tam_pg):
+                src_addr = start_addr + i
+                dst_addr = frame * tam_pg + i
+                if src_addr < len(program_words):
+                    self.hw.mem.pos[dst_addr] = program_words[src_addr]
+                else:
+                    # Preencher com instrução vazia se ultrapassar programa
+                    self.hw.mem.pos[dst_addr] = Word(Opcode.___, -1, -1, -1)
+        
+        # Sinalizar CPU que carregamento terminou
+        self.hw.cpu.irpt_page_load_complete = {
+            'process_id': process_id,
+            'page': page,
+            'frame': frame
+        }
+        self.hw.cpu.irpt = Interrupts.INT_PAGE_LOAD_COMPLETE
+        self.ih.handle(Interrupts.INT_PAGE_LOAD_COMPLETE, pc=self.hw.cpu.pc)
+        
+        print(f"[DISK] Página {page} carregada com sucesso no frame {frame}")
+    
+    def _handle_save_and_load(self, request):
+        """Salva página vítima e depois carregar página demandada"""
+        victim_info = request['victim_info']
+        process_id = request['process_id']
+        page = request['page']
+        frame = request['frame']
+        
+        print(f"[DISK] Salvando vítima (Proc {victim_info['process_id']}, Pág {victim_info['page']})...")
+        
+        # Simular latência de salvamento
+        time.sleep(self.disk_latency)
+        
+        # Copiar frame de memória para swap space
+        tam_pg = self.gm.get_tam_pg()
+        victim_data = []
+        for i in range(tam_pg):
+            addr = frame * tam_pg + i
+            victim_data.append(self.hw.mem.pos[addr])
+        
+        # Salvar no swap space
+        swap_key = (victim_info['process_id'], victim_info['page'])
+        self.swap_space[swap_key] = victim_data
+        
+        # Liberar frame
+        self.gm.free_frame(frame)
+        
+        print(f"[DISK] Vítima salva, frame {frame} liberado")
+        
+        # Sinalizar salvamento completo
+        self.hw.cpu.irpt_page_save_complete = {
+            'frame': frame
+        }
+        
+        # Agora carregar a página demandada no frame liberado
+        print(f"[DISK] Carregando página {page} do processo {process_id} no frame {frame}...")
+        time.sleep(self.disk_latency)
+        
+        # Carregar página
+        page_entry = request['page_entry']
+        program_name = page_entry['disk_location']
+        if program_name in self.programs:
+            start_addr = page * tam_pg
+            program_words = self.programs[program_name]
+            
+            for i in range(tam_pg):
+                src_addr = start_addr + i
+                dst_addr = frame * tam_pg + i
+                if src_addr < len(program_words):
+                    self.hw.mem.pos[dst_addr] = program_words[src_addr]
+                else:
+                    self.hw.mem.pos[dst_addr] = Word(Opcode.___, -1, -1, -1)
+        
+        # Sinalizar carregamento completo
+        self.hw.cpu.irpt_page_load_complete = {
+            'process_id': process_id,
+            'page': page,
+            'frame': frame
+        }
+        self.hw.cpu.irpt = Interrupts.INT_PAGE_LOAD_COMPLETE
+        self.ih.handle(Interrupts.INT_PAGE_LOAD_COMPLETE, pc=self.hw.cpu.pc)
+        
+        print(f"[DISK] Página {page} carregada no frame {frame}")
+    
+    def stop(self):
+        self.running = False
+
+# ====================================================================================================
 # THREAD CPU + THREAD ESCALONADOR (T2a - conforme esquema do diagrama)
 # No diagrama aparecem separadas, aqui estão integradas em uma única thread
 # 
@@ -677,12 +1018,30 @@ class Escalonador:
 # ====================================================================================================
 #parteT2 - atualizado
 class InterruptHandling:
-    def __init__(self, cpu, gp):
+    def __init__(self, cpu, gp, gm=None, disk_device=None):
         self.cpu = cpu
         self.gp = gp
+        self.gm = gm  # T2b: Gerente de Memória para page fault
+        self.disk_device = disk_device  # T2b: Dispositivo de disco
 
     def handle(self, irpt, pc):
         print(f"      INTERRUPCAO {irpt.name} (PC Logico: {pc})")
+        
+        # T2b: Tratamento de page fault
+        if irpt == Interrupts.INT_PAGE_FAULT:
+            self.handle_page_fault()
+            return
+        
+        # T2b: Tratamento de salvamento de página completo
+        if irpt == Interrupts.INT_PAGE_SAVE_COMPLETE:
+            self.handle_page_save_complete()
+            return
+        
+        # T2b: Tratamento de carregamento de página completo
+        if irpt == Interrupts.INT_PAGE_LOAD_COMPLETE:
+            self.handle_page_load_complete()
+            return
+        
         if irpt == Interrupts.INT_IO_COMPLETE:
             pid = self.cpu.irpt_io_complete
             if pid is not None:
@@ -703,6 +1062,88 @@ class InterruptHandling:
                     Interrupts.INT_OVERFLOW]:
             if self.cpu.running_process:
                 self.cpu.running_process.state = PCB.ProcessState.FINISHED
+    
+    # ====================================================================================================
+    # T2b: HANDLERS DE MEMÓRIA VIRTUAL
+    # ====================================================================================================
+    
+    def handle_page_fault(self):
+        """Trata page fault: aloca frame ou vitima página"""
+        if not self.cpu.page_fault_info or not self.gm or not self.disk_device:
+            return
+        
+        process_id = self.cpu.page_fault_info['process_id']
+        page_num = self.cpu.page_fault_info['page']
+        pcb = self.gp._find_pcb(process_id)
+        
+        if not pcb:
+            return
+        
+        print(f"      [PAGE FAULT] Processo {process_id}, Página {page_num}")
+        
+        # Tentar alocar frame livre
+        frame = self.gm.allocate_frame_for_page_fault()
+        
+        if frame is not None:
+            # Caso 1: Frame livre disponível
+            print(f"      [PAGE FAULT] Frame {frame} disponível")
+            # Criar pedido para carregar página do disco
+            self.disk_device.load_page(process_id, page_num, frame, pcb.page_table[page_num])
+            # Bloquear processo
+            self.gp.block_process(process_id)
+        else:
+            # Caso 2: Sem frame livre - precisa vitimar
+            victim_info = self.gm.find_victim()
+            if victim_info:
+                print(f"      [PAGE FAULT] Vítima: Proc {victim_info['process_id']}, Pág {victim_info['page']}, Frame {victim_info['frame']}")
+                # Salvar vítima e depois carregar página demandada
+                self.disk_device.save_and_load_page(victim_info, process_id, page_num, pcb.page_table[page_num])
+                # Bloquear processo
+                self.gp.block_process(process_id)
+        
+        # Limpar info do page fault
+        self.cpu.page_fault_info = None
+        self.cpu.irpt = Interrupts.NO_INTERRUPT
+    
+    def handle_page_save_complete(self):
+        """Tratamento após salvar página vítima no disco"""
+        if not self.cpu.irpt_page_save_complete:
+            return
+        
+        save_info = self.cpu.irpt_page_save_complete
+        print(f"      [DISK] Página vítima salva, frame {save_info['frame']} liberado")
+        
+        # O DiskDevice já iniciou o carregamento da página demandada
+        # Apenas limpamos a flag
+        self.cpu.irpt_page_save_complete = None
+        self.cpu.irpt = Interrupts.NO_INTERRUPT
+    
+    def handle_page_load_complete(self):
+        """Tratamento após carregar página do disco"""
+        if not self.cpu.irpt_page_load_complete:
+            return
+        
+        load_info = self.cpu.irpt_page_load_complete
+        process_id = load_info['process_id']
+        page_num = load_info['page']
+        frame = load_info['frame']
+        
+        print(f"      [DISK] Página {page_num} carregada no frame {frame} (Processo {process_id})")
+        
+        # Atualizar tabela de páginas
+        pcb = self.gp._find_pcb(process_id)
+        if pcb and page_num < len(pcb.page_table):
+            pcb.page_table[page_num]['state'] = 'IN_MEMORY'
+            pcb.page_table[page_num]['frame'] = frame
+            # Incrementar PC (pular instrução que causou page fault)
+            pcb.pc += 1
+        
+        # Desbloquear processo
+        self.gp.unblock_process(process_id)
+        
+        # Limpar flag
+        self.cpu.irpt_page_load_complete = None
+        self.cpu.irpt = Interrupts.NO_INTERRUPT
 
 
 # ====================================================================================================
@@ -786,17 +1227,28 @@ class Utilities:
 
 #parteT2 - atualizado
 class SO:
-    def __init__(self, hw, tam_pg, quantum):
+    def __init__(self, hw, tam_pg, quantum, use_virtual_memory=False):
         self.hw = hw
         self.tam_pg = tam_pg
         self.quantum = quantum
+        self.use_virtual_memory = use_virtual_memory
         
         # Estruturas do SO
         self.utils = Utilities()
         self.utils.hw = hw
         self.gm = GerenteMemoria(len(hw.mem.pos), tam_pg)
         self.gp = GerenteProcessos(self.gm, hw, self.utils)
-        self.ih = InterruptHandling(hw.cpu, self.gp)
+        
+        # T2b: Criar DiskDevice se usar memória virtual
+        self.disk_device = None
+        if use_virtual_memory:
+            # Criar InterruptHandling com referências ao GM e DiskDevice
+            self.ih = InterruptHandling(hw.cpu, self.gp, self.gm, None)
+            self.disk_device = DiskDevice(hw, self.gp, self.gm, self.ih)
+            # Atualizar referência do InterruptHandling
+            self.ih.disk_device = self.disk_device
+        else:
+            self.ih = InterruptHandling(hw.cpu, self.gp)
         
         # IMPORTANTE: IODevice (Thread Console) deve ser criado antes de SysCallHandling
         # pois contém a "Fila Pedidos Console" (conforme diagrama)
@@ -1094,10 +1546,16 @@ class Programs:
 # ====================================================================================================
 #parteT2 - atualizado
 class Sistema:
-    def __init__(self, tam_mem, tam_pg, quantum):
+    def __init__(self, tam_mem, tam_pg, quantum, use_virtual_memory=False):
         self.hw = HW(tam_mem)
-        self.so = SO(self.hw, tam_pg, quantum)
+        self.so = SO(self.hw, tam_pg, quantum, use_virtual_memory)
         self.progs = Programs()
+        self.use_virtual_memory = use_virtual_memory
+        
+        # T2b: Carregar programas no disco se usar memória virtual
+        if use_virtual_memory and self.so.disk_device:
+            for prog in self.progs.progs:
+                self.so.disk_device.load_program(prog.name, prog.image)
     
     def run(self):
         print("=" * 60)
@@ -1131,11 +1589,14 @@ class Sistema:
                 
                 if cmd == "start":
                     if not system_started:
-                        # Inicia threads (CPU e I/O Device)
+                        # Inicia threads (CPU, I/O Device e Disk se T2b)
                         self.so.escalonador.start()
                         self.so.io_device.start()
+                        if self.use_virtual_memory and self.so.disk_device:
+                            self.so.disk_device.start()
                         system_started = True
-                        print("[Sistema] Sistema iniciado! Processos serão escalonados automaticamente.")
+                        mode = "T2b (Memória Virtual)" if self.use_virtual_memory else "T2a"
+                        print(f"[Sistema] Sistema iniciado em modo {mode}! Processos serão escalonados automaticamente.")
                     else:
                         print("[Sistema] Sistema já está rodando!")
                 
@@ -1143,6 +1604,8 @@ class Sistema:
                     if system_started:
                         self.so.escalonador.stop()
                         self.so.io_device.stop()
+                        if self.use_virtual_memory and self.so.disk_device:
+                            self.so.disk_device.stop()
                         system_started = False
                         print("[Sistema] Sistema parado!")
                     else:
@@ -1160,7 +1623,12 @@ class Sistema:
                             continue
                         
                         frame_inicial = int(cmd_line[2]) if len(cmd_line) >= 3 else None
-                        proc_id = self.so.gp.cria_processo(programa, frame_inicial)
+                        proc_id = self.so.gp.cria_processo(
+                            programa, 
+                            frame_inicial, 
+                            use_virtual_memory=self.use_virtual_memory,
+                            program_name=programa_nome
+                        )
                         
                         if proc_id != -1 and not system_started:
                             print("Dica: Use 'start' para iniciar o escalonamento!")
@@ -1219,5 +1687,18 @@ class Sistema:
         print("=" * 60)
 
 if __name__ == "__main__":
-    s = Sistema(tam_mem=1024, tam_pg=16, quantum=50)
+    # T2b: Configurar modo de memória
+    # use_virtual_memory=True para T2b (Memória Virtual)
+    # use_virtual_memory=False para T2a (Memória completa)
+    USE_VIRTUAL_MEMORY = False  # Alterar para True para testar T2b
+    
+    # Memória menor para T2b facilita testes de page fault
+    tam_mem = 512 if USE_VIRTUAL_MEMORY else 1024
+    
+    s = Sistema(
+        tam_mem=tam_mem, 
+        tam_pg=16, 
+        quantum=50,
+        use_virtual_memory=USE_VIRTUAL_MEMORY
+    )
     s.run()
