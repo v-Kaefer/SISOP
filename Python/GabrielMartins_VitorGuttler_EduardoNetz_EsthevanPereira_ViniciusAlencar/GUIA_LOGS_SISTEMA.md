@@ -311,6 +311,87 @@ Processo 0 (frame 0) removido.
 
 ---
 
+## Processo NOP (No Operation Process)
+
+### O que é o processo NOP?
+O processo NOP é um programa especial que mantém o sistema operacional ativo e rodando continuamente.
+
+**Características:**
+- **Nome:** `nop`
+- **Função:** Loop infinito executando operações mínimas
+- **Propósito:** Garantir que o sistema nunca fique sem processos para executar
+
+### Por que usar o NOP?
+
+**Problema sem NOP:**
+Se todos os processos terminarem, o escalonador ficaria sem processos na fila de prontos. O sistema pararia de executar e não seria possível adicionar novos processos via CLI.
+
+**Solução com NOP:**
+- O processo NOP fica em loop infinito
+- Sempre há pelo menos um processo na fila de prontos
+- Sistema continua operacional indefinidamente
+- Usuário pode adicionar novos processos a qualquer momento
+- CLI permanece responsiva
+
+### Como usar o processo NOP
+
+```bash
+# Criar o processo NOP para manter o sistema ativo
+[Procs:0 Ready:0 Blocked:0] > new nop
+
+# Iniciar o escalonamento
+[Procs:1 Ready:1 Blocked:0] > start
+
+# Sistema continua rodando - você pode adicionar mais processos
+[Procs:1 Ready:1 Blocked:0] > new fatorial
+[Procs:2 Ready:2 Blocked:0] > new progMinimo
+```
+
+### Comportamento do NOP
+
+**Características de execução:**
+- Executa loop infinito: incrementa contador e volta ao início
+- Consome quantum completo (50 instruções)
+- Retorna ao fim da fila (Round-Robin)
+- Permite que outros processos executem entre suas iterações
+- Nunca finaliza (não tem instrução STOP)
+
+**Logs típicos do NOP:**
+```
+[ESCALONADOR] Processo X selecionado
+[CONTEXTO] Restaurando contexto (PC=1, Quantum=50)
+[QUANTUM EXPIRADO] Processo X - Executou 50/50 instruções
+```
+
+### Quando usar o NOP
+
+**Recomendado:**
+- ✓ Ao iniciar o sistema pela primeira vez
+- ✓ Quando você quer manter o sistema rodando por muito tempo
+- ✓ Para demonstrar escalonamento contínuo
+- ✓ Em ambientes de teste e desenvolvimento
+
+**Não necessário:**
+- Se você vai executar processos continuamente
+- Se vai finalizar o sistema logo após os testes
+- Se tem muitos processos ativos na fila
+
+### Remover o processo NOP
+
+Se desejar parar o processo NOP:
+
+```bash
+# Listar processos para encontrar o PID do NOP
+[Procs:X Ready:Y Blocked:0] > ps
+
+# Remover o processo pelo PID
+[Procs:X Ready:Y Blocked:0] > rm <PID_do_NOP>
+```
+
+**Atenção:** Ao remover o NOP, certifique-se de ter outros processos na fila ou o sistema pode parar de escalonar.
+
+---
+
 **Última atualização:** Novembro 2024  
 **Versão do Sistema:** T2a (Concorrência e I/O Assíncrono)  
 **Documento:** GUIA_LOGS_SISTEMA.md

@@ -69,6 +69,26 @@ O simulador inclui vários programas para teste, como:
 - `fatorial`, `fatorialV2`: Calcula o fatorial de um número.
 - `fibonacci10`, `fibonacciREAD`: Gera a sequência de Fibonacci. A versão `READ` utiliza uma chamada de sistema para ler o tamanho da sequência do usuário.
 - `PC`: Ordena um vetor de números usando o algoritmo Bubble Sort.
+- **`nop`**: Processo NOP (No Operation Process) - Loop infinito que mantém o sistema ativo. Útil para garantir que o sistema continue rodando e aceitando novos processos via CLI. Recomendado iniciar este processo antes de outros para manter o sistema operacional sempre ativo.
+
+### Uso Recomendado do Processo NOP
+
+Para manter o sistema operacional rodando continuamente e permitir a criação de novos processos a qualquer momento:
+
+```bash
+# 1. Criar o processo NOP
+> new nop
+
+# 2. Iniciar o escalonamento
+> start
+
+# 3. O sistema agora está rodando continuamente
+# Você pode adicionar mais processos a qualquer momento
+> new fatorial
+> new fibonacci10
+```
+
+O processo NOP garante que sempre haja pelo menos um processo na fila de prontos, mantendo o sistema operacional ativo e responsivo.
 
 # Implementação da Parte 2 do Trabalho
 

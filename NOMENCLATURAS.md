@@ -145,6 +145,23 @@ Este documento define os principais termos técnicos utilizados no projeto SISOP
 
 ---
 
+### N
+
+**NOP (No Operation Process)**
+- Processo especial que mantém o sistema operacional rodando continuamente.
+- Características:
+  - Loop infinito executando operações mínimas (incremento de contador)
+  - Nunca finaliza (não possui instrução STOP)
+  - Garante que sempre há pelo menos um processo na fila de prontos
+- No SISOP Python: Programa `nop` disponível na biblioteca de programas
+- Uso recomendado:
+  - Criar e iniciar no início da sessão do sistema
+  - Permite que usuário adicione novos processos via CLI a qualquer momento
+  - Evita que sistema pare por falta de processos
+  - Pode ser removido quando não mais necessário
+
+---
+
 ### O
 
 **Opcode (Operation Code)**

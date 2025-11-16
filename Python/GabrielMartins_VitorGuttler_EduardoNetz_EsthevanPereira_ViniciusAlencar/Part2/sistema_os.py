@@ -1061,6 +1061,15 @@ class Programs:
                 Word(Opcode.STOP, -1, -1, -1),
                 # Padding de dados para garantir que o espaço de endereço lógico seja grande o suficiente
                 *([Word(Opcode.DATA, -1, -1, -1)] * 54)
+            ]),
+            
+            # Processo NOP (No Operation Process) - mantém o sistema ativo
+            # Loop infinito que executa operações mínimas, permitindo que o sistema
+            # continue rodando e aceitando novos processos via CLI
+            Program("nop", [
+                Word(Opcode.LDI, 0, -1, 0),      # 0: r0 = 0 (contador)
+                Word(Opcode.ADDI, 0, -1, 1),     # 1: r0 = r0 + 1 (incrementa)
+                Word(Opcode.JMP, -1, -1, 1),     # 2: volta para posição 1 (loop infinito)
             ])
         ]
     
