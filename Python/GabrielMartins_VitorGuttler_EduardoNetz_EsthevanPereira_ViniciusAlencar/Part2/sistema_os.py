@@ -87,9 +87,9 @@ class CPU:
         self.irpt_page_save_complete = None
         self.irpt_page_load_complete = None
         # T2b: Log throttling para processos em loop (como NOP)
-        self.log_slowdown = 2048  # Exibir log a cada 2048 instruções
+        self.log_slowdown = 10.0  # Exibir log a cada 10 segundos
         self.instruction_count_global = 0
-        self.last_logged_at = 0
+        self.last_logged_time = time.time()  # Timestamp do último log
 
     def set_address_of_handlers(self, ih, sys_call):
         self.ih, self.sys_call = ih, sys_call
@@ -153,12 +153,13 @@ class CPU:
     def _should_log_instruction(self):
         """
         T2b: Determina se deve exibir log da instrução atual.
-        Usa log_slowdown para reduzir verbosidade em processos loop (ex: NOP).
+        Usa log_slowdown (em segundos) para reduzir verbosidade em processos loop (ex: NOP).
         """
         self.instruction_count_global += 1
         
-        if self.instruction_count_global - self.last_logged_at >= self.log_slowdown:
-            self.last_logged_at = self.instruction_count_global
+        current_time = time.time()
+        if current_time - self.last_logged_time >= self.log_slowdown:
+            self.last_logged_time = current_time
             return True
         
         return False
@@ -1688,7 +1689,10 @@ class Sistema:
                     self.hw.cpu.debug = not self.hw.cpu.debug
                     status = "ATIVADO" if self.hw.cpu.debug else "DESATIVADO"
                     print(f"[Trace] Modo trace {status}")
-                    print(f"[Trace] Log a cada {self.hw.cpu.log_slowdown} instruções")
+                    if self.hw.cpu.debug:
+                        # Reset timer quando trace é ativado
+                        self.hw.cpu.last_logged_time = time.time()
+                        print(f"[Trace] Log a cada {self.hw.cpu.log_slowdown} segundos")
                 
                 elif cmd == "exit":
                     if system_started:
@@ -1724,7 +1728,7 @@ if __name__ == "__main__":
     s = Sistema(
         tam_mem=tam_mem, 
         tam_pg=16, 
-        quantum=50,
+        quantum=5,
         use_virtual_memory=USE_VIRTUAL_MEMORY
     )
     s.run()
