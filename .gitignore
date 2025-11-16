@@ -2,6 +2,8 @@
 *.png
 *.pdf
 *.pages.pdf
+*.pyc
+__pycache__/
 Guia.md
 Etapa01.md
 Etapa02.md
