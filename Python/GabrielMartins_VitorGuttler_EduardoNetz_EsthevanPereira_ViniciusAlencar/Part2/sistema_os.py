@@ -156,20 +156,19 @@ class CPU:
         """
         T2b: Determina se deve exibir log da instrução atual.
         
-        CORREÇÕES:
-        - Atualiza timer SEMPRE (não só quando loga)
+        Este método SEMPRE roda, independente do modo trace.
+        - Incrementa contador global de instruções
+        - Atualiza timer continuamente
+        - Detecta NOP via flag is_nop (não via ID do frame)
         - Previne múltiplos logs no mesmo quantum
-        - Usa tempo diferente para NOP (10s) vs processos normais (3s)
+        - Usa intervalo diferente: NOP (10s) vs processos normais (3s)
         """
         self.instruction_count_global += 1
         current_time = time.time()
         elapsed = current_time - self.last_logged_time
         
-        # Determinar intervalo baseado no tipo de processo
-        # NOP é detectado por ser um loop infinito pequeno (3 instruções, ID 0)
-        if (self.running_process and 
-            len(self.running_process.page_table) == 1 and 
-            self.running_process.id == 0):
+        # Detectar intervalo baseado na flag is_nop do processo
+        if self.running_process and getattr(self.running_process, "is_nop", False):
             interval = self.log_slowdown_nop  # 10s para NOP
         else:
             interval = self.log_slowdown  # 3s para processos normais
@@ -194,12 +193,17 @@ class CPU:
             if not self._legal(physical_pc): break
             
             self.ir = self.m[physical_pc]
-            # T2b: Log throttling - exibir apenas a cada log_slowdown segundos
-            if self.debug:
-                should_log = self._should_log_instruction()
-                if should_log:
+            # T2b: Throttling sempre ativo, trace controla apenas nível de detalhe
+            should_log = self._should_log_instruction()
+            if should_log:
+                if self.debug:
+                    # Trace ligado: log detalhado
                     print(f"    [Instrução #{self.instruction_count_global}] PC: {self.pc} -> INSTR: ", end="")
                     self.u.dump(self.ir)
+                else:
+                    # Trace desligado: log compacto ou silencioso
+                    # (pode deixar vazio se quiser silêncio total com trace off)
+                    print(f"[CPU] Exec #{self.instruction_count_global} (PC={self.pc})")
             
             opc, ra, rb, p = self.ir.opc, self.ir.ra, self.ir.rb, self.ir.p
             
@@ -290,6 +294,8 @@ class PCB:
         self.pc, self.registers = 0, [0] * 10
         self.page_table = page_table
         self.state = PCB.ProcessState.READY
+        # T2b: Flag para identificar processo NOP de forma robusta
+        self.is_nop = False
     
     @classmethod
     def get_processo_count(cls): return cls._processo_count
@@ -508,6 +514,11 @@ class GerenteProcessos:
             return -1
             
         pcb = PCB(page_table)
+        
+        # T2b: Marcar processo NOP com flag is_nop (detecção robusta)
+        if program_name and program_name.lower() == "nop":
+            pcb.is_nop = True
+        
         with self.lock:
             self.all_processes.append(pcb)
             self.ready_queue.append(pcb)
@@ -1711,14 +1722,18 @@ class Sistema:
                         print("Uso: dumpm <inicio> <fim>")
                 
                 elif cmd == "trace":
-                    # T2b: Comando para ativar/desativar trace (debug)
+                    # T2b: Comando para ativar/desativar trace (nível de detalhe do log)
+                    # Throttling continua ativo independente do trace
                     self.hw.cpu.debug = not self.hw.cpu.debug
                     status = "ATIVADO" if self.hw.cpu.debug else "DESATIVADO"
                     print(f"[Trace] Modo trace {status}")
                     if self.hw.cpu.debug:
-                        # Reset timer quando trace é ativado
+                        # Reset timer e contador quando trace é ativado
                         self.hw.cpu.last_logged_time = time.time()
-                        print(f"[Trace] Log a cada {self.hw.cpu.log_slowdown}s (normal), {self.hw.cpu.log_slowdown_nop}s (NOP)")
+                        self.hw.cpu.last_logged_instruction = self.hw.cpu.instruction_count_global
+                        print(f"[Trace] Log detalhado a cada {self.hw.cpu.log_slowdown}s (normal), {self.hw.cpu.log_slowdown_nop}s (NOP)")
+                    else:
+                        print(f"[Trace] Log compacto continuará a cada {self.hw.cpu.log_slowdown}s (normal), {self.hw.cpu.log_slowdown_nop}s (NOP)")
                 
                 elif cmd == "logtime":
                     # T2b: Ajustar intervalo de log para processos normais
