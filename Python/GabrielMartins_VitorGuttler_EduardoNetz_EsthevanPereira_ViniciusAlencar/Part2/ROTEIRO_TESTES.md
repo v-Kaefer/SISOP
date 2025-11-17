@@ -38,27 +38,24 @@ for entry in tabela_paginas:
 
 ## Testes Executados
 
-### Teste 1: nop > start > new fatorial
+### Teste 1: Execução Básica de Processo (T2b)
 
 **Sequência**:
 ```
-new nop
-start
 new fatorial
+start
 ps
 stats
 exit
 ```
 
 **Resultado (T2b - Memória Virtual)**:
-- ✅ Processo 0 (nop) criado - Página 0 no frame 0 (lazy loading)
+- ✅ Processo 0 (fatorial) criado - Página 0 no frame 0 (lazy loading)
 - ✅ Sistema iniciado em modo T2b (Memória Virtual)
 - ✅ Thread Disk Device iniciada (gerenciamento de paginação)
-- ✅ Processo 1 (fatorial) criado - Página 0 no frame 1
-- ✅ ps mostra 2 processos com estrutura de página T2b:
-  - `[{'state': 'IN_MEMORY', 'frame': 0, 'disk_location': 'nop'}]`
-  - `[{'state': 'IN_MEMORY', 'frame': 1, 'disk_location': 'fatorial'}]`
-- ✅ Ambos processos em READY
+- ✅ ps mostra processo com estrutura de página T2b:
+  - `[{'state': 'IN_MEMORY', 'frame': 0, 'disk_location': 'fatorial'}]`
+- ✅ Processo executa até STOP e termina
 
 **Por que funcionou**: 
 - Memória virtual permite lazy loading (apenas primeira página carregada)
@@ -72,14 +69,14 @@ exit
 
 ---
 
-### Teste 2: new fatorial > start > nop > new fatorial  
+### Teste 2: Múltiplos Processos com Escalonamento (T2a/T2b)
 
 **Sequência**:
 ```
 new fatorial
+new fibonacci10
 start
-new nop
-new fatorial
+new progMinimo
 ps
 stats
 exit
@@ -87,11 +84,11 @@ exit
 
 **Resultado (T2b - Memória Virtual)**:
 - ✅ Processo 0 (fatorial) criado - Frame 0
+- ✅ Processo 1 (fibonacci10) criado - Frame 1
 - ✅ Sistema iniciado em modo T2b
-- ✅ Processo 1 (nop) adicionado - Frame 1
-- ✅ Processo 2 (fatorial) adicionado - Frame 2
-- ✅ ps mostra 3 processos ativos
-- ✅ Todos em estado READY
+- ✅ Processo 2 (progMinimo) adicionado após start - Frame 2
+- ✅ ps mostra processos ativos
+- ✅ Escalonamento Round-Robin funciona corretamente
 
 **Por que funcionou**: Sistema permite adicionar múltiplos processos em qualquer ordem com memória virtual.
 

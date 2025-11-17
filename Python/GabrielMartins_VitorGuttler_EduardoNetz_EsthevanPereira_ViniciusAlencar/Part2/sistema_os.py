@@ -86,9 +86,8 @@ class CPU:
         self.page_fault_info = None
         self.irpt_page_save_complete = None
         self.irpt_page_load_complete = None
-        # T2b: Log throttling configurável para processos em loop (como NOP)
-        self.log_slowdown = 3.0  # Processos normais: 3 segundos
-        self.log_slowdown_nop = 10.0  # Processo NOP: 10 segundos
+        # T2b: Log throttling configurável para evitar spam de logs
+        self.log_slowdown = 3.0  # Intervalo padrão: 3 segundos
         self.instruction_count_global = 0
         self.last_logged_time = time.time()  # Timestamp do último log
         self.last_logged_instruction = 0  # Previne duplicatas no quantum
@@ -159,19 +158,15 @@ class CPU:
         Este método SEMPRE roda, independente do modo trace.
         - Incrementa contador global de instruções
         - Atualiza timer continuamente
-        - Detecta NOP via flag is_nop (não via ID do frame)
         - Previne múltiplos logs no mesmo quantum
-        - Usa intervalo diferente: NOP (10s) vs processos normais (3s)
+        - Usa intervalo padrão de log throttling
         """
         self.instruction_count_global += 1
         current_time = time.time()
         elapsed = current_time - self.last_logged_time
         
-        # Detectar intervalo baseado na flag is_nop do processo
-        if self.running_process and getattr(self.running_process, "is_nop", False):
-            interval = self.log_slowdown_nop  # 10s para NOP
-        else:
-            interval = self.log_slowdown  # 3s para processos normais
+        # Usar intervalo padrão de log throttling
+        interval = self.log_slowdown
         
         # Verificar se passou tempo E se não logamos na instrução anterior
         if (elapsed >= interval and 
@@ -288,12 +283,12 @@ class PCB:
         READY, RUNNING, BLOCKED, FINISHED = range(4)
         
     def __init__(self, page_table):
-        # Handle both T2a (int) and T2b (dict) page table formats
+        # Trata formatos T2a (int) e T2b (dict) da tabela de páginas
         if page_table:
             if isinstance(page_table[0], dict):
-                self.id = page_table[0]['frame']  # T2b: extract frame from dict
+                self.id = page_table[0]['frame']  # T2b: extrai frame do dict
             else:
-                self.id = page_table[0]  # T2a: use frame directly
+                self.id = page_table[0]  # T2a: usa frame diretamente
         else:
             self.id = 0
         PCB._processo_count += 1
@@ -301,8 +296,6 @@ class PCB:
         self.pc, self.registers = 0, [0] * 10
         self.page_table = page_table
         self.state = PCB.ProcessState.READY
-        # T2b: Flag para identificar processo NOP de forma robusta
-        self.is_nop = False
     
     @classmethod
     def get_processo_count(cls): return cls._processo_count
@@ -532,10 +525,6 @@ class GerenteProcessos:
             return -1
             
         pcb = PCB(page_table)
-        
-        # T2b: Marcar processo NOP com flag is_nop (detecção robusta)
-        if program_name and program_name.lower() == "nop":
-            pcb.is_nop = True
         
         with self.lock:
             self.all_processes.append(pcb)
@@ -1674,7 +1663,6 @@ class Sistema:
         print("  stats                   - Estatísticas")
         print("  trace                   - Ativar/desativar trace")
         print("  logtime <tempo>         - Ajustar intervalo log (segundos)")
-        print("  lognop <tempo>          - Ajustar intervalo log NOP (segundos)")
         print("  start                   - Iniciar escalonamento")
         print("  stop                    - Parar escalonamento")
         print("  exit                    - Sair")
@@ -1780,12 +1768,12 @@ class Sistema:
                         # Reset timer e contador quando trace é ativado
                         self.hw.cpu.last_logged_time = time.time()
                         self.hw.cpu.last_logged_instruction = self.hw.cpu.instruction_count_global
-                        print(f"[Trace] Log detalhado a cada {self.hw.cpu.log_slowdown}s (normal), {self.hw.cpu.log_slowdown_nop}s (NOP)")
+                        print(f"[Trace] Log detalhado a cada {self.hw.cpu.log_slowdown}s")
                     else:
-                        print(f"[Trace] Log compacto continuará a cada {self.hw.cpu.log_slowdown}s (normal), {self.hw.cpu.log_slowdown_nop}s (NOP)")
+                        print(f"[Trace] Log compacto continuará a cada {self.hw.cpu.log_slowdown}s")
                 
                 elif cmd == "logtime":
-                    # T2b: Ajustar intervalo de log para processos normais
+                    # T2b: Ajustar intervalo de log
                     if len(cmd_line) > 1:
                         try:
                             new_time = float(cmd_line[1])
@@ -1797,25 +1785,8 @@ class Sistema:
                         except ValueError:
                             print("Erro: Tempo inválido. Use número decimal (ex: 3.0)")
                     else:
-                        print(f"Intervalo atual: {self.hw.cpu.log_slowdown}s (normal), "
-                              f"{self.hw.cpu.log_slowdown_nop}s (NOP)")
+                        print(f"Intervalo atual: {self.hw.cpu.log_slowdown}s")
                         print("Uso: logtime <segundos>")
-                
-                elif cmd == "lognop":
-                    # T2b: Ajustar intervalo de log para processo NOP
-                    if len(cmd_line) > 1:
-                        try:
-                            new_time = float(cmd_line[1])
-                            if new_time > 0:
-                                self.hw.cpu.log_slowdown_nop = new_time
-                                print(f"[Log] Intervalo de log para NOP alterado para: {new_time}s")
-                            else:
-                                print("Erro: Tempo deve ser maior que 0")
-                        except ValueError:
-                            print("Erro: Tempo inválido. Use número decimal (ex: 10.0)")
-                    else:
-                        print(f"Intervalo NOP atual: {self.hw.cpu.log_slowdown_nop}s")
-                        print("Uso: lognop <segundos>")
                 
                 elif cmd == "exit":
                     if system_started:

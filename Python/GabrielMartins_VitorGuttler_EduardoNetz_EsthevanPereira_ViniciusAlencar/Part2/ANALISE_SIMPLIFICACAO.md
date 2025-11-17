@@ -7,36 +7,35 @@ Este documento analisa o código atual do simulador de Sistema Operacional Pytho
 
 ## 1. FUNCIONALIDADES ALÉM DO REQUISITO
 
-### 1.1 Processo NOP com Detecção Especial
+### 1.1 Log Throttling Configurável
 
-**Localização**: Linhas 297-298, 518-520, 89-94, 736-763
+**Localização**: Linhas 88-93, 155-180, 1760-1790
 
 **O que existe**:
 ```python
-# Flag especial para processo NOP
-pcb.is_nop = True
+# Log throttling para evitar spam de logs
+self.log_slowdown = 3.0  # Intervalo padrão: 3 segundos
 
-# Log throttling diferenciado para NOP
-self.log_slowdown = 3.0          # Processos normais: 3 segundos
-self.log_slowdown_nop = 10.0     # Processo NOP: 10 segundos
+# Comando para ajustar intervalo
+logtime <segundos>
 ```
 
-**Requisito do enunciado**: Nenhum. O enunciado não menciona processo NOP.
+**Requisito do enunciado**: Não mencionado. Enunciado não especifica controle de logging.
 
 **Por que foi adicionado**: 
-- Manter sistema sempre ativo para aceitar novos processos (T2a requisito 3)
-- Evitar poluição de logs com processo em loop infinito
-- Facilitar testes e demonstração
+- Evitar poluição de logs em processos de longa execução
+- Facilitar debug sem sobrecarregar terminal
+- Permitir ajuste dinâmico do nível de detalhe
 
 **Poderia ser removido?**: 
-- ❌ **NÃO** - Embora não seja explicitamente requisitado, é necessário para cumprir o requisito 3 do T2a: "SO operante e reativo todo tempo - Interação do Usuário". Sem um processo mantendo o sistema ativo, a fila ficaria vazia após todos processos terminarem.
+- ✅ **SIM** - Funcionalidade auxiliar, não essencial ao requisito
 
 **Alternativa mínima**: 
-- Remover toda lógica de detecção especial de NOP (is_nop, log throttling)
-- Manter apenas o programa NOP como qualquer outro programa
-- Documentar que usuário deve sempre criar um processo de loop infinito primeiro
+- Remover log throttling completamente
+- Remover comando `logtime`
+- Logs sempre exibidos ou sempre silenciosos (conforme trace)
 
-**Economia**: ~100 linhas de código
+**Economia**: ~80 linhas de código
 
 ---
 
@@ -50,7 +49,6 @@ elif cmd == "stats":        # Estatísticas detalhadas
 elif cmd == "memstat":      # Status de memória
 elif cmd == "trace":        # Liga/desliga trace
 elif cmd == "logtime":      # Ajusta intervalo de log
-elif cmd == "lognop":       # Ajusta intervalo de log NOP
 elif cmd == "stop":         # Para escalonamento
 ```
 
@@ -69,24 +67,23 @@ elif cmd == "stop":         # Para escalonamento
 - ✅ `stats` - Estatísticas extras
 - ✅ `memstat` - Status de memória detalhado
 - ✅ `trace` - Debug detalhado
-- ✅ `logtime` / `lognop` - Controle de logging
+- ✅ `logtime` - Controle de logging
 - ✅ `stop` - Parar sistema (enunciado não pede)
 - ⚠️ `rm <id>` - Remover processo (útil mas não requisitado)
 - ⚠️ `dumpm` - Dump de memória física (útil mas não requisitado)
 
-**Economia**: ~150 linhas de código
+**Economia**: ~130 linhas de código
 
 ---
 
 ### 1.3 Sistema de Logging Sofisticado
 
-**Localização**: Linhas 89-95, 736-763
+**Localização**: Linhas 88-93, 155-180
 
 **O que existe**:
 ```python
 # Log throttling configurável
 self.log_slowdown = 3.0
-self.log_slowdown_nop = 10.0
 self.instruction_count_global = 0
 self.last_logged_time = time.time()
 self.last_logged_instruction = 0
@@ -94,9 +91,8 @@ self.last_logged_instruction = 0
 # Lógica complexa de throttling no loop da CPU
 elapsed_time = time.time() - self.last_logged_time
 instructions_diff = self.instruction_count_global - self.last_logged_instruction
-throttle_time = self.log_slowdown_nop if current_proc.is_nop else self.log_slowdown
 
-if elapsed_time >= throttle_time and instructions_diff > 0:
+if elapsed_time >= self.log_slowdown and instructions_diff > 0:
     # Log compacto ou detalhado
 ```
 
@@ -106,7 +102,7 @@ if elapsed_time >= throttle_time and instructions_diff > 0:
 - ✅ SIM - Todo o sistema de throttling
 - ⚠️ Manter logging básico para debug (trace on/off simples)
 
-**Economia**: ~80 linhas de código
+**Economia**: ~60 linhas de código
 
 ---
 
@@ -306,21 +302,18 @@ cmd_line = input("> ")
 
 | Item | Linhas | Crítico? |
 |------|--------|----------|
-| 1. Log throttling NOP | ~100 | Não* |
-| 2. Comandos shell extras | ~150 | Não |
-| 3. Sistema logging sofisticado | ~80 | Não |
-| 4. Estatísticas detalhadas | ~50 | Não |
-| 5. Validações extras | ~30 | Não |
-| 6. Programas extras | ~170 | Não |
-| 7. Frame inicial específico | ~20 | Não |
-| 8. Banner interface | ~30 | Não |
-| 9. Prompt detalhado | ~5 | Não |
-| 10. Simplificação Disk | ~50 | Não |
-| **TOTAL REMOVÍVEL** | **~685** | |
+| 1. Log throttling | ~60 | Não |
+| 2. Comandos shell extras | ~130 | Não |
+| 3. Estatísticas detalhadas | ~50 | Não |
+| 4. Validações extras | ~30 | Não |
+| 5. Programas extras | ~170 | Não |
+| 6. Frame inicial específico | ~20 | Não |
+| 7. Banner interface | ~30 | Não |
+| 8. Prompt detalhado | ~5 | Não |
+| 9. Simplificação Disk | ~50 | Não |
+| **TOTAL REMOVÍVEL** | **~545** | |
 
-**\*** *Necessário para manter sistema ativo (requisito implícito T2a)*
-
-### Versão Mínima: ~1133 linhas (redução de 37%)
+### Versão Mínima: ~1275 linhas (redução de 30%)
 
 ---
 
@@ -375,14 +368,14 @@ cmd_line = input("> ")
 **Objetivo**: Código mais curto e fácil de entender para fins acadêmicos.
 
 **Remover**:
-- Todos comandos extras (stats, memstat, trace, logtime, lognop, stop)
+- Todos comandos extras (stats, memstat, trace, logtime, stop)
 - Sistema de log throttling
 - Estatísticas detalhadas
 - 6 dos 9 programas de teste
 - Validações redundantes
 - Interface elaborada
 
-**Resultado**: ~1100 linhas, foca nos requisitos essenciais.
+**Resultado**: ~1275 linhas, foca nos requisitos essenciais.
 
 ### 4.2 Versão Completa Atual
 **Objetivo**: Sistema robusto e fácil de usar.
