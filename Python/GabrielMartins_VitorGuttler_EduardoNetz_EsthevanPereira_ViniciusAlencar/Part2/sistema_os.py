@@ -361,13 +361,13 @@ class GerenteMemoria:
             for entry in tabela_paginas:
                 # Handle both T2a (int) and T2b (dict) formats
                 if isinstance(entry, dict):
-                    # T2b: extract frame from dict if page is in memory
+                    # T2b: extrai frame do dict se página está em memória
                     if entry.get('state') == 'IN_MEMORY':
                         frame = entry['frame']
                     else:
-                        continue  # Skip pages not in memory
+                        continue  # Pula páginas que não estão em memória
                 else:
-                    # T2a: entry is the frame number directly
+                    # T2a: entry é o número do frame diretamente
                     frame = entry
                 
                 if 0 <= frame < self.num_frames: 
@@ -624,7 +624,7 @@ class GerenteProcessos:
                     frames_str = str(pcb.page_table)
                     tam_pg = self.gm.get_tam_pg()
                     
-                    # Handle both T2a (int) and T2b (dict) page table formats
+                    # Trata formatos T2a (int) e T2b (dict) da tabela de páginas
                     if isinstance(pcb.page_table[0], dict):
                         primeiro_frame = pcb.page_table[0]['frame']
                         ultimo_frame = pcb.page_table[-1]['frame']
@@ -677,7 +677,7 @@ class GerenteProcessos:
             entry = pcb.page_table[page]
             if isinstance(entry, dict):
                 if entry.get('state') != 'IN_MEMORY':
-                    continue  # Skip pages not in memory
+                    continue  # Pula páginas que não estão em memória
                 frame = entry['frame']
             else:
                 frame = entry
