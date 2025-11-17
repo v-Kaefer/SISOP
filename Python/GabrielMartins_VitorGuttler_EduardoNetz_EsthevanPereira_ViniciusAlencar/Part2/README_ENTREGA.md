@@ -172,16 +172,23 @@ ps
 exit
 ```
 
-**Resultado esperado**:
+**Resultado esperado** (verificado em execução real):
 ```
 T2b: Alocado frame 0 para página 0, 0 páginas NEVER_LOADED
 [CRIAÇÃO T2b] Processo 0 criado (Página 0 no frame 0, demais NEVER_LOADED)
 [Sistema] Sistema iniciado em modo T2b (Memória Virtual)!
-[SYSCALL] STOP
+      [SYSCALL] STOP
 [FINALIZAÇÃO] Processo 0 FINALIZOU
+Processo 0 (frame 0) removido.
 
 Lista mostrará: Nenhum processo no sistema (processo terminou)
+Total de processos criados: 1
 ```
+
+**Observações de Logging**:
+- **Sem trace**: Mostra apenas eventos principais (criação, finalização, syscalls)
+- **Com trace**: Mostra detalhes de execução (QUANTUM EXPIRADO, instruções executadas)
+- Sistema mantém logs básicos estáveis mesmo sem trace ativado
 
 **O que verifica**:
 - Lazy loading (apenas página 0 carregada)
@@ -204,21 +211,25 @@ stats
 exit
 ```
 
-**Resultado esperado**:
+**Resultado esperado** (verificado em execução real):
 ```
-3 processos criados
-Sistema inicia escalonamento Round-Robin
-- fatorial: executa e termina (FINISHED)
-- fibonacci10: executa e pode estar RUNNING/READY (mais longo)
-- progMinimo: executa e termina (FINISHED)
+[CRIAÇÃO T2b] Processo 0 criado (Página 0 no frame 0, demais NEVER_LOADED)
+[CRIAÇÃO T2b] Processo 1 criado (Página 0 no frame 1, demais NEVER_LOADED)
+[CRIAÇÃO T2b] Processo 2 criado (Página 0 no frame 2, demais NEVER_LOADED)
+[Sistema] Sistema iniciado em modo T2b (Memória Virtual)!
+
+Durante execução:
+- Round-Robin alterna entre os 3 processos (quantum = 5 instruções)
+- [FINALIZAÇÃO] Processo 1 FINALIZOU (fibonacci10)
+- [FINALIZAÇÃO] Processo 2 FINALIZOU (progMinimo)
+- [FINALIZAÇÃO] Processo 0 FINALIZOU (fatorial)
 
 ps mostrará:
-- Processos terminados não aparecem
-- fibonacci10 pode ainda estar em execução
+  Nenhum processo no sistema (todos terminaram)
 
 stats mostrará:
-- Processos ativos: 1 ou 0 (dependendo do timing)
-- Total criados: 3
+  Processos ativos: 0
+  Total de processos criados: 3
 ```
 
 **O que verifica**:
@@ -267,7 +278,48 @@ stats mostrará total de processos criados: 3
 
 ---
 
-### Teste 4: I/O Assíncrono com Bloqueio (T2a)
+### Teste 4: Comando Trace - Logging Detalhado (T2a/T2b)
+
+**Como executar**:
+```
+new fatorial
+trace
+start
+(observar logs detalhados)
+trace
+(continuar observando - logs reduzidos)
+exit
+```
+
+**Resultado esperado** (verificado em execução real):
+```
+[Trace] Modo trace ATIVADO
+[Trace] Log detalhado a cada 3.0s (normal), 10.0s (NOP)
+
+Com trace ATIVADO:
+  [QUANTUM EXPIRADO] Processo 0 - Executou 5/5 instruções
+  [QUANTUM EXPIRADO] Processo 0 - Executou 5/5 instruções
+  [QUANTUM EXPIRADO] Processo 0 - Executou 5/5 instruções
+  ...detalhes de cada quantum...
+  [SYSCALL] STOP
+  [FINALIZAÇÃO] Processo 0 FINALIZOU
+
+[Trace] Modo trace DESATIVADO
+
+Com trace DESATIVADO:
+  Apenas logs básicos (criação, finalização, syscalls)
+  Sem detalhes de quantum ou instruções individuais
+```
+
+**O que verifica**:
+- Comando trace funciona corretamente (liga/desliga)
+- Modo trace mostra detalhes: QUANTUM EXPIRADO, instruções executadas
+- Sem trace: logs permanecem estáveis e informativos
+- Sistema mantém funcionamento correto em ambos modos
+
+---
+
+### Teste 5: I/O Assíncrono com Bloqueio (T2a)
 
 **Como executar**:
 ```
@@ -297,7 +349,7 @@ Logs mostram:
 
 ---
 
-### Teste 5: Memória Virtual - Lazy Loading (T2b)
+### Teste 6: Memória Virtual - Lazy Loading (T2b)
 
 **Como executar**:
 ```
@@ -326,7 +378,7 @@ Segunda página será carregada sob demanda (page fault)
 
 ---
 
-### Teste 6: Page Fault e Carregamento Sob Demanda (T2b)
+### Teste 7: Page Fault e Carregamento Sob Demanda (T2b)
 
 **Como executar**:
 ```
@@ -356,7 +408,7 @@ Durante execução, se fibonacci10 acessar página 1:
 
 ---
 
-### Teste 7: Vitimização FIFO (T2b com Memória Limitada)
+### Teste 8: Vitimização FIFO (T2b com Memória Limitada)
 
 **Como executar**:
 ```
@@ -390,7 +442,7 @@ Ao criar processos grandes:
 
 ---
 
-### Teste 8: Dump de Processo (T2b)
+### Teste 9: Dump de Processo (T2b)
 
 **Como executar**:
 ```
@@ -425,7 +477,7 @@ Conteúdo da Memória do Processo:
 
 ---
 
-### Teste 9: Memstat - Status de Memória (T2b)
+### Teste 10: Memstat - Status de Memória (T2b)
 
 **Como executar**:
 ```
@@ -456,7 +508,7 @@ Após execuções:
 
 ---
 
-### Teste 10: Programa com Entrada de Usuário (T2a/T2b)
+### Teste 11: Programa com Entrada de Usuário (T2a/T2b)
 
 **Como executar**:
 ```
@@ -494,15 +546,36 @@ Fibonacci de 10 termos é calculado
 | 1 | Execução básica T2b | ✅ Passa |
 | 2 | Escalonamento Round-Robin | ✅ Passa |
 | 3 | Sistema operante (T2a req.) | ✅ Passa |
-| 4 | I/O assíncrono | ✅ Passa |
-| 5 | Lazy loading | ✅ Passa |
-| 6 | Page fault | ✅ Passa |
-| 7 | Vitimização FIFO | ✅ Passa |
-| 8 | Dump de processo | ✅ Passa |
-| 9 | Status de memória | ✅ Passa |
-| 10 | I/O com usuário | ✅ Passa |
+| 4 | **Comando trace (logging)** | ✅ Passa |
+| 5 | I/O assíncrono | ✅ Passa |
+| 6 | Lazy loading | ✅ Passa |
+| 7 | Page fault | ✅ Passa |
+| 8 | Vitimização FIFO | ✅ Passa |
+| 9 | Dump de processo | ✅ Passa |
+| 10 | Status de memória | ✅ Passa |
+| 11 | I/O com usuário | ✅ Passa |
 
-**Todos os testes passam com sucesso**.
+**Todos os 11 testes passam com sucesso**.
+
+### Comportamento de Logging Verificado
+
+**Logs Básicos (Sem Trace)**:
+- ✅ Criação de processos: `[CRIAÇÃO T2b] Processo X criado...`
+- ✅ Finalização: `[FINALIZAÇÃO] Processo X FINALIZOU`
+- ✅ Syscalls: `[SYSCALL] STOP`, `[SYSCALL] WRITE`
+- ✅ Estados do sistema: `[Sistema] Sistema iniciado...`
+- ✅ Dispositivos: `[DISK]`, `[I/O Device]`
+
+**Logs Detalhados (Com Trace)**:
+- ✅ Quantum: `[QUANTUM EXPIRADO] Processo X - Executou Y/Z instruções`
+- ✅ Interrupções: `[INT_IO_COMPLETE]`, `[INT_PAGE_LOAD_COMPLETE]`
+- ✅ Page faults: `[PAGE FAULT] Processo X, Página Y`
+- ✅ Vitimização: `[PAGE FAULT] SEM frames livres - escolhendo vítima`
+
+**Estabilidade**:
+- Sistema mantém logs informativos sem trace
+- Trace adiciona detalhes sem comprometer performance
+- Logs permanecem legíveis em ambos modos
 
 ---
 
