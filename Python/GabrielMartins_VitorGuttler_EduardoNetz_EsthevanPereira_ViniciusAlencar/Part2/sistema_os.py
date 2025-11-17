@@ -1005,8 +1005,10 @@ class CPUThread(threading.Thread):
             pcb = self.escalonador.gp.get_next_ready()
             if pcb is None: continue
             
-            print(f"\n[ESCALONADOR] Processo {pcb.id} selecionado")
-            print(f"[CONTEXTO] Restaurando contexto (PC={pcb.pc}, Quantum={self.escalonador.quantum})")
+            # T2b: Logs de escalonamento apenas se trace estiver ligado
+            if self.cpu.debug:
+                print(f"\n[ESCALONADOR] Processo {pcb.id} selecionado")
+                print(f"[CONTEXTO] Restaurando contexto (PC={pcb.pc}, Quantum={self.escalonador.quantum})")
             
             self.cpu.set_context(pcb)
             instrucoes_antes = self.cpu.instructions_executed
@@ -1017,9 +1019,11 @@ class CPUThread(threading.Thread):
                 print(f"[FINALIZAÇÃO] Processo {pcb.id} FINALIZOU")
                 self.escalonador.gp.desaloca_processo(pcb.id)
             elif pcb.state == PCB.ProcessState.BLOCKED:
-                print(f"[BLOQUEADO] Processo {pcb.id} aguardando I/O")
+                if self.cpu.debug:
+                    print(f"[BLOQUEADO] Processo {pcb.id} aguardando I/O")
             elif pcb.state == PCB.ProcessState.READY:
-                print(f"[QUANTUM EXPIRADO] Processo {pcb.id} - Executou {instrucoes_exec}/{self.escalonador.quantum} instruções")
+                if self.cpu.debug:
+                    print(f"[QUANTUM EXPIRADO] Processo {pcb.id} - Executou {instrucoes_exec}/{self.escalonador.quantum} instruções")
                 self.escalonador.gp.add_ready(pcb)
     
     def stop(self):
