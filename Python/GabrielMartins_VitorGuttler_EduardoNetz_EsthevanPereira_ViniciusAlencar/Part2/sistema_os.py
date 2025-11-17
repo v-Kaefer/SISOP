@@ -288,7 +288,10 @@ class PCB:
         READY, RUNNING, BLOCKED, FINISHED = range(4)
         
     def __init__(self, page_table):
-        self.id = page_table[0] if page_table else 0
+        if isinstance(page_table[0], dict):
+            self.id = page_table[0]['frame']
+        else:
+            self.id = page_table[0]
         PCB._processo_count += 1
         self.processo_number = PCB._processo_count
         self.pc, self.registers = 0, [0] * 10
