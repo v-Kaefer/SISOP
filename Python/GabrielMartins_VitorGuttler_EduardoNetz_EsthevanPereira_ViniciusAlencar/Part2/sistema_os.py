@@ -158,7 +158,9 @@ class CPU:
         self.instruction_count_global += 1
         
         current_time = time.time()
-        if current_time - self.last_logged_time >= self.log_slowdown:
+        elapsed = current_time - self.last_logged_time
+        
+        if elapsed >= self.log_slowdown:
             self.last_logged_time = current_time
             return True
         
@@ -167,16 +169,19 @@ class CPU:
     def run(self, quantum):
         if not self.running_process: return
         self.cpu_stop = False
+        
         while not self.cpu_stop and (self.instructions_executed < quantum or quantum == -1):
             
             physical_pc = self._translate_address(self.pc)
             if not self._legal(physical_pc): break
             
             self.ir = self.m[physical_pc]
-            # T2b: Log throttling - exibir apenas a cada log_slowdown instruções
-            if self.debug and self._should_log_instruction():
-                print(f"    [Instrução #{self.instruction_count_global}] PC: {self.pc} -> INSTR: ", end="")
-                self.u.dump(self.ir)
+            # T2b: Log throttling - exibir apenas a cada log_slowdown segundos
+            if self.debug:
+                should_log = self._should_log_instruction()
+                if should_log:
+                    print(f"    [Instrução #{self.instruction_count_global}] PC: {self.pc} -> INSTR: ", end="")
+                    self.u.dump(self.ir)
             
             opc, ra, rb, p = self.ir.opc, self.ir.ra, self.ir.rb, self.ir.p
             
@@ -231,6 +236,7 @@ class CPU:
                     self.cpu_stop = True
                 self.irpt = Interrupts.NO_INTERRUPT
             self.instructions_executed += 1
+        
         # Isso garante que, se a CPU estiver rodando quando a interrupção chega, o handler também roda pela CPU, mas como o device já terá tratado, será idempotente (sem efeitos colaterais).
         if self.running_process:
             if self.running_process.state == PCB.ProcessState.RUNNING:
