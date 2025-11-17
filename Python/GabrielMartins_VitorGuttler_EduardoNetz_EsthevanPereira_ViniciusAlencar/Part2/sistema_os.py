@@ -288,7 +288,14 @@ class PCB:
         READY, RUNNING, BLOCKED, FINISHED = range(4)
         
     def __init__(self, page_table):
-        self.id = page_table[0] if page_table else 0
+        # Handle both T2a (int) and T2b (dict) page table formats
+        if page_table:
+            if isinstance(page_table[0], dict):
+                self.id = page_table[0]['frame']  # T2b: extract frame from dict
+            else:
+                self.id = page_table[0]  # T2a: use frame directly
+        else:
+            self.id = 0
         PCB._processo_count += 1
         self.processo_number = PCB._processo_count
         self.pc, self.registers = 0, [0] * 10
@@ -616,8 +623,17 @@ class GerenteProcessos:
                 for pcb in sorted(self.all_processes, key=lambda p: p.id):
                     frames_str = str(pcb.page_table)
                     tam_pg = self.gm.get_tam_pg()
-                    inicio_fisico = pcb.page_table[0] * tam_pg
-                    fim_fisico = pcb.page_table[-1] * tam_pg + tam_pg - 1
+                    
+                    # Handle both T2a (int) and T2b (dict) page table formats
+                    if isinstance(pcb.page_table[0], dict):
+                        primeiro_frame = pcb.page_table[0]['frame']
+                        ultimo_frame = pcb.page_table[-1]['frame']
+                    else:
+                        primeiro_frame = pcb.page_table[0]
+                        ultimo_frame = pcb.page_table[-1]
+                    
+                    inicio_fisico = primeiro_frame * tam_pg
+                    fim_fisico = ultimo_frame * tam_pg + tam_pg - 1
                     enderecos_str = f"{inicio_fisico}-{fim_fisico}"
                     print(f"{pcb.id:<3} {pcb.processo_number:<4} {pcb.state.name:<8} {pcb.pc:<3} {frames_str:<20} {enderecos_str}")
             print("-" * 70)
@@ -1798,7 +1814,7 @@ if __name__ == "__main__":
     # T2b: Configurar modo de memória
     # use_virtual_memory=True para T2b (Memória Virtual)
     # use_virtual_memory=False para T2a (Memória completa)
-    USE_VIRTUAL_MEMORY = False  # Alterar para True para testar T2b
+    USE_VIRTUAL_MEMORY = True  # Alterar para True para testar T2b
     
     # Memória menor para T2b facilita testes de page fault
     tam_mem = 512 if USE_VIRTUAL_MEMORY else 1024
