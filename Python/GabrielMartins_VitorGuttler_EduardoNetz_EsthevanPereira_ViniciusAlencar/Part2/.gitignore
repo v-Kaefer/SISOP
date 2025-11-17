@@ -1,0 +1,6 @@
+# Test files
+test_*.py
+test_*.txt
+*_test.txt
+throttle_output.txt
+final_test.txt
