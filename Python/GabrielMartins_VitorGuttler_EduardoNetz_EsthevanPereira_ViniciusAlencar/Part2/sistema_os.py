@@ -365,7 +365,18 @@ class GerenteMemoria:
     
     def desaloca(self, tabela_paginas):
         if tabela_paginas:
-            for frame in tabela_paginas:
+            for entry in tabela_paginas:
+                # Handle both T2a (int) and T2b (dict) formats
+                if isinstance(entry, dict):
+                    # T2b: extract frame from dict if page is in memory
+                    if entry.get('state') == 'IN_MEMORY':
+                        frame = entry['frame']
+                    else:
+                        continue  # Skip pages not in memory
+                else:
+                    # T2a: entry is the frame number directly
+                    frame = entry
+                
                 if 0 <= frame < self.num_frames: 
                     self.free_frames[frame] = True
                     self.frame_to_process[frame] = -1
@@ -653,17 +664,35 @@ class GerenteProcessos:
         print(f"Tabela de Páginas: {pcb.page_table}")
         tam_pg = self.gm.get_tam_pg()
         print(f"\nMapeamento Lógico → Físico:")
-        for i, frame in enumerate(pcb.page_table):
+        for i, entry in enumerate(pcb.page_table):
+            # Handle both T2a (int) and T2b (dict) formats
+            if isinstance(entry, dict):
+                frame = entry.get('frame', -1)
+                state = entry.get('state', 'UNKNOWN')
+                status = f" (Estado: {state})"
+            else:
+                frame = entry
+                status = ""
+            
             log_inicio, log_fim = i * tam_pg, i * tam_pg + tam_pg - 1
             fis_inicio, fis_fim = frame * tam_pg, frame * tam_pg + tam_pg - 1
-            print(f"  Página {i}: Lógico {log_inicio:3d}-{log_fim:3d} → Frame {frame} → Físico {fis_inicio:4d}-{fis_fim:4d}")
+            print(f"  Página {i}: Lógico {log_inicio:3d}-{log_fim:3d} → Frame {frame} → Físico {fis_inicio:4d}-{fis_fim:4d}{status}")
         print(f"\nConteúdo da Memória do Processo:")
         print("-" * 50)
         logical_size = len(pcb.page_table) * tam_pg
         for log_addr in range(min(logical_size, len(pcb.page_table) * tam_pg)):
             page, offset = log_addr // tam_pg, log_addr % tam_pg
             if page >= len(pcb.page_table): continue
-            frame = pcb.page_table[page]
+            
+            # Handle both T2a (int) and T2b (dict) formats
+            entry = pcb.page_table[page]
+            if isinstance(entry, dict):
+                if entry.get('state') != 'IN_MEMORY':
+                    continue  # Skip pages not in memory
+                frame = entry['frame']
+            else:
+                frame = entry
+            
             phys_addr = (frame * tam_pg) + offset
             if phys_addr < len(self.hw.mem.pos):
                 word = self.hw.mem.pos[phys_addr]

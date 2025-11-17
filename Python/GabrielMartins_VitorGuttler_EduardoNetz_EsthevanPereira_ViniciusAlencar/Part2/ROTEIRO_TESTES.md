@@ -8,6 +8,34 @@
 - Tamanho de página: 16 palavras
 - Quantum: 5 instruções
 
+## Bugs Corrigidos (Atualização 2025-11-17)
+
+### Bug #3: GerenteMemoria.desaloca com dict em T2b
+**Sintoma**: `TypeError: '<=' not supported between instances of 'int' and 'dict'`
+
+**Causa**: Método `desaloca()` tentava comparar dict diretamente ao iterar sobre tabela de páginas T2b
+
+**Correção**:
+```python
+for entry in tabela_paginas:
+    if isinstance(entry, dict):
+        if entry.get('state') == 'IN_MEMORY':
+            frame = entry['frame']
+        else:
+            continue
+    else:
+        frame = entry
+```
+
+### Bug #4: dump_processo com dict em T2b
+**Sintoma**: `TypeError` ao tentar multiplicar dict por int no dump
+
+**Causa**: dump_processo tratava frame como int sem verificar se era dict
+
+**Correção**: Adicionada verificação `isinstance(entry, dict)` para extrair frame corretamente
+
+---
+
 ## Testes Executados
 
 ### Teste 1: nop > start > new fatorial
@@ -115,6 +143,55 @@ exit
 
 ---
 
+### Teste 5: Execução Completa com Finalização (Bug Fix Verification)
+
+**Sequência**:
+```
+new fatorial
+start
+(aguardar execução completa)
+ps
+exit
+```
+
+**Resultado (T2b - Memória Virtual)**:
+- ✅ Processo 0 (fatorial) criado
+- ✅ Sistema iniciado
+- ✅ Fatorial executa até SYSCALL STOP
+- ✅ Processo finaliza com mensagem "[FINALIZAÇÃO] Processo 0 FINALIZOU"
+- ✅ **SEM EXCEÇÕES** (bug #3 corrigido)
+- ✅ Memória desalocada corretamente
+- ✅ ps mostra "Nenhum processo no sistema"
+
+**Por que funcionou**: Correção do método `desaloca()` para tratar dicts corretamente em T2b.
+
+---
+
+### Teste 6: Comando dump com T2b (Bug Fix Verification)
+
+**Sequência**:
+```
+new fatorial
+dump 0
+start
+exit
+```
+
+**Resultado (T2b - Memória Virtual)**:
+- ✅ Processo criado
+- ✅ dump 0 mostra informações corretas:
+  ```
+  Estado: READY
+  Tabela de Páginas: [{'state': 'IN_MEMORY', 'frame': 0, 'disk_location': 'fatorial'}]
+  Página 0: Lógico 0-15 → Frame 0 → Físico 0-15 (Estado: IN_MEMORY)
+  ```
+- ✅ **SEM EXCEÇÕES** (bug #4 corrigido)
+- ✅ Conteúdo da memória exibido corretamente
+
+**Por que funcionou**: Correção do método `dump_processo()` para extrair frame de dicts em T2b.
+
+---
+
 ## Diferenças T2a vs T2b Observadas nos Testes
 
 ### T2a (Memória Completa - 1024 palavras)
@@ -161,6 +238,16 @@ exit
   - `frame`: Frame físico (se IN_MEMORY)
   - `disk_location`: Localização no disco
 
+### ✅ Desalocação de Memória (T2b)
+- Sistema corretamente libera frames ao finalizar processos
+- Trata estruturas dict e int corretamente
+- Ignora páginas não carregadas em memória
+
+### ✅ Comando dump (T2b)
+- Exibe corretamente informações de processos T2b
+- Mostra estado de cada página
+- Lista apenas páginas carregadas em memória
+
 ### ⏳ Page Fault (não ocorreu nos testes)
 - Testes rápidos não acessaram páginas além da primeira
 - Para testar: executar fibonacci10 ou PC por tempo suficiente
@@ -201,17 +288,47 @@ else:
     primeiro_frame = pcb.page_table[0]
 ```
 
+### Bug #3: GerenteMemoria.desaloca com dict em T2b ⭐ NOVO
+**Sintoma**: `TypeError: '<=' not supported between instances of 'int' and 'dict'`
+
+**Causa**: Método iterava sobre tabela de páginas assumindo valores int
+
+**Correção**:
+```python
+for entry in tabela_paginas:
+    if isinstance(entry, dict):
+        if entry.get('state') == 'IN_MEMORY':
+            frame = entry['frame']
+        else:
+            continue
+    else:
+        frame = entry
+```
+
+### Bug #4: dump_processo com dict em T2b ⭐ NOVO
+**Sintoma**: `TypeError` ao multiplicar dict por int
+
+**Causa**: Não extraía frame do dict antes de fazer cálculos
+
+**Correção**: Verificação `isinstance(entry, dict)` adicionada em 2 locais
+
 ---
 
 ## Plano de Correção
 
-✅ **Todos bugs corrigidos** - Sistema funcionando corretamente com memória virtual
+✅ **Todos bugs corrigidos** - Sistema funcionando completamente com memória virtual
+
+**Resumo das correções**:
+1. ✅ PCB.__init__ - Trata dict vs int
+2. ✅ list_all_processes - Extrai frame de dict
+3. ✅ GerenteMemoria.desaloca - Trata dict na desalocação
+4. ✅ dump_processo - Extrai frame de dict para dump
 
 ---
 
 ## Próximos Testes Sugeridos (Não Executados)
 
-### Teste 5: Forçar Page Fault
+### Teste 7: Forçar Page Fault
 ```
 new fibonacci10
 start
@@ -219,7 +336,7 @@ start
 ```
 **Esperado**: Page fault ao acessar página 1, carregamento assíncrono, processo bloqueia temporariamente
 
-### Teste 6: Forçar Vitimização
+### Teste 8: Forçar Vitimização
 ```
 (reduzir memória para 256 palavras - 4 frames)
 new PC
@@ -234,17 +351,21 @@ start
 
 ## Conclusão
 
-**Sistema T2b funciona corretamente** para os cenários testados:
+**Sistema T2b funciona completamente** para os cenários testados:
 - ✅ Lazy loading implementado
 - ✅ Disk Device operacional
 - ✅ Estrutura de página estendida funcionando
 - ✅ Compatibilidade com comandos shell mantida
-- ✅ Bugs de incompatibilidade dict/int corrigidos
+- ✅ **4 bugs de incompatibilidade dict/int corrigidos**
+- ✅ Processos finalizam corretamente
+- ✅ Memória desalocada sem erros
+- ✅ Comando dump funciona em T2b
 
-**Todos os 4 testes passaram com memória virtual ativada.**
+**Todos os 6 testes passaram com memória virtual ativada.**
 
 ---
 
 **Data**: 2025-11-17  
 **Versão**: T2b (Memória Virtual Ativada)  
-**Configuração**: `USE_VIRTUAL_MEMORY = True`
+**Configuração**: `USE_VIRTUAL_MEMORY = True`  
+**Última Atualização**: Bugs #3 e #4 corrigidos
