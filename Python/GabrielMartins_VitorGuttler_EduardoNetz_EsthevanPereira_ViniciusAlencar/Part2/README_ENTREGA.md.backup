@@ -102,15 +102,14 @@ Estrutura: `{'state': 'IN_MEMORY', 'frame': 0, 'disk_location': 'programa'}`
    - Usuário deve digitar número quando solicitado
    - Se input não for fornecido, processo permanece bloqueado
 
-2. **Compatibilidade T2a/T2b**: Sistema suporta ambos modos
+2. **Log do Processo NOP**: Processo em loop infinito pode gerar muitos logs
+   - Sistema implementa log throttling (intervalo de 10s para NOP)
+   - Use comando `lognop <segundos>` para ajustar intervalo
+
+3. **Compatibilidade T2a/T2b**: Sistema suporta ambos modos
    - T2a: `USE_VIRTUAL_MEMORY = False` (memória 1024 palavras)
    - T2b: `USE_VIRTUAL_MEMORY = True` (memória 512 palavras)
    - **Atualmente configurado**: T2b (Memória Virtual ativada)
-
-3. **Observação sobre Escalonamento**: Sistema mantém escalonamento ativo
-   - Round-Robin gerencia processos automaticamente
-   - Quantum configurável garante alternância entre processos
-   - Sistema continua funcionando mesmo após processos terminarem
 
 ---
 
@@ -156,6 +155,7 @@ python3 sistema_os.py
 | `fibonacci10` | Fibonacci 10 termos | 2 |
 | `fibonacciREAD` | Fibonacci com entrada usuário | 4 |
 | `PC` | Bubble Sort | 7 |
+| `nop` | Loop infinito (mantém sistema ativo) | 1 |
 
 ---
 
@@ -194,8 +194,8 @@ Lista mostrará: Nenhum processo no sistema (processo terminou)
 
 **Como executar**:
 ```
+new nop
 new fatorial
-new fibonacci10
 new progMinimo
 start
 (aguardar ~3 segundos)
@@ -208,16 +208,16 @@ exit
 ```
 3 processos criados
 Sistema inicia escalonamento Round-Robin
+- nop: permanece READY/RUNNING (loop infinito)
 - fatorial: executa e termina (FINISHED)
-- fibonacci10: executa e pode estar RUNNING/READY (mais longo)
 - progMinimo: executa e termina (FINISHED)
 
 ps mostrará:
-- Processos terminados não aparecem
-- fibonacci10 pode ainda estar em execução
+- Processo 0 (nop): READY ou RUNNING
+- Processos 1 e 2 não aparecem (terminaram)
 
 stats mostrará:
-- Processos ativos: 1 ou 0 (dependendo do timing)
+- Processos ativos: 1
 - Total criados: 3
 ```
 
@@ -225,7 +225,7 @@ stats mostrará:
 - Criação de múltiplos processos
 - Round-Robin funcionando
 - Estados de processo (READY/RUNNING/FINISHED)
-- Quantum garantindo alternância
+- NOP mantém sistema ativo
 
 ---
 
@@ -233,7 +233,7 @@ stats mostrará:
 
 **Como executar**:
 ```
-new progMinimo
+new nop
 start
 (sistema agora está rodando)
 new fatorial
@@ -241,29 +241,25 @@ new fatorial
 new fibonacci10
 (aguardar ~2 segundos)
 ps
-stats
 exit
 ```
 
 **Resultado esperado**:
 ```
 Sistema aceita novos processos após start
-- progMinimo executa rapidamente e termina
+- nop inicia executando
 - fatorial é adicionado dinamicamente e executa
 - fibonacci10 é adicionado e executa
 
 ps mostrará processos ativos:
-- Processos curtos já terminaram
-- fibonacci10 pode estar executando ou terminado (depende do timing)
-
-stats mostrará total de processos criados: 3
+- nop continua rodando
+- fatorial e fibonacci10 podem estar executando ou terminados
 ```
 
 **O que verifica**:
 - Shell aceita comandos enquanto sistema executa
 - Processos criados dinamicamente entram na fila
 - Sistema permanece responsivo
-- Escalonador gerencia processos adicionados após start
 
 ---
 
