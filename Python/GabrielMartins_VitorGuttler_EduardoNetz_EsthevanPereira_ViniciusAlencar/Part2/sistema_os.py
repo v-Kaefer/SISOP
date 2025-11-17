@@ -1798,7 +1798,7 @@ if __name__ == "__main__":
     # T2b: Configurar modo de memória
     # use_virtual_memory=True para T2b (Memória Virtual)
     # use_virtual_memory=False para T2a (Memória completa)
-    USE_VIRTUAL_MEMORY = False  # Alterar para True para testar T2b
+    USE_VIRTUAL_MEMORY = True  # Alterar para True para testar T2b
     
     # Memória menor para T2b facilita testes de page fault
     tam_mem = 512 if USE_VIRTUAL_MEMORY else 1024

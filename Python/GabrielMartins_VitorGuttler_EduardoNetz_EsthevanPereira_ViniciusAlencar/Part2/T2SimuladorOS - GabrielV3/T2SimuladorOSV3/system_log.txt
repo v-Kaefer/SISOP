@@ -1,0 +1,35 @@
+# Log do Sistema - Iniciado em 2025-11-12 17:29:14.953240
+# Formato: ID NomeProg Razao EstadoInicial ProximoEstado TabelaDePaginas
+------------------------------------------------------------------------------------------------------------------------
+  0  fatorial         criacao               nulo        BLOCKED     { [0,_,_], [1,_,_], [2,_,_], [3,_,_] }
+  0  fatorial         carga_inicial         BLOCKED     READY       { [0,0,mp], [1,_,_], [2,_,_], [3,_,_] }
+  0  fatorial         escalonamento         READY       RUNNING     { [0,0,mp], [1,_,_], [2,_,_], [3,_,_] }
+  0  fatorial         syscall_io            RUNNING     BLOCKED     { [0,0,mp], [1,_,_], [2,_,_], [3,_,_] }
+  0  fatorial         retorno_io            BLOCKED     READY       { [0,0,mp], [1,_,_], [2,_,_], [3,_,_] }
+  0  fatorial         escalonamento         READY       RUNNING     { [0,0,mp], [1,_,_], [2,_,_], [3,_,_] }
+  0  fatorial         page_fault            RUNNING     BLOCKED     { [0,0,mp], [1,_,_], [2,_,_], [3,_,_] }
+  0  fatorial         retorno_page_fault    BLOCKED     READY       { [0,0,mp], [1,_,_], [2,_,_], [3,1,mp] }
+  0  fatorial         escalonamento         READY       RUNNING     { [0,0,mp], [1,_,_], [2,_,_], [3,1,mp] }
+  0  fatorial         preempcao_quantum     RUNNING     READY       { [0,0,mp], [1,_,_], [2,_,_], [3,1,mp] }
+  0  fatorial         escalonamento         READY       RUNNING     { [0,0,mp], [1,_,_], [2,_,_], [3,1,mp] }
+  0  fatorial         syscall_io            RUNNING     BLOCKED     { [0,0,mp], [1,_,_], [2,_,_], [3,1,mp] }
+  0  fatorial         retorno_io            BLOCKED     READY       { [0,0,mp], [1,_,_], [2,_,_], [3,1,mp] }
+  0  fatorial         escalonamento         READY       RUNNING     { [0,0,mp], [1,_,_], [2,_,_], [3,1,mp] }
+  0  fatorial         preempcao_quantum     RUNNING     READY       { [0,0,mp], [1,_,_], [2,_,_], [3,1,mp] }
+  0  fatorial         escalonamento         READY       RUNNING     { [0,0,mp], [1,_,_], [2,_,_], [3,1,mp] }
+  0  fatorial         syscall_io            RUNNING     BLOCKED     { [0,0,mp], [1,_,_], [2,_,_], [3,1,mp] }
+  0  fatorial         retorno_io            BLOCKED     READY       { [0,0,mp], [1,_,_], [2,_,_], [3,1,mp] }
+  0  fatorial         escalonamento         READY       RUNNING     { [0,0,mp], [1,_,_], [2,_,_], [3,1,mp] }
+  0  fatorial         preempcao_quantum     RUNNING     READY       { [0,0,mp], [1,_,_], [2,_,_], [3,1,mp] }
+  0  fatorial         escalonamento         READY       RUNNING     { [0,0,mp], [1,_,_], [2,_,_], [3,1,mp] }
+  0  fatorial         syscall_io            RUNNING     BLOCKED     { [0,0,mp], [1,_,_], [2,_,_], [3,1,mp] }
+  0  fatorial         retorno_io            BLOCKED     READY       { [0,0,mp], [1,_,_], [2,_,_], [3,1,mp] }
+  0  fatorial         escalonamento         READY       RUNNING     { [0,0,mp], [1,_,_], [2,_,_], [3,1,mp] }
+  0  fatorial         preempcao_quantum     RUNNING     READY       { [0,0,mp], [1,_,_], [2,_,_], [3,1,mp] }
+  0  fatorial         escalonamento         READY       RUNNING     { [0,0,mp], [1,_,_], [2,_,_], [3,1,mp] }
+  0  fatorial         syscall_io            RUNNING     BLOCKED     { [0,0,mp], [1,_,_], [2,_,_], [3,1,mp] }
+  0  fatorial         retorno_io            BLOCKED     READY       { [0,0,mp], [1,_,_], [2,_,_], [3,1,mp] }
+  0  fatorial         escalonamento         READY       RUNNING     { [0,0,mp], [1,_,_], [2,_,_], [3,1,mp] }
+  0  fatorial         preempcao_quantum     RUNNING     READY       { [0,0,mp], [1,_,_], [2,_,_], [3,1,mp] }
+  0  fatorial         escalonamento         READY       RUNNING     { [0,0,mp], [1,_,_], [2,_,_], [3,1,mp] }
+  0  fatorial         syscall_io            RUNNING     BLOCKED     { [0,0,mp], [1,_,_], [2,_,_], [3,1,mp] }
