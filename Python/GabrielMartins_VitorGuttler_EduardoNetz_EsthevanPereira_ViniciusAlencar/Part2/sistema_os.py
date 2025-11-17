@@ -86,10 +86,12 @@ class CPU:
         self.page_fault_info = None
         self.irpt_page_save_complete = None
         self.irpt_page_load_complete = None
-        # T2b: Log throttling para processos em loop (como NOP)
-        self.log_slowdown = 10.0  # Exibir log a cada 10 segundos
+        # T2b: Log throttling configurável para processos em loop (como NOP)
+        self.log_slowdown = 3.0  # Processos normais: 3 segundos
+        self.log_slowdown_nop = 10.0  # Processo NOP: 10 segundos
         self.instruction_count_global = 0
         self.last_logged_time = time.time()  # Timestamp do último log
+        self.last_logged_instruction = 0  # Previne duplicatas no quantum
 
     def set_address_of_handlers(self, ih, sys_call):
         self.ih, self.sys_call = ih, sys_call
@@ -153,15 +155,31 @@ class CPU:
     def _should_log_instruction(self):
         """
         T2b: Determina se deve exibir log da instrução atual.
-        Usa log_slowdown (em segundos) para reduzir verbosidade em processos loop (ex: NOP).
+        
+        CORREÇÕES:
+        - Atualiza timer SEMPRE (não só quando loga)
+        - Previne múltiplos logs no mesmo quantum
+        - Usa tempo diferente para NOP (10s) vs processos normais (3s)
         """
         self.instruction_count_global += 1
-        
         current_time = time.time()
         elapsed = current_time - self.last_logged_time
         
-        if elapsed >= self.log_slowdown:
+        # Determinar intervalo baseado no tipo de processo
+        # NOP é detectado por ser um loop infinito pequeno (3 instruções, ID 0)
+        if (self.running_process and 
+            len(self.running_process.page_table) == 1 and 
+            self.running_process.id == 0):
+            interval = self.log_slowdown_nop  # 10s para NOP
+        else:
+            interval = self.log_slowdown  # 3s para processos normais
+        
+        # Verificar se passou tempo E se não logamos na instrução anterior
+        if (elapsed >= interval and 
+            self.instruction_count_global > self.last_logged_instruction + 1):
+            
             self.last_logged_time = current_time
+            self.last_logged_instruction = self.instruction_count_global
             return True
         
         return False
@@ -1595,6 +1613,8 @@ class Sistema:
         print("  memstat                 - Status memória")
         print("  stats                   - Estatísticas")
         print("  trace                   - Ativar/desativar trace")
+        print("  logtime <tempo>         - Ajustar intervalo log (segundos)")
+        print("  lognop <tempo>          - Ajustar intervalo log NOP (segundos)")
         print("  start                   - Iniciar escalonamento")
         print("  stop                    - Parar escalonamento")
         print("  exit                    - Sair")
@@ -1698,7 +1718,40 @@ class Sistema:
                     if self.hw.cpu.debug:
                         # Reset timer quando trace é ativado
                         self.hw.cpu.last_logged_time = time.time()
-                        print(f"[Trace] Log a cada {self.hw.cpu.log_slowdown} segundos")
+                        print(f"[Trace] Log a cada {self.hw.cpu.log_slowdown}s (normal), {self.hw.cpu.log_slowdown_nop}s (NOP)")
+                
+                elif cmd == "logtime":
+                    # T2b: Ajustar intervalo de log para processos normais
+                    if len(cmd_line) > 1:
+                        try:
+                            new_time = float(cmd_line[1])
+                            if new_time > 0:
+                                self.hw.cpu.log_slowdown = new_time
+                                print(f"[Log] Intervalo de log alterado para: {new_time}s")
+                            else:
+                                print("Erro: Tempo deve ser maior que 0")
+                        except ValueError:
+                            print("Erro: Tempo inválido. Use número decimal (ex: 3.0)")
+                    else:
+                        print(f"Intervalo atual: {self.hw.cpu.log_slowdown}s (normal), "
+                              f"{self.hw.cpu.log_slowdown_nop}s (NOP)")
+                        print("Uso: logtime <segundos>")
+                
+                elif cmd == "lognop":
+                    # T2b: Ajustar intervalo de log para processo NOP
+                    if len(cmd_line) > 1:
+                        try:
+                            new_time = float(cmd_line[1])
+                            if new_time > 0:
+                                self.hw.cpu.log_slowdown_nop = new_time
+                                print(f"[Log] Intervalo de log para NOP alterado para: {new_time}s")
+                            else:
+                                print("Erro: Tempo deve ser maior que 0")
+                        except ValueError:
+                            print("Erro: Tempo inválido. Use número decimal (ex: 10.0)")
+                    else:
+                        print(f"Intervalo NOP atual: {self.hw.cpu.log_slowdown_nop}s")
+                        print("Uso: lognop <segundos>")
                 
                 elif cmd == "exit":
                     if system_started:
