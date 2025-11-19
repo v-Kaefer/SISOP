@@ -116,6 +116,18 @@ class CPU:
         if 0 <= e < len(self.m): return True
         self.irpt = Interrupts.INT_ENDERECO_INVALIDO
         return False
+    
+    # Combina tradução e verificação legal, respeitando interrupções de tradução
+    def _translate_and_check(self, logical_addr):
+        """Traduz endereço e verifica legalidade, preservando interrupções de tradução"""
+        physical_addr = self._translate_address(logical_addr)
+        # Se tradução já gerou interrupção (ex: PAGE_FAULT), não sobrescrever
+        if self.irpt != Interrupts.NO_INTERRUPT:
+            return -1
+        # Senão, verificar legalidade normalmente
+        if not self._legal(physical_addr):
+            return -1
+        return physical_addr
 
     # Mapeamento de endereço lógico para físico (esquema de paginação - T1 e T2b)
     # T2b: Adiciona verificação de estado da página (IN_MEMORY, NEVER_LOADED, SWAPPED)
@@ -126,6 +138,7 @@ class CPU:
             return -1
         tam_pg = self.gm.get_tam_pg()
         page, offset = logical_address // tam_pg, logical_address % tam_pg
+        
         if not (0 <= page < len(self.running_process.page_table)):
             self.irpt = Interrupts.INT_ENDERECO_INVALIDO
             return -1
@@ -185,7 +198,9 @@ class CPU:
         while not self.cpu_stop and (self.instructions_executed < quantum or quantum == -1):
             
             physical_pc = self._translate_address(self.pc)
-            if not self._legal(physical_pc): break
+            # Não chamar _legal se _translate_address já definiu uma interrupção (ex: PAGE_FAULT)
+            if self.irpt != Interrupts.NO_INTERRUPT or not self._legal(physical_pc): 
+                break
             
             self.ir = self.m[physical_pc]
             # T2b: Throttling sempre ativo, trace controla apenas nível de detalhe
@@ -204,17 +219,17 @@ class CPU:
             
             if opc == Opcode.LDI: self.reg[ra] = p; self.pc += 1
             elif opc == Opcode.LDD:
-                addr = self._translate_address(p)
-                if self._legal(addr): self.reg[ra] = self.m[addr].p; self.pc += 1
+                addr = self._translate_and_check(p)
+                if addr >= 0: self.reg[ra] = self.m[addr].p; self.pc += 1
             elif opc == Opcode.LDX:
-                addr = self._translate_address(self.reg[rb])
-                if self._legal(addr): self.reg[ra] = self.m[addr].p; self.pc += 1
+                addr = self._translate_and_check(self.reg[rb])
+                if addr >= 0: self.reg[ra] = self.m[addr].p; self.pc += 1
             elif opc == Opcode.STD:
-                addr = self._translate_address(p)
-                if self._legal(addr): self.m[addr] = Word(Opcode.DATA, -1, -1, self.reg[ra]); self.pc += 1
+                addr = self._translate_and_check(p)
+                if addr >= 0: self.m[addr] = Word(Opcode.DATA, -1, -1, self.reg[ra]); self.pc += 1
             elif opc == Opcode.STX:
-                addr = self._translate_address(self.reg[ra])
-                if self._legal(addr): self.m[addr] = Word(Opcode.DATA, -1, -1, self.reg[rb]); self.pc += 1
+                addr = self._translate_and_check(self.reg[ra])
+                if addr >= 0: self.m[addr] = Word(Opcode.DATA, -1, -1, self.reg[rb]); self.pc += 1
             elif opc == Opcode.MOVE: self.reg[ra] = self.reg[rb]; self.pc += 1
             elif opc == Opcode.ADD: self.reg[ra] += self.reg[rb]; self._test_overflow(self.reg[ra]); self.pc += 1
             elif opc == Opcode.ADDI: self.reg[ra] += p; self._test_overflow(self.reg[ra]); self.pc += 1
@@ -223,8 +238,8 @@ class CPU:
             elif opc == Opcode.MULT: self.reg[ra] *= self.reg[rb]; self._test_overflow(self.reg[ra]); self.pc += 1
             elif opc == Opcode.JMP: self.pc = p
             elif opc == Opcode.JMPIM:
-                addr = self._translate_address(p)
-                if self._legal(addr): self.pc = self.m[addr].p
+                addr = self._translate_and_check(p)
+                if addr >= 0: self.pc = self.m[addr].p
             elif opc == Opcode.JMPIG: self.pc = self.reg[ra] if self.reg[rb] > 0 else self.pc + 1
             elif opc == Opcode.JMPIGK: self.pc = p if self.reg[rb] > 0 else self.pc + 1
             elif opc == Opcode.JMPILK: self.pc = p if self.reg[rb] < 0 else self.pc + 1
@@ -232,14 +247,14 @@ class CPU:
             elif opc == Opcode.JMPIL: self.pc = self.reg[ra] if self.reg[rb] < 0 else self.pc + 1
             elif opc == Opcode.JMPIE: self.pc = self.reg[ra] if self.reg[rb] == 0 else self.pc + 1
             elif opc == Opcode.JMPIGM:
-                addr = self._translate_address(p)
-                if self._legal(addr): self.pc = self.m[addr].p if self.reg[rb] > 0 else self.pc + 1
+                addr = self._translate_and_check(p)
+                if addr >= 0: self.pc = self.m[addr].p if self.reg[rb] > 0 else self.pc + 1
             elif opc == Opcode.JMPILM:
-                addr = self._translate_address(p)
-                if self._legal(addr): self.pc = self.m[addr].p if self.reg[rb] < 0 else self.pc + 1
+                addr = self._translate_and_check(p)
+                if addr >= 0: self.pc = self.m[addr].p if self.reg[rb] < 0 else self.pc + 1
             elif opc == Opcode.JMPIEM:
-                addr = self._translate_address(p)
-                if self._legal(addr): self.pc = self.m[addr].p if self.reg[rb] == 0 else self.pc + 1
+                addr = self._translate_and_check(p)
+                if addr >= 0: self.pc = self.m[addr].p if self.reg[rb] == 0 else self.pc + 1
             elif opc == Opcode.JMPIGT: self.pc = p if self.reg[ra] > self.reg[rb] else self.pc + 1
             elif opc == Opcode.SYSCALL:
                 self.sys_call.handle()
@@ -639,8 +654,15 @@ class GerenteProcessos:
                     
                     # Trata formatos T2a (int) e T2b (dict) da tabela de páginas
                     if isinstance(pcb.page_table[0], dict):
-                        primeiro_frame = pcb.page_table[0]['frame']
-                        ultimo_frame = pcb.page_table[-1]['frame']
+                        primeiro_frame = pcb.page_table[0].get('frame')
+                        # Para último frame, procurar última página IN_MEMORY
+                        ultimo_frame = None
+                        for page_entry in reversed(pcb.page_table):
+                            if isinstance(page_entry, dict) and page_entry.get('state') == 'IN_MEMORY':
+                                ultimo_frame = page_entry.get('frame')
+                                break
+                        if ultimo_frame is None:
+                            ultimo_frame = primeiro_frame  # Fallback: usar primeiro
                     else:
                         primeiro_frame = pcb.page_table[0]
                         ultimo_frame = pcb.page_table[-1]
@@ -1196,7 +1218,7 @@ class InterruptHandling:
             # Criar pedido para carregar página do disco
             self.disk_device.load_page(process_id, page_num, frame, pcb.page_table[page_num])
             # Bloquear processo
-            self.gp.block_process(process_id)
+            self.gp.block_process(pcb)
         else:
             # Caso 2: Sem frame livre - precisa vitimar
             victim_info = self.gm.find_victim()
@@ -1205,7 +1227,7 @@ class InterruptHandling:
                 # Salvar vítima e depois carregar página demandada
                 self.disk_device.save_and_load_page(victim_info, process_id, page_num, pcb.page_table[page_num])
                 # Bloquear processo
-                self.gp.block_process(process_id)
+                self.gp.block_process(pcb)
         
         # Limpar info do page fault
         self.cpu.page_fault_info = None
