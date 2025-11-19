@@ -573,7 +573,20 @@ class GerenteProcessos:
                         endereco_fisico = frame * tam_pg + i
                         self.hw.mem.pos[endereco_fisico] = Word(Opcode.___, -1, -1, -1)
 
+    def remove_processo_from_queues(self, proc_id):
+        """Remove processo das filas mas mantém memória alocada"""
+        pcb = self._find_pcb(proc_id)
+        if pcb:
+            with self.lock:
+                # Remove das filas de execução mas NÃO desaloca memória
+                if pcb in self.ready_queue: self.ready_queue.remove(pcb)
+                if pcb in self.blocked_queue: self.blocked_queue.remove(pcb)
+                # Mantém em all_processes para preservar histórico
+            print(f"Processo {proc_id} finalizado (memória mantida).")
+        else: print(f"Erro: Processo com ID {proc_id} não encontrado.")
+    
     def desaloca_processo(self, proc_id):
+        """Desaloca processo completamente (memória + filas) - usado apenas em comandos manuais"""
         pcb = self._find_pcb(proc_id)
         if pcb:
             with self.lock:
@@ -1051,7 +1064,8 @@ class CPUThread(threading.Thread):
             
             if pcb.state == PCB.ProcessState.FINISHED:
                 print(f"[FINALIZAÇÃO] Processo {pcb.id} FINALIZOU")
-                self.escalonador.gp.desaloca_processo(pcb.id)
+                # Não desaloca memória - processo finalizado mantém conteúdo em memória
+                self.escalonador.gp.remove_processo_from_queues(pcb.id)
             elif pcb.state == PCB.ProcessState.BLOCKED:
                 if self.cpu.debug:
                     print(f"[BLOQUEADO] Processo {pcb.id} aguardando I/O")
