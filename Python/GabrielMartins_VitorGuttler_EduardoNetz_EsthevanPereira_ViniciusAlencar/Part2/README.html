@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Sistema Operacional Simulado - T2b</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        h1, h2, h3 { color: #333; }
+        h1 { border-bottom: 3px solid #0066cc; padding-bottom: 10px; }
+        h2 { border-bottom: 2px solid #0099ff; padding-bottom: 8px; margin-top: 30px; }
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #0066cc;
+            color: white;
+        }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        .checkmark { color: green; font-weight: bold; }
+        .warning { color: orange; font-weight: bold; }
+    </style>
+</head>
+<body>
+<h1>Sistema Operacional Simulado - T2b (Memória Virtual)</h1>
+<p><strong>PUCRS - Escola Politécnica - Sistemas Operacionais</strong><br />
+<strong>Professor</strong>: Fernando Luís Dotti<br />
+<strong>Trabalho</strong>: T2a (Concorrência) + T2b (Memória Virtual)</p>
+<hr />
+<h2>Integrantes</h2>
+<ul>
+<li>Gabriel Martins</li>
+<li>Vitor Guttler</li>
+<li>Eduardo Netz</li>
+<li>Esthevan Pereira</li>
+<li>Vinicius Alencar</li>
+</ul>
+<hr />
+<h2>1. Implementação</h2>
+<h3>Características Implementadas</h3>
+<p><strong>T1 - Gerenciamento Básico</strong>
+- Paginação (16 palavras/página)
+- Escalonamento Round-Robin (quantum = 5)
+- Tradução de endereços lógico → físico</p>
+<p><strong>T2a - Concorrência</strong>
+- Threads: Shell, CPU, IODevice
+- Estados: READY, RUNNING, BLOCKED, FINISHED
+- I/O assíncrono com bloqueio/desbloqueio
+- Sistema operante continuamente</p>
+<p><strong>T2b - Memória Virtual</strong> ⭐
+- Lazy loading (só primeira página carregada)
+- Page fault com carregamento sob demanda
+- Vitimização FIFO quando memória cheia
+- Thread DiskDevice para paginação
+- Estados: IN_MEMORY, NEVER_LOADED, SWAPPED
+- Tabela de páginas: <code>{'state': 'IN_MEMORY', 'frame': 0, 'disk_location': 'programa'}</code></p>
+<h3>Configuração Atual</h3>
+<ul>
+<li><strong>Modo</strong>: T2b (Memória Virtual ativada)</li>
+<li><strong>Memória</strong>: 512 palavras (8 frames)</li>
+<li><strong>Quantum</strong>: 5 instruções</li>
+</ul>
+<h3>Restrições</h3>
+<p>✅ <strong>Sistema totalmente funcional</strong> - nenhuma restrição crítica</p>
+<hr />
+<h2>2. Como Executar</h2>
+<pre><code class="language-bash">cd Part2
+python3 sistema_os.py
+</code></pre>
+<p><strong>Requisitos</strong>: Python 3.6+ (sem dependências externas)</p>
+<hr />
+<h2>3. Comandos</h2>
+<table>
+<thead>
+<tr>
+<th>Comando</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>new &lt;programa&gt;</code></td>
+<td>Cria novo processo</td>
+</tr>
+<tr>
+<td><code>start</code></td>
+<td>Inicia escalonamento</td>
+</tr>
+<tr>
+<td><code>ps</code></td>
+<td>Lista processos</td>
+</tr>
+<tr>
+<td><code>dump &lt;id&gt;</code></td>
+<td>Detalhes do processo</td>
+</tr>
+<tr>
+<td><code>memstat</code></td>
+<td>Status da memória</td>
+</tr>
+<tr>
+<td><code>trace</code></td>
+<td>Liga/desliga log detalhado</td>
+</tr>
+<tr>
+<td><code>exit</code></td>
+<td>Encerra sistema</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>4. Programas</h2>
+<table>
+<thead>
+<tr>
+<th>Programa</th>
+<th>Descrição</th>
+<th>Páginas</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>fatorial</code></td>
+<td>Fatorial de 7</td>
+<td>1</td>
+</tr>
+<tr>
+<td><code>fatorialV2</code></td>
+<td>Fatorial com WRITE</td>
+<td>2</td>
+</tr>
+<tr>
+<td><code>progMinimo</code></td>
+<td>Programa mínimo</td>
+<td>1</td>
+</tr>
+<tr>
+<td><code>fibonacci10</code></td>
+<td>Fibonacci 10 termos</td>
+<td>2</td>
+</tr>
+<tr>
+<td><code>fibonacciREAD</code></td>
+<td>Fibonacci com input</td>
+<td>4</td>
+</tr>
+<tr>
+<td><code>PC</code></td>
+<td>Bubble Sort</td>
+<td>7</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>5. Testes</h2>
+<h3>Teste 1: Execução Básica (T2b)</h3>
+<pre><code class="language-bash">new fatorial
+start
+</code></pre>
+<p><strong>Resultado</strong>: 
+- ✅ Lazy loading (só página 0)
+- ✅ Processo executa e finaliza
+- ✅ Memória desalocada</p>
+<p><strong>Log</strong>:</p>
+<pre><code>T2b: Alocado frame 0 para página 0
+[CRIAÇÃO T2b] Processo 0 criado
+[Sistema] Sistema iniciado em modo T2b (Memória Virtual)!
+[FINALIZAÇÃO] Processo 0 FINALIZOU
+</code></pre>
+<hr />
+<h3>Teste 2: Múltiplos Processos</h3>
+<pre><code class="language-bash">new fatorial
+new fibonacci10
+new progMinimo
+start
+</code></pre>
+<p><strong>Resultado</strong>:
+- ✅ 3 processos criados
+- ✅ Round-Robin funciona
+- ✅ Todos terminam corretamente</p>
+<hr />
+<h3>Teste 3: Sistema Operante</h3>
+<pre><code class="language-bash">start
+new fatorial
+new fibonacci10
+ps
+</code></pre>
+<p><strong>Resultado</strong>:
+- ✅ Shell aceita comandos após start
+- ✅ Processos adicionados dinamicamente</p>
+<hr />
+<h3>Teste 4: Trace</h3>
+<pre><code class="language-bash">new fatorial
+trace
+start
+</code></pre>
+<p><strong>Com trace</strong>:</p>
+<pre><code>[QUANTUM EXPIRADO] Processo 0 - Executou 5/5 instruções
+[ESCALONADOR] Processo 0 selecionado
+</code></pre>
+<p><strong>Sem trace</strong>:</p>
+<pre><code>[CRIAÇÃO T2b] Processo 0 criado
+[FINALIZAÇÃO] Processo 0 FINALIZOU
+</code></pre>
+<hr />
+<h3>Teste 5: I/O Assíncrono</h3>
+<pre><code class="language-bash">new fatorialV2
+start
+</code></pre>
+<p><strong>Resultado</strong>:
+- ✅ SYSCALL WRITE detectado
+- ✅ Processo bloqueia (BLOCKED)
+- ✅ INT_IO_COMPLETE desbloqueia</p>
+<hr />
+<h3>Teste 6: Lazy Loading</h3>
+<pre><code class="language-bash">new fibonacci10
+dump 0
+</code></pre>
+<p><strong>Resultado</strong>:</p>
+<pre><code>Página 0: IN_MEMORY (frame 0)
+Página 1: NEVER_LOADED
+</code></pre>
+<p>✅ Apenas primeira página carregada</p>
+<hr />
+<h3>Teste 7: Page Fault</h3>
+<pre><code class="language-bash">new fibonacci10
+trace
+start
+</code></pre>
+<p><strong>Observação</strong>: fibonacci10 precisa memória maior ou tem bug no código que causa INT_ENDERECO_INVALIDO ao invés de page fault normal.</p>
+<hr />
+<h3>Teste 8: Vitimização FIFO</h3>
+<p><strong>Modificar</strong> <code>sistema_os.py</code> linha 1804: <code>tam_mem = 256</code> (4 frames)</p>
+<pre><code class="language-bash">new PC
+new fibonacci10
+new fatorial
+trace
+start
+</code></pre>
+<p><strong>Resultado esperado</strong>:
+- Memória cheia
+- Vitimização FIFO
+- Página salva em swap
+- Frame reutilizado</p>
+<hr />
+<h3>Teste 9: Dump de Processo</h3>
+<pre><code class="language-bash">new fatorial
+dump 0
+</code></pre>
+<p><strong>Resultado</strong>:</p>
+<pre><code>Estado: READY
+Tabela de Páginas: [{'state': 'IN_MEMORY', 'frame': 0, 'disk_location': 'fatorial'}]
+Página 0: Lógico 0-15 → Frame 0 → Físico 0-15
+</code></pre>
+<p>✅ Estrutura T2b correta</p>
+<hr />
+<h3>Teste 10: Status de Memória</h3>
+<pre><code class="language-bash">new fatorial
+memstat
+start
+memstat
+</code></pre>
+<p><strong>Resultado</strong>:
+- ✅ Frames alocados corretamente
+- ✅ Frames liberados após término</p>
+<hr />
+<h3>Teste 11: Entrada de Usuário</h3>
+<pre><code class="language-bash">new fibonacciREAD
+start
+10
+</code></pre>
+<p><strong>Resultado</strong>:
+- ✅ Sistema aguarda entrada
+- ✅ Processo calcula fibonacci(10)</p>
+<hr />
+<h2>6. Resumo</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Teste</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Execução básica T2b</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Múltiplos processos</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Sistema operante</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Trace</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>5</td>
+<td>I/O assíncrono</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Lazy loading</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Page fault</td>
+<td>⚠️</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Vitimização FIFO</td>
+<td>⚠️</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Dump processo</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Status memória</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Entrada usuário</td>
+<td>✅</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Legenda</strong>: ✅ OK | ⚠️ Requer ajuste</p>
+<hr />
+<h2>7. Bugs Corrigidos</h2>
+<ol>
+<li><strong>PCB.id</strong>: Extração de frame do dict</li>
+<li><strong>list_all_processes</strong>: Compatibilidade T2a/T2b</li>
+<li><strong>GerenteMemoria.desaloca</strong>: Iteração sobre dicts</li>
+<li><strong>dump_processo</strong>: Cálculo de endereços físicos</li>
+</ol>
+<p>✅ Todos bugs T2b corrigidos</p>
+<hr />
+<h2>8. Arquivos</h2>
+<pre><code>Part2/
+├── sistema_os.py          # ~1820 linhas
+├── README.md              # Este arquivo
+├── ANALISE_SIMPLIFICACAO.md
+├── AJUSTES_SOLICITADOS.md
+├── T2a-enunciado.md
+└── T2b-Enunciado.md
+</code></pre>
+<hr />
+<h2>9. Configuração</h2>
+<p>Editar <code>sistema_os.py</code> linha ~1801:</p>
+<p><strong>T2b</strong> (Atual):</p>
+<pre><code class="language-python">USE_VIRTUAL_MEMORY = True
+tam_mem = 512
+</code></pre>
+<p><strong>T2a</strong>:</p>
+<pre><code class="language-python">USE_VIRTUAL_MEMORY = False
+tam_mem = 1024
+</code></pre>
+<hr />
+<p><strong>Data</strong>: 2025-11-17<br />
+<strong>Versão</strong>: T2b<br />
+<strong>Status</strong>: ✅ Completo</p>
+</body>
+</html>

@@ -86,9 +86,8 @@ class CPU:
         self.page_fault_info = None
         self.irpt_page_save_complete = None
         self.irpt_page_load_complete = None
-        # T2b: Log throttling configurável para processos em loop (como NOP)
-        self.log_slowdown = 3.0  # Processos normais: 3 segundos
-        self.log_slowdown_nop = 10.0  # Processo NOP: 10 segundos
+        # T2b: Log throttling configurável para evitar spam de logs
+        self.log_slowdown = 3.0  # Intervalo padrão: 3 segundos
         self.instruction_count_global = 0
         self.last_logged_time = time.time()  # Timestamp do último log
         self.last_logged_instruction = 0  # Previne duplicatas no quantum
@@ -117,6 +116,18 @@ class CPU:
         if 0 <= e < len(self.m): return True
         self.irpt = Interrupts.INT_ENDERECO_INVALIDO
         return False
+    
+    # Combina tradução e verificação legal, respeitando interrupções de tradução
+    def _translate_and_check(self, logical_addr):
+        """Traduz endereço e verifica legalidade, preservando interrupções de tradução"""
+        physical_addr = self._translate_address(logical_addr)
+        # Se tradução já gerou interrupção (ex: PAGE_FAULT), não sobrescrever
+        if self.irpt != Interrupts.NO_INTERRUPT:
+            return -1
+        # Senão, verificar legalidade normalmente
+        if not self._legal(physical_addr):
+            return -1
+        return physical_addr
 
     # Mapeamento de endereço lógico para físico (esquema de paginação - T1 e T2b)
     # T2b: Adiciona verificação de estado da página (IN_MEMORY, NEVER_LOADED, SWAPPED)
@@ -127,6 +138,7 @@ class CPU:
             return -1
         tam_pg = self.gm.get_tam_pg()
         page, offset = logical_address // tam_pg, logical_address % tam_pg
+        
         if not (0 <= page < len(self.running_process.page_table)):
             self.irpt = Interrupts.INT_ENDERECO_INVALIDO
             return -1
@@ -159,19 +171,15 @@ class CPU:
         Este método SEMPRE roda, independente do modo trace.
         - Incrementa contador global de instruções
         - Atualiza timer continuamente
-        - Detecta NOP via flag is_nop (não via ID do frame)
         - Previne múltiplos logs no mesmo quantum
-        - Usa intervalo diferente: NOP (10s) vs processos normais (3s)
+        - Usa intervalo padrão de log throttling
         """
         self.instruction_count_global += 1
         current_time = time.time()
         elapsed = current_time - self.last_logged_time
         
-        # Detectar intervalo baseado na flag is_nop do processo
-        if self.running_process and getattr(self.running_process, "is_nop", False):
-            interval = self.log_slowdown_nop  # 10s para NOP
-        else:
-            interval = self.log_slowdown  # 3s para processos normais
+        # Usar intervalo padrão de log throttling
+        interval = self.log_slowdown
         
         # Verificar se passou tempo E se não logamos na instrução anterior
         if (elapsed >= interval and 
@@ -190,7 +198,9 @@ class CPU:
         while not self.cpu_stop and (self.instructions_executed < quantum or quantum == -1):
             
             physical_pc = self._translate_address(self.pc)
-            if not self._legal(physical_pc): break
+            # Não chamar _legal se _translate_address já definiu uma interrupção (ex: PAGE_FAULT)
+            if self.irpt != Interrupts.NO_INTERRUPT or not self._legal(physical_pc): 
+                break
             
             self.ir = self.m[physical_pc]
             # T2b: Throttling sempre ativo, trace controla apenas nível de detalhe
@@ -209,17 +219,17 @@ class CPU:
             
             if opc == Opcode.LDI: self.reg[ra] = p; self.pc += 1
             elif opc == Opcode.LDD:
-                addr = self._translate_address(p)
-                if self._legal(addr): self.reg[ra] = self.m[addr].p; self.pc += 1
+                addr = self._translate_and_check(p)
+                if addr >= 0: self.reg[ra] = self.m[addr].p; self.pc += 1
             elif opc == Opcode.LDX:
-                addr = self._translate_address(self.reg[rb])
-                if self._legal(addr): self.reg[ra] = self.m[addr].p; self.pc += 1
+                addr = self._translate_and_check(self.reg[rb])
+                if addr >= 0: self.reg[ra] = self.m[addr].p; self.pc += 1
             elif opc == Opcode.STD:
-                addr = self._translate_address(p)
-                if self._legal(addr): self.m[addr] = Word(Opcode.DATA, -1, -1, self.reg[ra]); self.pc += 1
+                addr = self._translate_and_check(p)
+                if addr >= 0: self.m[addr] = Word(Opcode.DATA, -1, -1, self.reg[ra]); self.pc += 1
             elif opc == Opcode.STX:
-                addr = self._translate_address(self.reg[ra])
-                if self._legal(addr): self.m[addr] = Word(Opcode.DATA, -1, -1, self.reg[rb]); self.pc += 1
+                addr = self._translate_and_check(self.reg[ra])
+                if addr >= 0: self.m[addr] = Word(Opcode.DATA, -1, -1, self.reg[rb]); self.pc += 1
             elif opc == Opcode.MOVE: self.reg[ra] = self.reg[rb]; self.pc += 1
             elif opc == Opcode.ADD: self.reg[ra] += self.reg[rb]; self._test_overflow(self.reg[ra]); self.pc += 1
             elif opc == Opcode.ADDI: self.reg[ra] += p; self._test_overflow(self.reg[ra]); self.pc += 1
@@ -228,8 +238,8 @@ class CPU:
             elif opc == Opcode.MULT: self.reg[ra] *= self.reg[rb]; self._test_overflow(self.reg[ra]); self.pc += 1
             elif opc == Opcode.JMP: self.pc = p
             elif opc == Opcode.JMPIM:
-                addr = self._translate_address(p)
-                if self._legal(addr): self.pc = self.m[addr].p
+                addr = self._translate_and_check(p)
+                if addr >= 0: self.pc = self.m[addr].p
             elif opc == Opcode.JMPIG: self.pc = self.reg[ra] if self.reg[rb] > 0 else self.pc + 1
             elif opc == Opcode.JMPIGK: self.pc = p if self.reg[rb] > 0 else self.pc + 1
             elif opc == Opcode.JMPILK: self.pc = p if self.reg[rb] < 0 else self.pc + 1
@@ -237,14 +247,14 @@ class CPU:
             elif opc == Opcode.JMPIL: self.pc = self.reg[ra] if self.reg[rb] < 0 else self.pc + 1
             elif opc == Opcode.JMPIE: self.pc = self.reg[ra] if self.reg[rb] == 0 else self.pc + 1
             elif opc == Opcode.JMPIGM:
-                addr = self._translate_address(p)
-                if self._legal(addr): self.pc = self.m[addr].p if self.reg[rb] > 0 else self.pc + 1
+                addr = self._translate_and_check(p)
+                if addr >= 0: self.pc = self.m[addr].p if self.reg[rb] > 0 else self.pc + 1
             elif opc == Opcode.JMPILM:
-                addr = self._translate_address(p)
-                if self._legal(addr): self.pc = self.m[addr].p if self.reg[rb] < 0 else self.pc + 1
+                addr = self._translate_and_check(p)
+                if addr >= 0: self.pc = self.m[addr].p if self.reg[rb] < 0 else self.pc + 1
             elif opc == Opcode.JMPIEM:
-                addr = self._translate_address(p)
-                if self._legal(addr): self.pc = self.m[addr].p if self.reg[rb] == 0 else self.pc + 1
+                addr = self._translate_and_check(p)
+                if addr >= 0: self.pc = self.m[addr].p if self.reg[rb] == 0 else self.pc + 1
             elif opc == Opcode.JMPIGT: self.pc = p if self.reg[ra] > self.reg[rb] else self.pc + 1
             elif opc == Opcode.SYSCALL:
                 self.sys_call.handle()
@@ -288,17 +298,19 @@ class PCB:
         READY, RUNNING, BLOCKED, FINISHED = range(4)
         
     def __init__(self, page_table):
-        if isinstance(page_table[0], dict):
-            self.id = page_table[0]['frame']
+        # Trata formatos T2a (int) e T2b (dict) da tabela de páginas
+        if page_table:
+            if isinstance(page_table[0], dict):
+                self.id = page_table[0]['frame']  # T2b: extrai frame do dict
+            else:
+                self.id = page_table[0]  # T2a: usa frame diretamente
         else:
-            self.id = page_table[0]
+            self.id = 0
         PCB._processo_count += 1
         self.processo_number = PCB._processo_count
         self.pc, self.registers = 0, [0] * 10
         self.page_table = page_table
         self.state = PCB.ProcessState.READY
-        # T2b: Flag para identificar processo NOP de forma robusta
-        self.is_nop = False
     
     @classmethod
     def get_processo_count(cls): return cls._processo_count
@@ -361,7 +373,18 @@ class GerenteMemoria:
     
     def desaloca(self, tabela_paginas):
         if tabela_paginas:
-            for frame in tabela_paginas:
+            for entry in tabela_paginas:
+                # Handle both T2a (int) and T2b (dict) formats
+                if isinstance(entry, dict):
+                    # T2b: extrai frame do dict se página está em memória
+                    if entry.get('state') == 'IN_MEMORY':
+                        frame = entry['frame']
+                    else:
+                        continue  # Pula páginas que não estão em memória
+                else:
+                    # T2a: entry é o número do frame diretamente
+                    frame = entry
+                
                 if 0 <= frame < self.num_frames: 
                     self.free_frames[frame] = True
                     self.frame_to_process[frame] = -1
@@ -518,10 +541,6 @@ class GerenteProcessos:
             
         pcb = PCB(page_table)
         
-        # T2b: Marcar processo NOP com flag is_nop (detecção robusta)
-        if program_name and program_name.lower() == "nop":
-            pcb.is_nop = True
-        
         with self.lock:
             self.all_processes.append(pcb)
             self.ready_queue.append(pcb)
@@ -569,7 +588,20 @@ class GerenteProcessos:
                         endereco_fisico = frame * tam_pg + i
                         self.hw.mem.pos[endereco_fisico] = Word(Opcode.___, -1, -1, -1)
 
+    def remove_processo_from_queues(self, proc_id):
+        """Remove processo das filas mas mantém memória alocada"""
+        pcb = self._find_pcb(proc_id)
+        if pcb:
+            with self.lock:
+                # Remove das filas de execução mas NÃO desaloca memória
+                if pcb in self.ready_queue: self.ready_queue.remove(pcb)
+                if pcb in self.blocked_queue: self.blocked_queue.remove(pcb)
+                # Mantém em all_processes para preservar histórico
+            print(f"Processo {proc_id} finalizado (memória mantida).")
+        else: print(f"Erro: Processo com ID {proc_id} não encontrado.")
+    
     def desaloca_processo(self, proc_id):
+        """Desaloca processo completamente (memória + filas) - usado apenas em comandos manuais"""
         pcb = self._find_pcb(proc_id)
         if pcb:
             with self.lock:
@@ -619,8 +651,24 @@ class GerenteProcessos:
                 for pcb in sorted(self.all_processes, key=lambda p: p.id):
                     frames_str = str(pcb.page_table)
                     tam_pg = self.gm.get_tam_pg()
-                    inicio_fisico = pcb.page_table[0] * tam_pg
-                    fim_fisico = pcb.page_table[-1] * tam_pg + tam_pg - 1
+                    
+                    # Trata formatos T2a (int) e T2b (dict) da tabela de páginas
+                    if isinstance(pcb.page_table[0], dict):
+                        primeiro_frame = pcb.page_table[0].get('frame')
+                        # Para último frame, procurar última página IN_MEMORY
+                        ultimo_frame = None
+                        for page_entry in reversed(pcb.page_table):
+                            if isinstance(page_entry, dict) and page_entry.get('state') == 'IN_MEMORY':
+                                ultimo_frame = page_entry.get('frame')
+                                break
+                        if ultimo_frame is None:
+                            ultimo_frame = primeiro_frame  # Fallback: usar primeiro
+                    else:
+                        primeiro_frame = pcb.page_table[0]
+                        ultimo_frame = pcb.page_table[-1]
+                    
+                    inicio_fisico = primeiro_frame * tam_pg
+                    fim_fisico = ultimo_frame * tam_pg + tam_pg - 1
                     enderecos_str = f"{inicio_fisico}-{fim_fisico}"
                     print(f"{pcb.id:<3} {pcb.processo_number:<4} {pcb.state.name:<8} {pcb.pc:<3} {frames_str:<20} {enderecos_str}")
             print("-" * 70)
@@ -640,17 +688,35 @@ class GerenteProcessos:
         print(f"Tabela de Páginas: {pcb.page_table}")
         tam_pg = self.gm.get_tam_pg()
         print(f"\nMapeamento Lógico → Físico:")
-        for i, frame in enumerate(pcb.page_table):
+        for i, entry in enumerate(pcb.page_table):
+            # Handle both T2a (int) and T2b (dict) formats
+            if isinstance(entry, dict):
+                frame = entry.get('frame', -1)
+                state = entry.get('state', 'UNKNOWN')
+                status = f" (Estado: {state})"
+            else:
+                frame = entry
+                status = ""
+            
             log_inicio, log_fim = i * tam_pg, i * tam_pg + tam_pg - 1
             fis_inicio, fis_fim = frame * tam_pg, frame * tam_pg + tam_pg - 1
-            print(f"  Página {i}: Lógico {log_inicio:3d}-{log_fim:3d} → Frame {frame} → Físico {fis_inicio:4d}-{fis_fim:4d}")
+            print(f"  Página {i}: Lógico {log_inicio:3d}-{log_fim:3d} → Frame {frame} → Físico {fis_inicio:4d}-{fis_fim:4d}{status}")
         print(f"\nConteúdo da Memória do Processo:")
         print("-" * 50)
         logical_size = len(pcb.page_table) * tam_pg
         for log_addr in range(min(logical_size, len(pcb.page_table) * tam_pg)):
             page, offset = log_addr // tam_pg, log_addr % tam_pg
             if page >= len(pcb.page_table): continue
-            frame = pcb.page_table[page]
+            
+            # Handle both T2a (int) and T2b (dict) formats
+            entry = pcb.page_table[page]
+            if isinstance(entry, dict):
+                if entry.get('state') != 'IN_MEMORY':
+                    continue  # Pula páginas que não estão em memória
+                frame = entry['frame']
+            else:
+                frame = entry
+            
             phys_addr = (frame * tam_pg) + offset
             if phys_addr < len(self.hw.mem.pos):
                 word = self.hw.mem.pos[phys_addr]
@@ -1020,7 +1086,8 @@ class CPUThread(threading.Thread):
             
             if pcb.state == PCB.ProcessState.FINISHED:
                 print(f"[FINALIZAÇÃO] Processo {pcb.id} FINALIZOU")
-                self.escalonador.gp.desaloca_processo(pcb.id)
+                # Não desaloca memória - processo finalizado mantém conteúdo em memória
+                self.escalonador.gp.remove_processo_from_queues(pcb.id)
             elif pcb.state == PCB.ProcessState.BLOCKED:
                 if self.cpu.debug:
                     print(f"[BLOQUEADO] Processo {pcb.id} aguardando I/O")
@@ -1151,7 +1218,7 @@ class InterruptHandling:
             # Criar pedido para carregar página do disco
             self.disk_device.load_page(process_id, page_num, frame, pcb.page_table[page_num])
             # Bloquear processo
-            self.gp.block_process(process_id)
+            self.gp.block_process(pcb)
         else:
             # Caso 2: Sem frame livre - precisa vitimar
             victim_info = self.gm.find_victim()
@@ -1160,7 +1227,7 @@ class InterruptHandling:
                 # Salvar vítima e depois carregar página demandada
                 self.disk_device.save_and_load_page(victim_info, process_id, page_num, pcb.page_table[page_num])
                 # Bloquear processo
-                self.gp.block_process(process_id)
+                self.gp.block_process(pcb)
         
         # Limpar info do page fault
         self.cpu.page_fault_info = None
@@ -1632,7 +1699,6 @@ class Sistema:
         print("  stats                   - Estatísticas")
         print("  trace                   - Ativar/desativar trace")
         print("  logtime <tempo>         - Ajustar intervalo log (segundos)")
-        print("  lognop <tempo>          - Ajustar intervalo log NOP (segundos)")
         print("  start                   - Iniciar escalonamento")
         print("  stop                    - Parar escalonamento")
         print("  exit                    - Sair")
@@ -1738,12 +1804,12 @@ class Sistema:
                         # Reset timer e contador quando trace é ativado
                         self.hw.cpu.last_logged_time = time.time()
                         self.hw.cpu.last_logged_instruction = self.hw.cpu.instruction_count_global
-                        print(f"[Trace] Log detalhado a cada {self.hw.cpu.log_slowdown}s (normal), {self.hw.cpu.log_slowdown_nop}s (NOP)")
+                        print(f"[Trace] Log detalhado a cada {self.hw.cpu.log_slowdown}s")
                     else:
-                        print(f"[Trace] Log compacto continuará a cada {self.hw.cpu.log_slowdown}s (normal), {self.hw.cpu.log_slowdown_nop}s (NOP)")
+                        print(f"[Trace] Log compacto continuará a cada {self.hw.cpu.log_slowdown}s")
                 
                 elif cmd == "logtime":
-                    # T2b: Ajustar intervalo de log para processos normais
+                    # T2b: Ajustar intervalo de log
                     if len(cmd_line) > 1:
                         try:
                             new_time = float(cmd_line[1])
@@ -1755,25 +1821,8 @@ class Sistema:
                         except ValueError:
                             print("Erro: Tempo inválido. Use número decimal (ex: 3.0)")
                     else:
-                        print(f"Intervalo atual: {self.hw.cpu.log_slowdown}s (normal), "
-                              f"{self.hw.cpu.log_slowdown_nop}s (NOP)")
+                        print(f"Intervalo atual: {self.hw.cpu.log_slowdown}s")
                         print("Uso: logtime <segundos>")
-                
-                elif cmd == "lognop":
-                    # T2b: Ajustar intervalo de log para processo NOP
-                    if len(cmd_line) > 1:
-                        try:
-                            new_time = float(cmd_line[1])
-                            if new_time > 0:
-                                self.hw.cpu.log_slowdown_nop = new_time
-                                print(f"[Log] Intervalo de log para NOP alterado para: {new_time}s")
-                            else:
-                                print("Erro: Tempo deve ser maior que 0")
-                        except ValueError:
-                            print("Erro: Tempo inválido. Use número decimal (ex: 10.0)")
-                    else:
-                        print(f"Intervalo NOP atual: {self.hw.cpu.log_slowdown_nop}s")
-                        print("Uso: lognop <segundos>")
                 
                 elif cmd == "exit":
                     if system_started:
