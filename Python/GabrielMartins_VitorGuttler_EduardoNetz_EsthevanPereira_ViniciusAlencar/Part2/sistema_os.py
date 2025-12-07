@@ -1853,7 +1853,7 @@ if __name__ == "__main__":
     USE_VIRTUAL_MEMORY = True  # Alterar para True para testar T2b
     
     # Memória menor para T2b facilita testes de page fault
-    tam_mem = 512 if USE_VIRTUAL_MEMORY else 1024
+    tam_mem = 256 if USE_VIRTUAL_MEMORY else 256
     
     s = Sistema(
         tam_mem=tam_mem, 
